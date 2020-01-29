@@ -1,0 +1,136 @@
+﻿
+@{
+    ViewBag.Title = "PrintPage";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="/Content/PrintPageStyles.css" />
+    <title>Document</title>
+</head>
+<body>
+    
+       
+
+        <div id="BlockOne">
+            <div class="TextAligment">
+                <span class="PrintDescription">
+                    Выберите необходимое количество шаблонов и человек / компаний, <br> для которых будет производиться печать:
+                </span>
+            </div>
+
+            <div class="chosePatternAligment">
+
+                <div id="patternAligment">
+
+                    <select class="selectStyle">
+                        <option style="margin-left: 10px;" value="" disabled selected>Выберите шаблон</option>
+                        <option class="chosePattern">Шаблон 1</option>
+                        <option class="chosePattern">Шаблон 2</option>
+                        <option class="chosePattern">Шаблон 3</option>
+                        <option class="chosePattern">Шаблон 4</option>
+                        <option class="chosePattern">Шаблон 5</option>
+                    </select>
+
+                </div>
+
+                <div id="acceptedPattern">
+
+                    <span class="PrintDescription">Выбранные шаблоны:</span>
+
+                    <div class="Pattern">
+                        <span class="PrintDescription"> Шаблон 1</span>
+                        <button id="DeleteButton">
+                            <img src="/Resourses/svg/delete.svg" class="deleteImage">
+                        </button>
+                    </div>
+
+                    <div class="Pattern">
+                        <span class="PrintDescription"> Шаблон 1</span>
+                        <button id="DeleteButton">
+                            <img src="/Resourses/svg/delete.svg" class="deleteImage">
+                        </button>
+                    </div>
+
+                    <div class="Pattern">
+                        <span class="PrintDescription"> Шаблон 1</span>
+                        <button id="DeleteButton">
+                            <img src="/Resourses/svg/delete.svg" class="deleteImage">
+                        </button>
+
+                    </div>
+
+
+                </div>
+
+
+                <div id="organisationAligment">
+
+                    <select class="selectStyle">
+                        <option value="" disabled selected>Выберите пользователя/организацию</option>
+                        <option class="chosePattern">Шаблон 1</option>
+                        <option class="chosePattern">Шаблон 2</option>
+                        <option class="chosePattern">Шаблон 3</option>
+                        <option class="chosePattern">Шаблон 4</option>
+                        <option class="chosePattern">Шаблон 5</option>
+                    </select>
+
+                </div>
+
+
+                <div id="acceptedPattern">
+
+                    <span class="PrintDescription">Выбранные пользователи организации:</span>
+
+                    <div class="Pattern">
+                        <span class="PrintDescription"> Шаблон 1</span>
+                        <button id="DeleteButton">
+                            <img src="/Resourses/svg/delete.svg" class="deleteImage">
+                        </button>
+                    </div>
+
+                    <div class="Pattern">
+                        <span class="PrintDescription"> Шаблон 1</span>
+                        <button id="DeleteButton">
+                            <img src="/Resourses/svg/delete.svg" class="deleteImage">
+                        </button>
+                    </div>
+
+                    <div class="Pattern">
+                        <span class="PrintDescription"> Шаблон 1</span>
+                        <button id="DeleteButton">
+                            <img src="/Resourses/svg/delete.svg" class="deleteImage">
+                        </button>
+                    </div>
+
+
+                </div>
+
+                <div id="manageButtons">
+                    <button class="BlueButton">
+
+                        <span class="butttonTextStyle">Печать</span>
+                    </button>
+
+                    <button class="BlueButton">
+
+                        <span class="butttonTextStyle">Сохранить в PDF</span>
+                    </button>
+
+                </div>
+
+            </div>
+
+
+
+        </div>
+
+
+ 
+</body>
+</html>
+

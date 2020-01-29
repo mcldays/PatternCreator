@@ -1,0 +1,437 @@
+@font-face {
+    font-family: "OpenSans";  
+    src: url("https://fonts.googleapis.com/css?family=Open+Sans&display=swap") format("truetype"); 
+    font-style: normal; 
+    font-weight: normal;
+     }
+
+     @font-face {
+        font-family: "ProximaNovaBold";  
+        src: url("../../../Fonts/ProximaNova.otf"); 
+        font-style: normal; 
+        font-weight: normal;
+         }
+
+
+
+
+#MainBlock{
+    width: 65%;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#Header{
+display: flex;
+flex-direction: column;
+align-items: center;
+width: 100%;
+
+}
+
+#ButtonsAligment{
+    display: flex;
+    
+}
+
+.UserJob{
+    width: 280px;
+height: 47px;
+background-color: #ffffff;
+border: 0;
+margin-left: 10px;
+
+}
+
+.HeaderFonts{
+    width: 190px;
+    height: 10px;
+    color: #2b2b2b;
+    font-family: "ProximaNovaBold";
+    font-size: 15px;
+    font-weight: 700;
+    text-transform: uppercase;
+    /* Text style for "Работа с ш" */
+    letter-spacing: 0.75px;
+}
+
+
+hr{
+    border: none; /* Убираем границу */
+    background-color: #00aeef;; /* Цвет линии */
+    color: #00aeef;; /* Цвет линии для IE6-7 */
+    height: 1px; /* Толщина линии */
+    width: 100%;
+}
+
+
+
+#BlockOne{
+    width: 100%;
+}
+
+.ButtonsContain{
+margin-top: 30px;
+display: flex;
+justify-content: center;
+
+}
+
+.blueButton{
+    width: 260px;
+height: 41px;
+border-radius: 5px;
+background-color: #00aeef;
+border: 0;
+margin-left: 10px;
+cursor: pointer;
+display: flex;
+justify-content: center;
+
+}
+
+.greyButton{
+    width: 260px;
+    height: 41px;
+    border-radius: 5px;
+    border: 2px solid #d7d7d7;
+    background-color: #ffffff;
+    margin-left: 10px;
+
+}
+
+.findButton{
+    width: 417px;
+
+border-radius: 5px;
+border: 2px solid #00aeef;
+margin-left: 10px;
+cursor: pointer;
+display: flex;
+
+}
+
+.findIcon{
+    border: 0;
+    outline: 0;
+    background-color: white;
+    cursor: pointer;
+    
+}
+
+.InputStyle{
+    border: 0;
+    outline: 0;
+    width: 100%;
+    padding-left: 10px;
+    font-family: "Open Sans";
+font-size: 16px;
+font-weight: 400;
+letter-spacing: 0.75px;
+}
+
+
+.blueButtonText{
+
+color: #ffffff;
+font-family: "Open Sans";
+font-size: 17px;
+font-weight: 400;
+}
+
+.greyButtonText{
+
+color: #a9a9a9;
+font-family: "Open Sans";
+font-size: 17px;
+font-weight: 400;
+}
+
+.AddPatternImg{
+    position: absolute;
+    width: 25px;
+height: 19px;
+margin-left: 110px;
+}
+
+.DeletePatternImg{
+    position: absolute;
+    width: 25px;
+height: 19px;
+margin-left: 2%;
+}
+
+
+#patternsContain{
+
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+
+}
+
+.patternRectangle{
+    width: 264px;
+height: 199px;
+border-radius: 5px;
+border: 2px solid #d7d7d7;
+background-color: #ffffff;
+margin-left: 25px;
+}
+
+.patternBut{
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    border: 0;
+}
+
+.imgStyle{
+    height: 100%;
+}
+
+
+.modal {
+    position: fixed; /* фиксированное положение */
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(0,0,0,0.5); /* цвет фона */
+    z-index: 1050;
+    opacity: 0; /* по умолчанию модальное окно прозрачно */
+    -webkit-transition: opacity 200ms ease-in; 
+    -moz-transition: opacity 200ms ease-in;
+    transition: opacity 200ms ease-in; /* анимация перехода */
+    pointer-events: none; /* элемент невидим для событий мыши */
+    margin: 0;
+    padding: 0;
+}
+/* при отображении модального окно */
+.modal:target {
+    opacity: 1; /* делаем окно видимым */
+	  pointer-events: auto; /* элемент видим для событий мыши */
+    overflow-y: auto; /* добавляем прокрутку по y, когда элемент не помещается на страницу */
+}
+/* ширина модального окна и его отступы от экрана */
+.modal-dialog {
+    position: relative;
+    width: auto;
+    margin: 10px;
+}
+
+
+
+@media (min-width: 576px) {
+  .modal-dialog {
+      max-width: 850px;
+      margin: 30px auto; /* для отображения модального окна по центру */
+  }
+}
+/* свойства для блока, содержащего контент модального окна */ 
+.modal-content {
+    position: relative;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    background-color: #fff;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    border: 1px solid rgba(0,0,0,.2);
+    border-radius: .3rem;
+    outline: 0;
+}
+@media (min-width: 768px) {
+  .modal-content {
+      -webkit-box-shadow: 0 5px 15px rgba(0,0,0,.5);
+      box-shadow: 0 5px 15px rgba(0,0,0,.5);
+  }
+}
+/* свойства для заголовка модального окна */
+.modal-header {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: justify;
+    -webkit-justify-content: space-between;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    padding: 15px;
+   
+}
+.modal-title {
+    margin-top: 0;
+    margin-bottom: 0;
+    line-height: 1.5;
+    font-size: 1.25rem;
+    font-weight: 500;
+}
+/* свойства для кнопки "Закрыть" */
+.close {
+    margin-left: 97%;
+    float: right;
+    font-family: sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1;
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    opacity: .5;
+    text-decoration: none;
+}
+/* свойства для кнопки "Закрыть" при нахождении её в фокусе или наведении */
+.close:focus, .close:hover {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+    opacity: .75;
+}
+/* свойства для блока, содержащего основное содержимое окна */
+.modal-body {
+  position: relative;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1 1 auto;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    padding: 15px;
+    overflow: auto;
+}
+
+
+
+
+.modelContent{
+ 
+    height: 900px;
+    width: 90%;
+    display: flex;
+    margin: auto;
+   
+}
+
+
+.manageBlockModel{
+    display: flex;
+    justify-content: center;
+  
+}
+
+.namePatternModel{
+    width: 740px;
+height: 40px;
+
+}
+
+.inputModelName{
+
+color: #2b2b2b;
+font-family: "Open Sans";
+font-size: 17px;
+font-weight: 400;
+/* Text style for "Название ш" */
+letter-spacing: 0.75px;
+padding-left: 10px;
+width: 100%;
+height: 100%;
+border: 0;
+outline: 0;
+box-shadow: inset 0 1px 7px rgba(3, 3, 3, 0.35);
+border-radius: 5px;
+border: 1px solid #cccccc;
+background-color: #ffffff;
+}
+
+.blueButtonsModal{
+    width: 240px;
+height: 45px;
+border-radius: 5px;
+background-color: #00aeef;
+border: 0;
+outline: 0;
+margin-inline-end: 10px;
+cursor: pointer;
+color: #ffffff;
+font-family: "Open Sans";
+font-size: 18px;
+font-weight: 400;
+
+}
+
+.buttonsContainModal{
+display: flex;
+margin-top: 20px;
+}
+
+.mainEditor{
+    margin-top: 20px;
+    width: 740px;
+    height: 610px;
+}
+
+.imgModalStyle{
+    width: 100%;
+    height: 100%;
+}
+
+.saveButtonModal{
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+}
+
+.rectangleWhite{
+    width: 48px;
+height: 48px;
+box-shadow: 0 5px 5px 1px rgba(3, 3, 3, 0.17);
+border-radius: 5px;
+background-color: #ffffff;
+display: flex;
+align-items: center;
+justify-content: center;
+border: 0;
+cursor: pointer;
+outline: 0;
+
+
+}
+
+.rectangleBlue{
+    width: 48px;
+height: 48px;
+box-shadow: 0 5px 5px 1px rgba(3, 3, 3, 0.17);
+border-radius: 5px;
+background-color: #00aeef;
+margin-top: 5px;
+border: 0;
+cursor: pointer;
+outline: 0;
+
+}
+
+.InzoomModal{
+    width: 22px;
+height: 22px;
+}
+
+.ZoomContain{
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    /* top: 140px; */
+    right: 70px;
+    top: 150px;
+}

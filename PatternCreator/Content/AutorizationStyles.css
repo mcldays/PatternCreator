@@ -1,0 +1,118 @@
+@font-face {
+    font-family: "OpenSans";  
+    src: url("https://fonts.googleapis.com/css?family=Open+Sans&display=swap") format("truetype"); 
+    font-style: normal; 
+    font-weight: normal;
+     }
+
+     @font-face {
+        font-family: "OpenSans-CondLight";  
+        src: url("../../../Fonts/OpenSans-CondLight.ttf") format("truetype"); 
+        font-style: normal; 
+        font-weight: normal;
+         }
+    
+
+     
+    
+     input::-webkit-input-placeholder {    color: #2b2b2b;
+        font-family: "OpenSans-CondLight";
+        font-size: 18px;
+        font-weight: 400;
+        /* Text style for "Имя" */
+        letter-spacing: 0.75px;
+        padding: 6px; }
+
+
+
+
+#MainContain
+{
+
+    display: block;
+    margin: auto;
+    width: 588px;
+height: 433px;
+box-shadow: 0 3px 6px rgba(2, 2, 2, 0.35);
+border-radius: 5px;
+border: 1px solid #cccccc;
+background-color: #ffffff;
+display: flex;
+    flex-direction: column;
+    text-align: center;
+    margin-top: 10%;
+}
+
+
+#Autorize{
+    margin-top: 70px;
+    
+}
+
+#TextOne{
+    width: 237px;
+    height: 24px;
+    color: #2b2b2b;
+    font-family: 'OpenSans-CondLight', sans-serif;
+    font-size: 30px;
+    font-weight: 700;
+    text-transform: uppercase;
+    /* Text style for "А, вториза" */
+    letter-spacing: 1.5px;
+}
+
+
+#AutContain{
+    margin-top: 70px;
+}
+
+#Login{
+    margin: auto;
+    width: 302px;
+    height: 43px;
+    box-shadow: inset 0 1px 7px rgba(3, 3, 3, 0.35);
+    border-radius: 5px;
+    border: 1px siolid #cccccc;
+    background-color: #ffffff;
+    border: 0;
+  
+}
+
+.NameStyle{
+    font-family: "OpenSans-CondLight";
+    font-size: 18px;
+    font-weight: 400;
+    /* Text style for "Имя" */
+    letter-spacing: 0.75px;
+    padding: 6px; 
+
+}
+
+#Password{
+    margin-top: 20px;
+}
+
+#Passed{
+    margin-top: 55px;
+}
+
+#LoginButton{
+    width: 198px;
+height: 43px;
+border-radius: 5px;
+background-color: #00aeef;
+border: 0;
+}
+
+#Passedstyle{
+    width: 45px;
+height: 14px;
+color: #ffffff;
+font-family: "Open Sans";
+font-size: 15px;
+font-weight: 700;
+text-transform: uppercase;
+/* Text style for "Вход" */
+letter-spacing: 0.75px;
+
+}
