@@ -52,6 +52,52 @@ namespace PatternCreator.Utilities
         }
 
 
+        public static bool sendCompanyModel(string CompanyName)
+        {
+            using (UserContext dbUse = new UserContext())
+            {
+                dbUse.CompanyModels.Add(new CompanyModel()
+                {
+                    CompanyName = CompanyName
+                });
+                dbUse.SaveChanges();
+                return true;
+            }
+        }
+
+
+        public static List<CompanyModel> GelAllCompanyList()
+        {
+
+            List<CompanyModel> models;
+
+            using (UserContext dbUse = new UserContext())
+            {
+                models = dbUse.CompanyModels.ToList();
+            }
+
+            return models;
+
+        }
+
+        public static bool SendUserToDb(UserModel model)
+        {
+            using (UserContext dbUse = new UserContext())
+            {
+                dbUse.UserModels.Add(new UserModel()
+                {
+                    Name = model.Name,
+                    Surname = model.Surname,
+                    Patronymic = model.Patronymic,
+                    CompanyId = model.CompanyId
+                });
+
+                dbUse.SaveChanges();
+                return true;
+            }
+        }
+
+
 
 
 

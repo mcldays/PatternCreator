@@ -199,7 +199,22 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202001221634288_InitialCreate.cs" />
+    <Compile Include="Migrations\202001221634288_InitialCreate.designer.cs">
+      <DependentUpon>202001221634288_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001301248295_YOUR_FIRST_MIGRATION.cs" />
+    <Compile Include="Migrations\202001301248295_YOUR_FIRST_MIGRATION.designer.cs">
+      <DependentUpon>202001301248295_YOUR_FIRST_MIGRATION.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001301522397_MigrationsTwice.cs" />
+    <Compile Include="Migrations\202001301522397_MigrationsTwice.designer.cs">
+      <DependentUpon>202001301522397_MigrationsTwice.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AutModel.cs" />
+    <Compile Include="Models\CompanyModel.cs" />
+    <Compile Include="Models\UserModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\SendDbUtility.cs" />
     <Compile Include="Utilities\UserContext.cs" />
@@ -237,6 +252,7 @@
     <Content Include="Resourses\svg\move.svg" />
     <Content Include="Resourses\svg\negative-sign %281%29.svg" />
     <Content Include="Resourses\svg\pencil-edit-button %282%29.svg" />
+    <Content Include="Resourses\svg\save-file.svg" />
     <Content Include="Resourses\svg\save-icon-silhouette.svg" />
     <Content Include="Resourses\svg\zoom-in.svg" />
     <Content Include="Resourses\svg\zoom-out.svg" />
@@ -287,6 +303,17 @@
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-3.4.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.4.1.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\202001221634288_InitialCreate.resx">
+      <DependentUpon>202001221634288_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001301248295_YOUR_FIRST_MIGRATION.resx">
+      <DependentUpon>202001301248295_YOUR_FIRST_MIGRATION.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001301522397_MigrationsTwice.resx">
+      <DependentUpon>202001301522397_MigrationsTwice.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

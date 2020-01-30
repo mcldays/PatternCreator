@@ -1,6 +1,8 @@
-﻿
+﻿@using PatternCreator.Models
+@model object[]
 @{
     ViewBag.Title = "Home";
+    
 }
 
 <!DOCTYPE html>
@@ -16,184 +18,185 @@
 </head>
 
 <body>
-   
-        <div id=BlockOne>
-            <div id="UserControl">
-                <div id="AligmentAdd">
-                    <a href="#openModal">
-                        <button class="AddUserControl">
-                            <span class="ControlTextChoose">Добавить пользователя</span>
-                            <img src="/Главная страница/svg/add-user.svg" class="AddUserImg">
 
-                        </button>
-                    </a>
-                </div>
+    <div id=BlockOne>
+        <div id="UserControl">
+            <div id="AligmentAdd">
+                <a href="#openModal">
+                    <button class="AddUserControl">
+                        <span class="ControlTextChoose">Добавить пользователя</span>
+                        <img src="/Resourses/svg/add-user.svg" class="AddUserImg">
 
-                <div id="AligmentDelete">
+                    </button>
+                </a>
+            </div>
+
+            <div id="AligmentDelete">
+                <a href="#openModalCompany">
                     <button class="DeleteUserControl">
-                        <span class="ControlText">Удалить пользователя</span>
-                        <img src="/Главная страница/svg/delete-grey.svg" class="AddUserImg">
+                        <span class="ControlText">Добавить компанию</span>
+
+                    </button>
+                </a>
+            </div>
+
+            <div id="AligmentFind">
+
+                <div class="FindUsersControl">
+
+                    <input type="text" class="ControlText" placeholder="Поиск по пользователям">
+
+                    <!-- <span class="ControlText">Поиск по пользователям</span> -->
+                    <button class="FindButton">
+                        <img src="/Resourses/svg/magnifying-glass (3).svg" class="AddUserImg">
                     </button>
                 </div>
-
-                <div id="AligmentFind">
-
-                    <div class="FindUsersControl">
-
-                        <input type="text" class="ControlText" placeholder="Поиск по пользователям">
-
-                        <!-- <span class="ControlText">Поиск по пользователям</span> -->
-                        <button class="FindButton">
-                            <img src="/Главная страница/svg/magnifying-glass (3).svg" class="AddUserImg">
-                        </button>
-                    </div>
-
-                </div>
-
 
             </div>
 
 
+        </div>
 
 
 
-            <div>
+
+
+        <div>
 
 
 
-                <div id="TableTwo">
-                    <table id="TableTwoStyle">
+            <div id="TableTwo">
+                <table id="TableTwoStyle">
 
-                        <tr>
-                            <div class="CompanyAligment">
+                    <tr>
+                        <div class="CompanyAligment">
 
-                                <div class="SaveAligment" style="width: 230px;">
-                                    <span id="CompanyStyleEdit">ООО "Гефест строй"</span>
-
-
-                                    <!-- <img src="/Главная страница/svg/save-icon-silhouette.svg" class="SaveIconStyle"> -->
-
-                                </div>
-                                <div class="IconUtilitiesCompany">
-                                    <button class="CompanyAdd">
-                                        <img src="/Главная страница/svg/add.svg" class="ManageIconStyleCompany">
-                                    </button>
-
-                                    <button class="CompanyEdit">
-                                        <img src="/Главная страница/svg/pencil-edit-button (2).svg" class="ManageIconStyleCompany">
-                                    </button>
-
-                                    <button class="CompanyDelete">
-                                        <img src="/Главная страница/svg/delete.svg" class="ManageIconStyleCompany">
-                                    </button>
-
-                                    <button class='IconButtonsSave'>
-                                        <img src='/Главная страница/svg/save-file.svg' class='ManageIconStyle'>
-                                    </button>
+                            <div class="SaveAligment" style="width: 230px;">
+                                <span id="CompanyStyleEdit">ООО "Гефест строй"</span>
 
 
-                                </div>
+                                <!-- <img src="/Главная страница/svg/save-icon-silhouette.svg" class="SaveIconStyle"> -->
+
+                            </div>
+                            <div class="IconUtilitiesCompany">
+
+                                <button class="CompanyEdit">
+                                    <img src="/Resourses/svg/pencil-edit-button (2).svg" class="ManageIconStyleCompany">
+                                </button>
+
+                                <button class="CompanyDelete">
+                                    <img src="/Resourses/svg/delete.svg" class="ManageIconStyleCompany">
+                                </button>
+
+                                <button class='IconButtonsSave'>
+                                    <img src='/Resourses/svg/save-file.svg' class='ManageIconStyle'>
+                                </button>
 
 
                             </div>
-                        </tr>
 
 
-
-
-
-                        <tr class="ignoreTr">
-
-                        <tr id="impotantTr">
-                            <th style="width: 20px;"><span>№</span></th>
-                            <th style="width: 250px;"><span>Имя</span></th>
-                            <th style="width: 300px;"><span>Фамилия</span></th>
-                            <th style="width: 350px;"><span>Отчество</span></th>
-                            <th style="width: 100px;"></th>
-
-                        </tr>
-
-
-
-
-
-
-                        <!-- <th style="width: 20px; height: 45px;"><span>1</span></th>
-                        <th style="width: 250px;"><span>Владимир</span></th>
-                        <th style="width: 300px;"><span>Колесников</span></th>
-                        <th style="width: 350px;"><span>Алексеевич</span></th> -->
-                        </tr>
-
-                        <tr class="normalTr">
-                            <td class="id"><span>1</span></td>
-                            <td><span>Владимир</span></td>
-                            <td><span>Колесников</span></td>
-                            <td><span>Алексеевич</span></td>
-                        </tr>
-                        <tr class="normalTr">
-                            <td><span>1</span></td>
-                            <td><span>Владимир</span></td>
-                            <td><span>Колесников</span></td>
-                            <td><span>Алексеевич</span></td>
-                        </tr>
-                        <tr class="normalTr">
-                            <td><span>1</span></td>
-                            <td><span>Владимир</span></td>
-                            <td><span>Колесников</span></td>
-                            <td><span>Алексеевич</span></td>
-                        </tr>
-                        <tr class="normalTr">
-                            <td><span>1</span></td>
-                            <td><span>Владимир</span></td>
-                            <td><span>Колесников</span></td>
-                            <td><span>Алексеевич</span></td>
-                        </tr>
-                        <tr class="normalTr">
-                            <td><span>1</span></td>
-                            <td><span>Владимир</span></td>
-                            <td><span>Колесников</span></td>
-                            <td><span>Алексеевич</span></td>
-                        </tr>
-                        <!-- <tr id="normalTr">
-                            <td><span>1</span></td>
-                            <td class="EditTdCol">
-                                <div class="EditCol">
-                                    <span class="EditTextCol">Имя</span> </div>
-                            </td>
-                            <td class="EditTdCol">
-                                <div class="EditCol">
-                                    <span class="EditTextCol">Фамилия</span>
-                                </div>
-                            </td>
-                            <td class="EditTdCol">
-                                <div class="EditCol">
-                                    <span class="EditTextCol">Отчество</span>
-                                </div>
-                            </td>
-                        </tr> -->
-
-                    </table>
-
-                    <!-- <div class="EditContainTable">
-                        <div id="CompanyAligment">
-                            <span id="CompanyStyle">ООО "Гефест строй"</span>
                         </div>
-                        <!-- <div class="IconUtilities">
-                            <img src="/Главная страница/svg/add.svg" class="ManageIconStyle">
-                            <img src="/Главная страница/svg/pencil-edit-button (2).svg" class="ManageIconStyle">
-                            <img src="/Главная страница/svg/delete.svg" class="ManageIconStyle">
-                        </div> -->
+                    </tr>
 
 
 
 
-                </div>
+
+                    <tr class="ignoreTr">
+
+                    <tr id="impotantTr">
+                        <th style="width: 20px;"><span>№</span></th>
+                        <th style="width: 250px;"><span>Имя</span></th>
+                        <th style="width: 300px;"><span>Фамилия</span></th>
+                        <th style="width: 350px;"><span>Отчество</span></th>
+                        <th style="width: 100px;"></th>
+
+                    </tr>
+
+
+
+
+
+
+                    <!-- <th style="width: 20px; height: 45px;"><span>1</span></th>
+                    <th style="width: 250px;"><span>Владимир</span></th>
+                    <th style="width: 300px;"><span>Колесников</span></th>
+                    <th style="width: 350px;"><span>Алексеевич</span></th> -->
+                    </tr>
+
+                    <tr class="normalTr">
+                        <td class="id"><span>1</span></td>
+                        <td><span>Владимир</span></td>
+                        <td><span>Колесников</span></td>
+                        <td><span>Алексеевич</span></td>
+                    </tr>
+                    <tr class="normalTr">
+                        <td><span>1</span></td>
+                        <td><span>Владимир</span></td>
+                        <td><span>Колесников</span></td>
+                        <td><span>Алексеевич</span></td>
+                    </tr>
+                    <tr class="normalTr">
+                        <td><span>1</span></td>
+                        <td><span>Владимир</span></td>
+                        <td><span>Колесников</span></td>
+                        <td><span>Алексеевич</span></td>
+                    </tr>
+                    <tr class="normalTr">
+                        <td><span>1</span></td>
+                        <td><span>Владимир</span></td>
+                        <td><span>Колесников</span></td>
+                        <td><span>Алексеевич</span></td>
+                    </tr>
+                    <tr class="normalTr">
+                        <td><span>1</span></td>
+                        <td><span>Владимир</span></td>
+                        <td><span>Колесников</span></td>
+                        <td><span>Алексеевич</span></td>
+                    </tr>
+                    <!-- <tr id="normalTr">
+                        <td><span>1</span></td>
+                        <td class="EditTdCol">
+                            <div class="EditCol">
+                                <span class="EditTextCol">Имя</span> </div>
+                        </td>
+                        <td class="EditTdCol">
+                            <div class="EditCol">
+                                <span class="EditTextCol">Фамилия</span>
+                            </div>
+                        </td>
+                        <td class="EditTdCol">
+                            <div class="EditCol">
+                                <span class="EditTextCol">Отчество</span>
+                            </div>
+                        </td>
+                    </tr> -->
+
+                </table>
+
+                <!-- <div class="EditContainTable">
+                    <div id="CompanyAligment">
+                        <span id="CompanyStyle">ООО "Гефест строй"</span>
+                    </div>
+                    <!-- <div class="IconUtilities">
+                        <img src="/Главная страница/svg/add.svg" class="ManageIconStyle">
+                        <img src="/Главная страница/svg/pencil-edit-button (2).svg" class="ManageIconStyle">
+                        <img src="/Главная страница/svg/delete.svg" class="ManageIconStyle">
+                    </div> -->
+
+
+
 
             </div>
 
         </div>
 
-        <div id="openModal" class="modal">
+    </div>
+
+@using (Html.BeginForm("UserToDb", "Pattern", FormMethod.Post, new { @id = "openModal", @class = "modal" }))
+{
+        @*<div id="openModal" class="modal">*@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -203,14 +206,26 @@
                     </div>
                     <div class="modal-body">
 
+
                         <div class="AddUserModal">
-                            <input type="text" class="inputUser" placeholder="Имя">
-                            <input type="text" class="inputUser" placeholder="Фамилия">
-                            <input type="text" class="inputUser" placeholder="Отчество">
-                            <select class="inputCompany">
-                                <option style="margin-left: 10px;" value="" disabled="" selected="">Выберите коммпанию</option>
-                                <option>Пункт 2</option>
-                            </select>
+                            @Html.EditorFor(model => (model[0] as UserModel).Name, new { htmlAttributes = new { @class = "inputUser", PlaceHolder = "Имя" } })
+                            @Html.EditorFor(model => (model[0] as UserModel).Surname, new { htmlAttributes = new { @class = "inputUser", PlaceHolder = "Фамилия*" } })
+                            @Html.EditorFor(model => (model[0] as UserModel).Patronymic, new { htmlAttributes = new { @class = "inputUser", PlaceHolder = "Отчество*" } })
+
+                            @*<input type="text" class="inputUser" placeholder="Имя">
+                                <input type="text" class="inputUser" placeholder="Фамилия">
+                                <input type="text" class="inputUser" placeholder="Отчество">*@
+
+                            @Html.DropDownList("CompanyName", null, "Выберите компанию", new { @class = "inputCompany" })
+
+
+
+
+
+                            @*<select class="inputCompany">
+                                    <option style="margin-left: 10px;" value="" disabled="" selected="">Выберите коммпанию</option>
+                                    <option>Пункт 2</option>
+                                </select>*@
 
                             <div class="buttonAligment">
                                 <a href="#close" title="Close" class="close">
@@ -229,16 +244,53 @@
                     </div>
                 </div>
             </div>
-        </div>
+        }
+
+
+        @using (Html.BeginForm("CompanyToDb", "Pattern", FormMethod.Post, new { @id = "openModalCompany", @class = "modal" }))
+        {
+            @*<div id="openModalCompany" class="modal">*@
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Добавить компанию</h3>
+
+                        <a href="#close" title="Close" class="close">×</a>
+                    </div>
+                    <div class="modal-body">
+
+
+                        <div class="AddUserModal">
+                            @*<input type="text" class="inputUser" placeholder="Название компании">*@
+                            @Html.EditorFor(model => (model[0] as CompanyModel).CompanyName, new { htmlAttributes = new { @class = "inputUser", PlaceHolder = "Название компании*" } })
+                            @Html.HiddenFor(model => (model[0] as CompanyModel).Id, new { @class = "hiddeId" })
+
+                            <div class="buttonAligment">
+                                <a href="#close" title="Close" class="close">
+                                    <button id="SaveModalButton">
+                                        <span>Сохранить</span>
+                                    </button>
+                                </a>
+                            </div>
+
+                        </div>
 
 
 
 
 
 
-  
+                    </div>
+                </div>
+            </div>
+            @*</div>*@
 
-    <script src="/Scripts/HomeScripts.js"></script>
-</body>
+        }
+
+
+
+
+        <script src="/Scripts/HomeScripts.js"></script>
+    </body>
 
 </html>

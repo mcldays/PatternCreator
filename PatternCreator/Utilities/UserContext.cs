@@ -18,7 +18,9 @@ namespace PatternCreator.Utilities
 
         public DbSet<AutModel> AutModels { get; set; }
 
+        public DbSet<CompanyModel> CompanyModels { get; set; }
 
+        public  DbSet<UserModel> UserModels { get; set;}
 
 
     }

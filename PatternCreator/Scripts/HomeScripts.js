@@ -11,15 +11,15 @@ $(document).ready(function(){
         
 
         <button class='IconButtonsEdit'>
-            <img src='/Главная страница/svg/pencil-edit-button (2).svg' class='ManageIconStyle'>
+            <img src='/Resourses/svg/pencil-edit-button (2).svg' class='ManageIconStyle'>
         </button>
 
         <button class='IconButtonsDelete'>
-            <img src='/Главная страница/svg/delete.svg' class='ManageIconStyle'>
+            <img src='/Resourses/svg/delete.svg' class='ManageIconStyle'>
         </button>
 
         <button class='IconButtonsSave'>
-            <img src='/Главная страница/svg/save-file.svg' class='ManageIconStyle'>
+            <img src='/Resourses/svg/save-file.svg' class='ManageIconStyle'>
         </button>
 
 
@@ -157,19 +157,19 @@ $(document).ready(function(){
                     </div>
                     <div class="IconUtilitiesCompany">
                         <button class="CompanyAdd">
-                            <img src="/Главная страница/svg/add.svg" class="ManageIconStyleCompany">
+                            <img src="/Resourses/svg/add.svg" class="ManageIconStyleCompany">
                         </button>
 
                         <button class="CompanyEdit">
-                            <img src="/Главная страница/svg/pencil-edit-button (2).svg" class="ManageIconStyleCompany">
+                            <img src="Resourses/svg/pencil-edit-button (2).svg" class="ManageIconStyleCompany">
                         </button>
 
                         <button class="CompanyDelete">
-                            <img src="/Главная страница/svg/delete.svg" class="ManageIconStyleCompany">
+                            <img src="/Resourses/svg/delete.svg" class="ManageIconStyleCompany">
                         </button>
                         
                         <button class='IconButtonsSave'>
-                            <img src='/Главная страница/svg/save-file.svg' class='ManageIconStyle'>
+                            <img src='/Resourses/svg/save-file.svg' class='ManageIconStyle'>
                         </button>
                         
                        
@@ -207,19 +207,19 @@ $(document).ready(function(){
                       </div>
                       <div class="IconUtilitiesCompany">
                           <button class="CompanyAdd">
-                              <img src="/Главная страница/svg/add.svg" class="ManageIconStyleCompany">
+                              <img src="/Resourses/svg/add.svg" class="ManageIconStyleCompany">
                           </button>
 
                           <button class="CompanyEdit">
-                              <img src="/Главная страница/svg/pencil-edit-button (2).svg" class="ManageIconStyleCompany">
+                              <img src="/Resourses/svg/pencil-edit-button (2).svg" class="ManageIconStyleCompany">
                           </button>
 
                           <button class="CompanyDelete">
-                              <img src="/Главная страница/svg/delete.svg" class="ManageIconStyleCompany">
+                              <img src="/Resourses/svg/delete.svg" class="ManageIconStyleCompany">
                           </button>
                           
                           <button class='IconButtonsSave'>
-                              <img src='/Главная страница/svg/save-file.svg' class='ManageIconStyle'>
+                              <img src='/Resourses/svg/save-file.svg' class='ManageIconStyle'>
                           </button>
                           
                          
