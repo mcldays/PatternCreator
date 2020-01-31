@@ -24,8 +24,11 @@ namespace PatternCreator.Controllers
 
         public ActionResult Home()
         {
+            List<string> Groups = new List<string>();
 
-            
+           var group = Utilities.SendDbUtility.GroupUsers();
+           
+
 
 
             var models = Utilities.SendDbUtility.GelAllCompanyList();
@@ -83,5 +86,14 @@ namespace PatternCreator.Controllers
 
             return RedirectToAction("Home", "Pattern");
         }
+
+        public bool RemoveCompany(int id)
+        {
+            SendDbUtility.DeleteAllUsersInCompany(id);
+            SendDbUtility.DeleteCompany(id);
+            
+            return true;
+        }
+        
     }
 }

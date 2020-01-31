@@ -1,4 +1,5 @@
 ﻿@using PatternCreator.Models
+@using PatternCreator.Utilities
 @model object[]
 @{
     ViewBag.Title = "Home";
@@ -68,36 +69,36 @@
             <div id="TableTwo">
                 <table id="TableTwoStyle">
 
-                    <tr>
-                        <div class="CompanyAligment">
+                    @*<tr>
+                <div class="CompanyAligment">
 
-                            <div class="SaveAligment" style="width: 230px;">
-                                <span id="CompanyStyleEdit">ООО "Гефест строй"</span>
-
-
-                                <!-- <img src="/Главная страница/svg/save-icon-silhouette.svg" class="SaveIconStyle"> -->
-
-                            </div>
-                            <div class="IconUtilitiesCompany">
-
-                                <button class="CompanyEdit">
-                                    <img src="/Resourses/svg/pencil-edit-button (2).svg" class="ManageIconStyleCompany">
-                                </button>
-
-                                <button class="CompanyDelete">
-                                    <img src="/Resourses/svg/delete.svg" class="ManageIconStyleCompany">
-                                </button>
-
-                                <button class='IconButtonsSave'>
-                                    <img src='/Resourses/svg/save-file.svg' class='ManageIconStyle'>
-                                </button>
+                    <div class="SaveAligment" style="width: 230px;">
+                        <span id="CompanyStyleEdit">ООО "Гефест строй"</span>
 
 
-                            </div>
 
 
-                        </div>
-                    </tr>
+                    </div>
+                    <div class="IconUtilitiesCompany">
+
+                        <button class="CompanyEdit">
+                            <img src="/Resourses/svg/pencil-edit-button (2).svg" class="ManageIconStyleCompany">
+                        </button>
+
+                        <button class="CompanyDelete">
+                            <img src="/Resourses/svg/delete.svg" class="ManageIconStyleCompany">
+                        </button>
+
+                        <button class='IconButtonsSave'>
+                            <img src='/Resourses/svg/save-file.svg' class='ManageIconStyle'>
+                        </button>
+
+
+                    </div>
+
+
+                </div>
+            </tr>*@
 
 
 
@@ -115,75 +116,95 @@
                     </tr>
 
 
-
-
-
-
-                    <!-- <th style="width: 20px; height: 45px;"><span>1</span></th>
-                    <th style="width: 250px;"><span>Владимир</span></th>
-                    <th style="width: 300px;"><span>Колесников</span></th>
-                    <th style="width: 350px;"><span>Алексеевич</span></th> -->
                     </tr>
-
-                    <tr class="normalTr">
-                        <td class="id"><span>1</span></td>
-                        <td><span>Владимир</span></td>
-                        <td><span>Колесников</span></td>
-                        <td><span>Алексеевич</span></td>
-                    </tr>
-                    <tr class="normalTr">
-                        <td><span>1</span></td>
-                        <td><span>Владимир</span></td>
-                        <td><span>Колесников</span></td>
-                        <td><span>Алексеевич</span></td>
-                    </tr>
-                    <tr class="normalTr">
-                        <td><span>1</span></td>
-                        <td><span>Владимир</span></td>
-                        <td><span>Колесников</span></td>
-                        <td><span>Алексеевич</span></td>
-                    </tr>
-                    <tr class="normalTr">
-                        <td><span>1</span></td>
-                        <td><span>Владимир</span></td>
-                        <td><span>Колесников</span></td>
-                        <td><span>Алексеевич</span></td>
-                    </tr>
-                    <tr class="normalTr">
-                        <td><span>1</span></td>
-                        <td><span>Владимир</span></td>
-                        <td><span>Колесников</span></td>
-                        <td><span>Алексеевич</span></td>
-                    </tr>
-                    <!-- <tr id="normalTr">
-                        <td><span>1</span></td>
-                        <td class="EditTdCol">
-                            <div class="EditCol">
-                                <span class="EditTextCol">Имя</span> </div>
-                        </td>
-                        <td class="EditTdCol">
-                            <div class="EditCol">
-                                <span class="EditTextCol">Фамилия</span>
-                            </div>
-                        </td>
-                        <td class="EditTdCol">
-                            <div class="EditCol">
-                                <span class="EditTextCol">Отчество</span>
-                            </div>
-                        </td>
-                    </tr> -->
-
                 </table>
 
-                <!-- <div class="EditContainTable">
-                    <div id="CompanyAligment">
-                        <span id="CompanyStyle">ООО "Гефест строй"</span>
-                    </div>
-                    <!-- <div class="IconUtilities">
-                        <img src="/Главная страница/svg/add.svg" class="ManageIconStyle">
-                        <img src="/Главная страница/svg/pencil-edit-button (2).svg" class="ManageIconStyle">
-                        <img src="/Главная страница/svg/delete.svg" class="ManageIconStyle">
-                    </div> -->
+
+
+                @{
+                    var companyes = SendDbUtility.GelAllCompanyList();
+
+                    foreach (var company in companyes)
+                    {
+                                <div class="bufferDiv">
+                                    <table id="TableTwoStyle">
+
+
+                                        <tr class="ignoreTr">
+
+
+                                            <th style="width: 20px;"></th>
+                                            <th style="width: 250px;"></th>
+                                            <th style="width: 300px;"></th>
+                                            <th style="width: 350px;"></th>
+                                            <th style="width: 100px;"></th>
+
+                                        </tr>
+
+
+                                        <div class="CompanyAligment">
+
+                                            <div class="SaveAligment" style="width: 230px;">
+                                                <span id="CompanyStyleEdit">@company.CompanyName</span>
+
+
+                                                <!-- <img src="/Главная страница/svg/save-icon-silhouette.svg" class="SaveIconStyle"> -->
+
+                                            </div>
+
+                                            <div class="IconUtilitiesCompany">
+
+
+                                                <button class="CompanyEdit">
+                                                    <img src="/Resourses/svg/pencil-edit-button (2).svg" class="ManageIconStyleCompany">
+                                                </button>
+
+                                                <button class="CompanyDelete" value="@company.Id">
+                                                    <img src="/Resourses/svg/delete.svg" class="ManageIconStyleCompany">
+                                                </button>
+
+                                                <button class='IconButtonsSave'>
+                                                    <img src='/Resourses/svg/save-file.svg' class='ManageIconStyle'>
+                                                </button>
+
+                                            </div>
+
+
+
+                                        </div>
+
+                                        @{
+                                            var users = SendDbUtility.GetAllUsers();
+
+
+                                            foreach (var VARIABLE in users)
+                                            {
+                                                var OnceCompany = SendDbUtility.GetCompanyById(VARIABLE.CompanyId);
+
+                                                if (OnceCompany.CompanyName == company.CompanyName)
+                                                {
+
+
+                                                    <tr class="normalTr">
+                                                        <td class="id"><span>@VARIABLE.Id</span></td>
+                                                        <td><span>@VARIABLE.Name</span></td>
+                                                        <td><span>@VARIABLE.Patronymic</span></td>
+                                                        <td><span>@VARIABLE.Surname</span></td>
+                                                    </tr>
+                                                }
+                                            }
+                                        }
+                                    </table>
+                                </div>
+
+
+
+                    }
+
+
+                }
+
+
 
 
 
@@ -288,9 +309,42 @@
         }
 
 
+        
+
+<script>
+    $(".CompanyDelete").click(function(e) {
+
+        let answer = confirm("Вы уверены?");
+        if (answer == true) {
+
+            console.log("Блясука");
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("RemoveCompany", "Pattern")",
+                data: "id=" + $(this).val(),
+                success: function(data) {
+                    //$(e.target).parent().parent().parent().remove();
+                    $(e.target).parent().parent().parent().parent().remove();
 
 
-        <script src="/Scripts/HomeScripts.js"></script>
+                },
+                error: function() {
+                    alert("Произошла ошибка, попробуйте позже");
+                }
+               
+            });
+
+
+
+        }
+
+        
+    })
+
+</script>
+
+<script src="/Scripts/HomeScripts.js"></script>
     </body>
 
 </html>

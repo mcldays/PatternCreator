@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity.Migrations;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Web;
 using PatternCreator.Models;
@@ -98,6 +99,106 @@ namespace PatternCreator.Utilities
         }
 
 
+        public static List<object> GroupUsers()
+        {
+            using (UserContext dbuse = new UserContext())
+            {
+                //var Group = from p in dbuse.UserModels
+                //    join c in dbuse.CompanyModels on p.CompanyId equals c.Id
+                //    select new {Name = p.Name, Surname = p.Surname, Company = c.CompanyName};
+
+                var Group = from p in dbuse.CompanyModels
+                    join c in dbuse.UserModels on p.Id equals c.CompanyId
+                    select new { Name = c.Name, Surname = c.Surname, Company = p.CompanyName };
+
+
+
+
+                var list = new List<object>();
+                foreach (var unknown in Group) list.Add(unknown);
+                return list;
+            }
+
+
+        }
+
+
+        public static List<UserModel> GetAllUsers()
+        {
+            List<UserModel> models;
+            using (UserContext dbUse = new UserContext())
+            {
+
+               models =  dbUse.UserModels.ToList();
+            }
+
+            return models;
+        }
+
+        public static CompanyModel GetCompanyById(int id)
+        {
+            CompanyModel model = new CompanyModel();
+            using (UserContext dbUse = new UserContext())
+            {
+                model = dbUse.CompanyModels.FirstOrDefault(t => t.Id == id);
+            }
+
+            return model;
+        }
+
+
+        public static bool DeleteCompany(int id)
+        {
+            try
+            {
+                using (UserContext dbUse = new UserContext())
+                {
+                    var model = dbUse.CompanyModels.FirstOrDefault(t => t.Id == id);
+                    dbUse.CompanyModels.Remove(model);
+                    dbUse.SaveChanges();
+                    return true;
+
+                }
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+
+        }
+
+
+        public static bool DeleteAllUsersInCompany(int id)
+        {
+            try
+            {
+                using (UserContext dbUse = new UserContext())
+                {
+                    var model2 = from b in dbUse.UserModels
+                        where b.CompanyId == id
+                        select b;
+
+
+                    foreach (var VARIABLE in model2)
+                    {
+                        dbUse.UserModels.Remove(VARIABLE);
+                    }
+
+                    dbUse.SaveChanges();
+                    return true;
+
+                }
+
+
+
+
+            }
+            catch (Exception e)
+            {
+                return false;
+
+            }
+        }
 
 
 

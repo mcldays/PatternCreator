@@ -128,65 +128,10 @@ $(document).ready(function(){
     })
 
 
-    $(".CompanyDelete").click(function(){
-
-      let answer = confirm("Вы уверены?")
-      if(answer == true){
-         $("table#TableTwoStyle").remove();
-      }
-       else{
-         return false;
-       }
-    })
+   
 
 
-
-      function manageCompanyIcons(){
-        let block = $(`<div id="TableTwo">
-        <table id="TableTwoStyle">
-
-            <tr>
-                <div class="CompanyAligment">
-
-                    <div class="SaveAligment" style="width: 230px;">
-                    <input type="text" class="EditCompanyInput">
-
-                  
-                     <!-- <img src="/Главная страница/svg/save-icon-silhouette.svg" class="SaveIconStyle"> -->
-        
-                    </div>
-                    <div class="IconUtilitiesCompany">
-                        <button class="CompanyAdd">
-                            <img src="/Resourses/svg/add.svg" class="ManageIconStyleCompany">
-                        </button>
-
-                        <button class="CompanyEdit">
-                            <img src="Resourses/svg/pencil-edit-button (2).svg" class="ManageIconStyleCompany">
-                        </button>
-
-                        <button class="CompanyDelete">
-                            <img src="/Resourses/svg/delete.svg" class="ManageIconStyleCompany">
-                        </button>
-                        
-                        <button class='IconButtonsSave'>
-                            <img src='/Resourses/svg/save-file.svg' class='ManageIconStyle'>
-                        </button>
-                        
-                       
-                    </div>
-                   
-                  
-                 </div>
-            </tr>
-            </table>
-            </div>`);
-
-
-            console.log($("table:last"))
-        $("table:last").after(block);
-       
-      }
-
+    
 
 
 
