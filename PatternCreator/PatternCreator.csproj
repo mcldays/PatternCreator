@@ -229,6 +229,8 @@
     <Content Include="Content\LayoutStyles.css" />
     <Content Include="Content\PrintPageStyles.css" />
     <Content Include="Content\EditorPatternStyles.css" />
+    <Content Include="Content\slick-theme.css" />
+    <Content Include="Content\stylePreload.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -258,9 +260,14 @@
     <Content Include="Resourses\svg\zoom-out.svg" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Content\slick-theme.less" />
+    <Content Include="Content\slick-theme.scss" />
+    <Content Include="Content\slick.scss" />
+    <Content Include="Content\style.scss" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\HomeScripts.js" />
+    <Content Include="Scripts\jcfilter.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
     <Content Include="Scripts\jquery-3.4.1.slim.js" />
@@ -271,6 +278,9 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\preloader.js" />
+    <Content Include="Scripts\slick.js" />
+    <Content Include="Scripts\slick.min.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

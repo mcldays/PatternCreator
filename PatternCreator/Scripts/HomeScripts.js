@@ -1,143 +1,30 @@
 'use strict';
 
 
-$(document).ready(function(){
+$(document).ready(function() {
 
 
-    $("tr.normalTr").hover(function () {
-        $(this).addClass("ColoredTr")
-        let block = $(`<div class='IconUtilities'>
-              
-        
+ 
 
-        <button class='IconButtonsEdit'>
-            <img src='/Resourses/svg/pencil-edit-button (2).svg' class='ManageIconStyle'>
-        </button>
+    $(".CompanyEdit").click(function(e) {
 
-        <button class='IconButtonsDelete'>
-            <img src='/Resourses/svg/delete.svg' class='ManageIconStyle'>
-        </button>
+        let span = $(e.target).parents()[2].children[0].children[0];
+        let EditorContain = $(e.target).parents()[2].children[0].children[1];
+        let button = $(e.target).parents()[2].children[0].children[2];
 
-        <button class='IconButtonsSave'>
-            <img src='/Resourses/svg/save-file.svg' class='ManageIconStyle'>
-        </button>
+
+        $(button).css("display", "none");
+        $(EditorContain).css("display", "flex");
+        $(span).css("display", "none");
 
 
 
-          </div>`);
-
-        
-        $(this).append(block)
-
-        $(".IconButtonsEdit").click(function(){
-          
-          
-          let input = $(".ColoredTr > td");
-          
-          // $(input).makeArray();
-
-          let bufer = $.makeArray(input);
-          console.log(input);
-            
-
-          let block = $(`<td><input type="text" class="EditCol"></td>`);
-          $(input).replaceWith(block);
-
-            
-            
-         
-
-        });
-
-        $(".IconButtonsSave").click(function(){
-            let input = $(".EditCol:input")
-            console.log(input);
-            let block = $(`<span>Какая то информация</span>`)
-
-            input.replaceWith(block);
-        })
+    });
 
 
-        $(".IconButtonsDelete").click(function(){
+    $(".CompanyAdd").click(function() {
 
-              console.log($(".ColoredTr"));
-
-              $(".ColoredTr").remove();
-        })
-
-        // $(".IconButtonsAdd").click(function(){
-
-        //     let block = $(`<tr class="">
-        //     <td><span>1</span></td>
-        //     <td class="EditTdCol">
-        //         <div class="EditCol">
-        //             <span class="EditTextCol">Имя</span> </div>
-        //     </td>
-        //     <td class="EditTdCol">
-        //         <div class="EditCol">
-        //             <span class="EditTextCol">Фамилия</span>
-        //         </div>
-        //     </td>
-        //     <td class="EditTdCol">
-        //         <div class="EditCol">
-        //             <span class="EditTextCol">Отчество</span>
-        //         </div>
-        //     </td>
-        // </tr>`)
-
-        //      console.log($("table tr:nth-last-of-type(1)"));
-        //      $("table tr:nth-last-of-type(1)").after(block);
-
-
-        // })
-
-
-        
-        
-
-
-
-        
-      }, function () {
-       
-            $(".ColoredTr").removeClass();
-              $("div.IconUtilities").remove();
-
-      }
-    );
-
-     
-    $(".CompanyEdit").click(function(){
-
-      let block = $(`<input type="text" class="EditCompanyInput">`)
-     
-      $("div.SaveAligment > span").replaceWith(block);
-
-      $("button.IconButtonsSave").click(function(){
-        
-
-        let blockSpan = $(` <span id="CompanyStyleEdit">ООО "Гефест строй"</span>`)
-        
-        $(block).replaceWith(blockSpan);
-
-      })
-
-      
-
-
-    })
-
-
-   
-
-
-    
-
-
-
-    $(".CompanyAdd").click(function(){
-
-          let block = $(`<div id="TableTwo">
+        let block = $(`<div id="TableTwo">
           <table id="TableTwoStyle">
 
               <tr>
@@ -177,18 +64,36 @@ $(document).ready(function(){
               </div>`);
 
 
-              console.log($("table:last"))
-          $("table:last").after(block);
-
-       
-    })
+        console.log($("table:last"))
+        $("table:last").after(block);
 
 
-    
-    
-   
+    });
+
+    $(".FindButton:button").click(function() {
+        let inputText = $(".ControlText:input").val();
+
+        let tables = $("tr > td > span");
 
 
+        for (var i = 0; i < tables.length; i++) {
+            if (inputText != $(tables[i]).text()) {
+                $(tables[i]).css("display", "none");
+
+
+            }
+
+
+
+        }
+
+
+
+
+        console.log(inputText);
+
+
+    });
 
 
 });

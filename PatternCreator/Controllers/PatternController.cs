@@ -26,7 +26,7 @@ namespace PatternCreator.Controllers
         {
             List<string> Groups = new List<string>();
 
-           var group = Utilities.SendDbUtility.GroupUsers();
+          
            
 
 
@@ -94,6 +94,34 @@ namespace PatternCreator.Controllers
             
             return true;
         }
+
+
+        public bool RemoveUser(int id)
+        {
+            SendDbUtility.DeleteUserById(id);
+            return true;
+        }
+
+        public ActionResult SaveUser(UserModel model)
+        {
+            Utilities.SendDbUtility.UpdateUser(model);
+
+
+            return RedirectToAction("Home", "Pattern");
+        }
+
+        public ActionResult SaveCompany(CompanyModel model)
+        {
+
+            Utilities.SendDbUtility.SaveCompany(model);
+
+
+
+            return RedirectToAction("Home", "Pattern");
+        }
+
         
+
+
     }
 }

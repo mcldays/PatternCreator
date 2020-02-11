@@ -201,8 +201,68 @@ namespace PatternCreator.Utilities
         }
 
 
+        public static bool DeleteUserById(int id)
+        {
+            try
+            {
+                using (UserContext dbUse = new UserContext())
+                {
+                    dbUse.UserModels.Remove(dbUse.UserModels.FirstOrDefault(t => t.Id == id));
+                    dbUse.SaveChanges();
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+           
+        }
 
 
+
+        public static bool UpdateUser(UserModel model)
+        {
+            try
+            {
+                using (UserContext dbUse = new UserContext())
+                {
+                    dbUse.UserModels.AddOrUpdate(model);
+                    dbUse.SaveChanges();
+                }
+
+                return true;
+
+
+            }
+            catch (Exception e)
+            {
+
+                return false;
+            }
+        }
+
+        public static bool SaveCompany(CompanyModel model)
+        {
+            try
+            {
+                using (UserContext dbUse = new UserContext())
+                {
+                    dbUse.CompanyModels.AddOrUpdate(model);
+                    dbUse.SaveChanges();
+
+                    return true;
+                }
+
+
+            }
+            catch (Exception e)
+            {
+
+                return false;
+
+            }
+        }
 
     }
 }

@@ -12,10 +12,15 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     @Styles.Render("~/Content/LayoutStyles.css")
     @*<link rel="stylesheet" type="text/css" href="LayoutStyles.css" />*@
+
     <title>Document</title>
 </head>
 <body>
     <div id="MainBlock">
+
+
+
+
         <div id="Header">
             <div id="ButtonsAligment">
 
@@ -28,28 +33,33 @@
 
                     </button>
                 }
-                    @using (Html.BeginForm("EditorPattern", "Pattern", FormMethod.Post))
-                    {
+                @using (Html.BeginForm("EditorPattern", "Pattern", FormMethod.Post))
+                {
 
-                        <button class="UserJob">
+                    <button class="UserJob">
 
-                            <span class="HeaderFonts">Работа с шаблонами </span>
-                        </button>
-                    }
+                        <span class="HeaderFonts">Работа с шаблонами </span>
+                    </button>
+                }
 
-                    @using (Html.BeginForm("PrintPage", "Pattern", FormMethod.Post))
-                    {
-                        <button class="UserJob">
+                @using (Html.BeginForm("PrintPage", "Pattern", FormMethod.Post))
+                {
+                    <button class="UserJob">
 
-                            <span class="HeaderFonts">Печать</span>
+                        <span class="HeaderFonts">Печать</span>
 
-                        </button>
-                    }
-                </div>
+                    </button>
+                }
+            </div>
 
         </div>
         <hr>
         @RenderBody()
     </div>
+
+
+
+
+
 </body>
 </html>

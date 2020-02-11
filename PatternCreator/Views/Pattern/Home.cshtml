@@ -15,195 +15,247 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" type="text/css" href="/Content/HomeStyles.css" />
     <script type="text/javascript" src="/Scripts/jquery-3.4.1.js"></script>
+    <link rel="stylesheet" href="/Content/stylePreload.css">
+    <script src="/Scripts/preloader.js"></script>
+
     <title>Document</title>
 </head>
 
 <body>
 
-    <div id=BlockOne>
-        <div id="UserControl">
-            <div id="AligmentAdd">
-                <a href="#openModal">
-                    <button class="AddUserControl">
-                        <span class="ControlTextChoose">Добавить пользователя</span>
-                        <img src="/Resourses/svg/add-user.svg" class="AddUserImg">
+    <div class="preloader" id="preloader-id">
+        <div class="container" id="page-preloader">
+            <div class="📦"></div>
+            <div class="📦"></div>
+            <div class="📦"></div>
+            <div class="📦"></div>
+            <div class="📦"></div>
+        </div>
+    </div>
 
-                    </button>
-                </a>
-            </div>
+<div id=BlockOne>
+<div id="UserControl">
+    <div id="AligmentAdd">
+        <a href="#openModal">
+            <button class="AddUserControl">
+                <span class="ControlTextChoose">Добавить пользователя</span>
+                <img src="/Resourses/svg/add-user.svg" class="AddUserImg">
 
-            <div id="AligmentDelete">
-                <a href="#openModalCompany">
-                    <button class="DeleteUserControl">
-                        <span class="ControlText">Добавить компанию</span>
+            </button>
+        </a>
+    </div>
 
-                    </button>
-                </a>
-            </div>
+    <div id="AligmentDelete">
+        <a href="#openModalCompany">
+            <button class="DeleteUserControl">
+                <span class="ControlText">Добавить компанию</span>
 
-            <div id="AligmentFind">
+            </button>
+        </a>
+    </div>
 
-                <div class="FindUsersControl">
+    <div id="AligmentFind">
 
-                    <input type="text" class="ControlText" placeholder="Поиск по пользователям">
+        <div class="FindUsersControl">
 
-                    <!-- <span class="ControlText">Поиск по пользователям</span> -->
-                    <button class="FindButton">
-                        <img src="/Resourses/svg/magnifying-glass (3).svg" class="AddUserImg">
-                    </button>
-                </div>
-
-            </div>
+            <input type="text" class="ControlText" placeholder="Поиск по пользователям">
 
 
+            <button class="FindButton">
+                <img src="/Resourses/svg/magnifying-glass (3).svg" class="AddUserImg">
+            </button>
         </div>
 
+    </div>
+
+
+</div>
 
 
 
 
-        <div>
+
+<div>
 
 
 
-            <div id="TableTwo">
-                <table id="TableTwoStyle">
+<div id="TableTwo">
+    <table id="TableTwoStyle">
 
-                    @*<tr>
+        <tr class="ignoreTr">
+
+            <tr id="impotantTr">
+                <th style="width: 20px;"><span>№</span></th>
+                <th style="width: 250px;"><span>Имя</span></th>
+                <th style="width: 300px;"><span>Фамилия</span></th>
+                <th style="width: 350px;"><span>Отчество</span></th>
+                <th style="width: 100px;"></th>
+
+            </tr>
+
+
+        </tr>
+    </table>
+
+
+
+    @{
+        var companyes = SendDbUtility.GelAllCompanyList();
+
+        foreach (var company in companyes)
+        {
+            <div class="bufferDiv">
+
+
                 <div class="CompanyAligment">
 
+
+
+
+
                     <div class="SaveAligment" style="width: 230px;">
-                        <span id="CompanyStyleEdit">ООО "Гефест строй"</span>
+                        <span id="CompanyStyleEdit">@company.CompanyName</span>
 
 
 
+                        @using (Html.BeginForm("SaveCompany", "Pattern", FormMethod.Post, new {@class = "CompanyEditor"}))
+                        {
+                                        @*<div class="CompanyEditor">*@
+                            @Html.EditorFor(model => (model[1] as CompanyModel).CompanyName, new {htmlAttributes = new {@class = "EditCompanyInput", PlaceHolder = "Имя коммпании"}})
+                            @Html.Hidden("Id", company.Id)
+                            ;
+                            <button class='IconButtonsSave'>
+                                <img src='/Resourses/svg/save-file.svg' class='ManageIconStyle'>
+                            </button>
+                                        @*</div>*@
+                        }
+
+
+                        <button class="closeTableBut" value="@company.Id">
+                            <img src="/Resourses/svg/down-arrow (2).svg" style="width: 20px; height: 17px"/>
+                        </button>
+
+
+
+
+
+                        <!-- <img src="/Главная страница/svg/save-icon-silhouette.svg" class="SaveIconStyle"> -->
 
                     </div>
+
+
+
                     <div class="IconUtilitiesCompany">
+
 
                         <button class="CompanyEdit">
                             <img src="/Resourses/svg/pencil-edit-button (2).svg" class="ManageIconStyleCompany">
                         </button>
 
-                        <button class="CompanyDelete">
+                        <button class="CompanyDelete" value="@company.Id">
                             <img src="/Resourses/svg/delete.svg" class="ManageIconStyleCompany">
                         </button>
 
-                        <button class='IconButtonsSave'>
-                            <img src='/Resourses/svg/save-file.svg' class='ManageIconStyle'>
-                        </button>
 
 
                     </div>
 
 
+
                 </div>
-            </tr>*@
 
 
 
+                <table id="TableTwoStyle" value="@company.Id">
 
 
                     <tr class="ignoreTr">
 
-                    <tr id="impotantTr">
-                        <th style="width: 20px;"><span>№</span></th>
-                        <th style="width: 250px;"><span>Имя</span></th>
-                        <th style="width: 300px;"><span>Фамилия</span></th>
-                        <th style="width: 350px;"><span>Отчество</span></th>
+
+                        <th style="width: 20px;"></th>
+                        <th style="width: 250px;"></th>
+                        <th style="width: 300px;"></th>
+                        <th style="width: 350px;"></th>
                         <th style="width: 100px;"></th>
 
                     </tr>
 
 
-                    </tr>
-                </table>
+
+
+                    @{
 
 
 
-                @{
-                    var companyes = SendDbUtility.GelAllCompanyList();
-
-                    foreach (var company in companyes)
-                    {
-                                <div class="bufferDiv">
-                                    <table id="TableTwoStyle">
-
-
-                                        <tr class="ignoreTr">
-
-
-                                            <th style="width: 20px;"></th>
-                                            <th style="width: 250px;"></th>
-                                            <th style="width: 300px;"></th>
-                                            <th style="width: 350px;"></th>
-                                            <th style="width: 100px;"></th>
-
-                                        </tr>
-
-
-                                        <div class="CompanyAligment">
-
-                                            <div class="SaveAligment" style="width: 230px;">
-                                                <span id="CompanyStyleEdit">@company.CompanyName</span>
-
-
-                                                <!-- <img src="/Главная страница/svg/save-icon-silhouette.svg" class="SaveIconStyle"> -->
-
-                                            </div>
-
-                                            <div class="IconUtilitiesCompany">
-
-
-                                                <button class="CompanyEdit">
-                                                    <img src="/Resourses/svg/pencil-edit-button (2).svg" class="ManageIconStyleCompany">
-                                                </button>
-
-                                                <button class="CompanyDelete" value="@company.Id">
-                                                    <img src="/Resourses/svg/delete.svg" class="ManageIconStyleCompany">
-                                                </button>
-
-                                                <button class='IconButtonsSave'>
-                                                    <img src='/Resourses/svg/save-file.svg' class='ManageIconStyle'>
-                                                </button>
-
-                                            </div>
+                        var users = SendDbUtility.GetAllUsers();
 
 
 
-                                        </div>
+                        foreach (var VARIABLE in users)
+                        {
+                            var OnceCompany = SendDbUtility.GetCompanyById(VARIABLE.CompanyId);
 
-                                        @{
-                                            var users = SendDbUtility.GetAllUsers();
-
-
-                                            foreach (var VARIABLE in users)
-                                            {
-                                                var OnceCompany = SendDbUtility.GetCompanyById(VARIABLE.CompanyId);
-
-                                                if (OnceCompany.CompanyName == company.CompanyName)
-                                                {
+                            if (OnceCompany.CompanyName == company.CompanyName)
+                            {
+                                using (Html.BeginForm("SaveUser", "Pattern", FormMethod.Post, new {}))
+                                {
 
 
-                                                    <tr class="normalTr">
-                                                        <td class="id"><span>@VARIABLE.Id</span></td>
-                                                        <td><span>@VARIABLE.Name</span></td>
-                                                        <td><span>@VARIABLE.Patronymic</span></td>
-                                                        <td><span>@VARIABLE.Surname</span></td>
-                                                    </tr>
-                                                }
-                                            }
-                                        }
-                                    </table>
-                                </div>
+                                    <tr class="normalTr" userId="@VARIABLE.Id">
+                                        <td class="id">
+                                            @VARIABLE.Id
+
+
+                                        </td>
+
+                                        <td>
+                                            <span>@VARIABLE.Name</span>
+                                            @*<input type="text" class="EditCol" disabled>*@
+                                            @Html.EditorFor(model => (model[0] as UserModel).Name, new {htmlAttributes = new {@class = "EditCol", PlaceHolder = "Имя"}})
+                                        </td>
+
+                                        <td>
+                                            <span>@VARIABLE.Surname</span>
+                                            @*<input type="text" class="EditCol" disabled>*@
+                                            @Html.EditorFor(model => (model[0] as UserModel).Surname, new {htmlAttributes = new {@class = "EditCol", PlaceHolder = "Фамилия*"}})
+                                        </td>
+
+                                        <td>
+                                            <span>@VARIABLE.Patronymic</span>
+                                            @*<input type="text" class="EditCol" disabled="disabled">*@
+                                            @Html.EditorFor(model => (model[0] as UserModel).Patronymic, new {htmlAttributes = new {@class = "EditCol", PlaceHolder = "Отчество*"}})
+
+                                            <button class='IconButtonsSaveUser'>
+                                                <img src='/Resourses/svg/save-file.svg' class='ManageIconStyle'>
+                                            </button>
+
+
+                                        </td>
+
+
+                                        @Html.Hidden("CompanyId", VARIABLE.CompanyId)
+                                        @Html.Hidden("Id", VARIABLE.Id)
+
+                                    </tr>
+
+
+
+
+
+
+
+                                }
+
+
+                            }
+                        }
+
+
 
 
 
                     }
-
-
-                }
-
+                </table>
 
 
 
@@ -211,140 +263,260 @@
 
             </div>
 
-        </div>
 
-    </div>
 
-@using (Html.BeginForm("UserToDb", "Pattern", FormMethod.Post, new { @id = "openModal", @class = "modal" }))
+        }
+
+
+    }
+
+
+
+
+
+
+</div>
+
+</div>
+
+</div>
+
+@using (Html.BeginForm("UserToDb", "Pattern", FormMethod.Post, new {@id = "openModal", @class = "modal"}))
 {
         @*<div id="openModal" class="modal">*@
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3 class="modal-title">Добавить пользователя</h3>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Добавить пользователя</h3>
 
-                        <a href="#close" title="Close" class="close">×</a>
-                    </div>
-                    <div class="modal-body">
-
-
-                        <div class="AddUserModal">
-                            @Html.EditorFor(model => (model[0] as UserModel).Name, new { htmlAttributes = new { @class = "inputUser", PlaceHolder = "Имя" } })
-                            @Html.EditorFor(model => (model[0] as UserModel).Surname, new { htmlAttributes = new { @class = "inputUser", PlaceHolder = "Фамилия*" } })
-                            @Html.EditorFor(model => (model[0] as UserModel).Patronymic, new { htmlAttributes = new { @class = "inputUser", PlaceHolder = "Отчество*" } })
-
-                            @*<input type="text" class="inputUser" placeholder="Имя">
-                                <input type="text" class="inputUser" placeholder="Фамилия">
-                                <input type="text" class="inputUser" placeholder="Отчество">*@
-
-                            @Html.DropDownList("CompanyName", null, "Выберите компанию", new { @class = "inputCompany" })
-
-
-
-
-
-                            @*<select class="inputCompany">
-                                    <option style="margin-left: 10px;" value="" disabled="" selected="">Выберите коммпанию</option>
-                                    <option>Пункт 2</option>
-                                </select>*@
-
-                            <div class="buttonAligment">
-                                <a href="#close" title="Close" class="close">
-                                    <button id="SaveModalButton">
-                                        <span>Сохранить</span>
-                                    </button>
-                                </a>
-                            </div>
-
-                        </div>
-
-
-
-
-
-                    </div>
-                </div>
+                <a href="#close" title="Close" class="close">×</a>
             </div>
-        }
+            <div class="modal-body">
 
 
-        @using (Html.BeginForm("CompanyToDb", "Pattern", FormMethod.Post, new { @id = "openModalCompany", @class = "modal" }))
-        {
-            @*<div id="openModalCompany" class="modal">*@
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3 class="modal-title">Добавить компанию</h3>
+                <div class="AddUserModal">
+                    @Html.EditorFor(model => (model[0] as UserModel).Name, new {htmlAttributes = new {@class = "inputUser", PlaceHolder = "Имя"}})
+                    @Html.EditorFor(model => (model[0] as UserModel).Surname, new {htmlAttributes = new {@class = "inputUser", PlaceHolder = "Фамилия*"}})
+                    @Html.EditorFor(model => (model[0] as UserModel).Patronymic, new {htmlAttributes = new {@class = "inputUser", PlaceHolder = "Отчество*"}})
 
-                        <a href="#close" title="Close" class="close">×</a>
+                    @*<input type="text" class="inputUser" placeholder="Имя">
+                            <input type="text" class="inputUser" placeholder="Фамилия">
+                            <input type="text" class="inputUser" placeholder="Отчество">*@
+
+                    @Html.DropDownList("CompanyName", null, "Выберите компанию", new {@class = "inputCompany"})
+
+
+
+
+
+                    @*<select class="inputCompany">
+                                <option style="margin-left: 10px;" value="" disabled="" selected="">Выберите коммпанию</option>
+                                <option>Пункт 2</option>
+                            </select>*@
+
+                    <div class="buttonAligment">
+                        <a href="#close" title="Close" class="close">
+                            <button id="SaveModalButton">
+                                <span>Сохранить</span>
+                            </button>
+                        </a>
                     </div>
-                    <div class="modal-body">
 
-
-                        <div class="AddUserModal">
-                            @*<input type="text" class="inputUser" placeholder="Название компании">*@
-                            @Html.EditorFor(model => (model[0] as CompanyModel).CompanyName, new { htmlAttributes = new { @class = "inputUser", PlaceHolder = "Название компании*" } })
-                            @Html.HiddenFor(model => (model[0] as CompanyModel).Id, new { @class = "hiddeId" })
-
-                            <div class="buttonAligment">
-                                <a href="#close" title="Close" class="close">
-                                    <button id="SaveModalButton">
-                                        <span>Сохранить</span>
-                                    </button>
-                                </a>
-                            </div>
-
-                        </div>
-
-
-
-
-
-
-                    </div>
                 </div>
+
+
+
+
+
             </div>
-            @*</div>*@
+        </div>
+    </div>
+}
 
-        }
+
+@using (Html.BeginForm("CompanyToDb", "Pattern", FormMethod.Post, new {@id = "openModalCompany", @class = "modal"}))
+{
+        @*<div id="openModalCompany" class="modal">*@
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Добавить компанию</h3>
+
+                <a href="#close" title="Close" class="close">×</a>
+            </div>
+            <div class="modal-body">
 
 
-        
+                <div class="AddUserModal">
+                    @*<input type="text" class="inputUser" placeholder="Название компании">*@
+                    @Html.EditorFor(model => (model[0] as CompanyModel).CompanyName, new {htmlAttributes = new {@class = "inputUser", PlaceHolder = "Название компании*"}})
+                    @Html.HiddenFor(model => (model[0] as CompanyModel).Id, new {@class = "hiddenId"})
+
+                    <div class="buttonAligment">
+                        <a href="#close" title="Close" class="close">
+                            <button id="SaveModalButton">
+                                <span>Сохранить</span>
+                            </button>
+                        </a>
+                    </div>
+
+                </div>
+
+
+
+
+
+
+            </div>
+        </div>
+    </div>
+        @*</div>*@
+
+}
+
+
+
 
 <script>
-    $(".CompanyDelete").click(function(e) {
-
-        let answer = confirm("Вы уверены?");
-        if (answer == true) {
-
-            console.log("Блясука");
-
-            $.ajax({
-                type: "GET",
-                url: "@Url.Action("RemoveCompany", "Pattern")",
-                data: "id=" + $(this).val(),
-                success: function(data) {
-                    //$(e.target).parent().parent().parent().remove();
-                    $(e.target).parent().parent().parent().parent().remove();
+    $(document).ready(function() {
 
 
-                },
-                error: function() {
-                    alert("Произошла ошибка, попробуйте позже");
-                }
-               
+        $(".CompanyDelete").click(function(e) {
+
+            let answer = confirm("Вы уверены?");
+            if (answer == true) {
+
+
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("RemoveCompany", "Pattern")",
+                    data: "id=" + $(this).val(),
+                    success: function(data) {
+                        //$(e.target).parent().parent().parent().remove();
+                        $(e.target).parent().parent().parent().parent().remove();
+
+
+                    },
+                    error: function() {
+                        alert("Произошла ошибка, попробуйте позже");
+                    }
+
+                });
+
+
+            }
+
+
+        });
+
+
+    });
+
+
+    $("tr.normalTr").hover(function() {
+
+            $(this).addClass("ColoredTr");
+            let block = $(`<div class='IconUtilities'>
+
+
+
+        <button class='IconButtonsEdit'>
+            <img src='/Resourses/svg/pencil-edit-button (2).svg' class='ManageIconStyle'>
+        </button>
+
+        <button class='IconButtonsDelete'>
+            <img src='/Resourses/svg/delete.svg' class='ManageIconStyle'>
+        </button>
+
+
+
+
+          </div>`);
+
+
+            $(this).append(block);
+
+            $(".IconButtonsEdit").click(function(e) {
+
+
+                let input = $(".ColoredTr > td > input");
+
+                let span = $(".ColoredTr > td > span");
+
+                let saveButton = $(".ColoredTr").children()[3].children[2];
+
+
+                console.log(saveButton);
+
+
+                $(span).css("display", "none");
+
+                $(input).css("display", "initial");
+                $(saveButton).css("display", "contents");
+
+
+            });
+
+            $(".IconButtonsSave").click(function() {
+
+
+            });
+
+            $(".IconButtonsDelete").click(function() {
+
+                $(".ColoredTr").remove();
+
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("RemoveUser", "Pattern")",
+                    data: "id=" + $(this).parent().parent().attr("userId"),
+                    success: function(data) {
+                        //$(e.target).parent().parent().parent().remove();
+
+
+                    },
+                    error: function(data) {
+                        alert(data);
+                    }
+
+                });
+
+
             });
 
 
+        },
+        function() {
+
+            $(".ColoredTr").removeClass();
+            $("div.IconUtilities").remove();
 
         }
+    );
 
-        
-    })
+
+    $(".closeTableBut").click(function(e) {
+        @*$("table[value='@company.Id']").slideToggle("slow");*@
+
+
+        let button = $(e.target).parent().parent().parent().parent().children()[1];
+
+
+        $(button).fadeToggle("slow", "linear");
+
+
+        //if ($(poshel).is(":hidden")) {
+        //    $(poshel).fadeOut();
+        //} else {
+        //    $(poshel).fadeIn();
+        //}
+    });
+
 
 </script>
 
+
 <script src="/Scripts/HomeScripts.js"></script>
-    </body>
+</body>
 
 </html>
