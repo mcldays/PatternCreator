@@ -70,30 +70,34 @@ $(document).ready(function() {
 
     });
 
-    $(".FindButton:button").click(function() {
-        let inputText = $(".ControlText:input").val();
+    //$(".FindButton:button").click(function() {
+    //    let inputText = $(".ControlText:input").val();
 
-        let tables = $("tr > td > span");
-
-
-        for (var i = 0; i < tables.length; i++) {
-            if (inputText != $(tables[i]).text()) {
-                $(tables[i]).css("display", "none");
+    //    let badTd = $("tr>tr");
 
 
-            }
+    //    let tables = $("tr > td > span");
 
 
+    //    for (var i = 0; i < tables.length; i++) {
+    //        if (inputText != $(tables[i]).text()) {
+    //            $(tables[i]).css("display", "none");
 
-        }
 
+    //        }
 
 
 
-        console.log(inputText);
+    //    }
 
 
-    });
+
+
+    //    console.log(inputText);
+
+
+    //});
+
 
 
 });

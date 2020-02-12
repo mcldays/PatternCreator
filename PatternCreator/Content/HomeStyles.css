@@ -157,7 +157,7 @@ input[type="text"]:disabled {
 .FindUsersControl {
     width: 417px;
     height: 39px;
-    background-color: rgb(255, 255, 255);
+    background:none;
     border-radius: 5px;
     border-width: 2px;
     border-style: solid;
@@ -166,6 +166,14 @@ input[type="text"]:disabled {
     display: flex;
     align-items: center;
 }
+
+.IconButtonsSaveUserParital {
+    border: 0;
+    cursor: pointer;
+    background: none;
+    display: none;
+}
+
 
 
 
@@ -267,7 +275,7 @@ input[type="text"]:disabled {
 }
 
 .IconUtilitiesCompany {
-    margin-left: 717px;
+    margin-left: 634px;
 }
 
 
@@ -604,4 +612,30 @@ body {
     flex: 1 1 auto;
     padding: 15px;
     overflow: auto;
+}
+
+
+button.glo {
+   
+    
+    /* padding: 15px 20px; */
+    text-transform: uppercase;
+    /* width: 278px; */
+    text-decoration: none;
+    /* text-align: center; */
+    margin: 30px 0;
+    display: block;
+    background-image: linear-gradient(to left,transparent,transparent 50%,#00aeef 50%,#00aeef);
+    background-position: 100% 0;
+    background-size: 200% 100%;
+    transition: all .25s ease-in;
+     font: 400 18px tahoma; 
+    border: 1px solid #00aeeF;
+    width: 215px;
+    height: 36px;
+}
+
+button.glo:hover {
+    background-position: 0 0;
+    color: #fff;
 }

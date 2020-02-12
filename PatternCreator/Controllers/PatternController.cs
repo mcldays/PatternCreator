@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Migrations;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -110,6 +112,8 @@ namespace PatternCreator.Controllers
             return RedirectToAction("Home", "Pattern");
         }
 
+
+
         public ActionResult SaveCompany(CompanyModel model)
         {
 
@@ -120,7 +124,39 @@ namespace PatternCreator.Controllers
             return RedirectToAction("Home", "Pattern");
         }
 
-        
+        public ActionResult FindUsersParital(string name)
+        {
+            using (UserContext dbUse= new UserContext())
+            {
+               var data= dbUse.UserModels.Where(t => t.Name == name).ToList<UserModel>();
+               return PartialView(data);
+            }
+
+
+        }
+
+
+        public bool EditUserParital(int userId, string Name, string Surname, string Patronymic, int CompanyId)
+        {
+            UserModel model = new UserModel()
+            {
+                Id = userId,
+                CompanyId = CompanyId,
+                Name = Name,
+                Surname = Surname,
+                Patronymic = Patronymic
+            };
+
+            using (UserContext dbUse = new UserContext()) 
+            {
+                dbUse.UserModels.AddOrUpdate(model);
+                dbUse.SaveChanges();
+            }
+
+
+
+            return true;
+        }
 
 
     }

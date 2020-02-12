@@ -18,6 +18,11 @@
     <link rel="stylesheet" href="/Content/stylePreload.css">
     <script src="/Scripts/preloader.js"></script>
 
+    @Scripts.Render("~/scripts/jquery.validate.min.js")
+    @Scripts.Render("~/scripts/jquery.unobtrusive-ajax.js")
+
+
+
     <title>Document</title>
 </head>
 
@@ -33,229 +38,266 @@
         </div>
     </div>
 
-<div id=BlockOne>
-<div id="UserControl">
-    <div id="AligmentAdd">
-        <a href="#openModal">
-            <button class="AddUserControl">
-                <span class="ControlTextChoose">Добавить пользователя</span>
-                <img src="/Resourses/svg/add-user.svg" class="AddUserImg">
+    <div id=BlockOne>
+        <div id="UserControl">
+            <div id="AligmentAdd">
+                <a href="#openModal">
+                    <button class="AddUserControl">
+                        <span class="ControlTextChoose">Добавить пользователя</span>
+                        <img src="/Resourses/svg/add-user.svg" class="AddUserImg">
 
-            </button>
-        </a>
-    </div>
+                    </button>
+                </a>
+            </div>
 
-    <div id="AligmentDelete">
-        <a href="#openModalCompany">
-            <button class="DeleteUserControl">
-                <span class="ControlText">Добавить компанию</span>
+            <div id="AligmentDelete">
+                <a href="#openModalCompany">
+                    <button class="DeleteUserControl">
+                        <span class="ControlText">Добавить компанию</span>
 
-            </button>
-        </a>
-    </div>
+                    </button>
+                </a>
+            </div>
 
-    <div id="AligmentFind">
+            <div id="AligmentFind">
+                <script>
+                    function OnSuccess() {
+                        $("div.bufferDiv").fadeOut("slow");
+                        $("div#afterTable").fadeIn("slow");
 
-        <div class="FindUsersControl">
-
-            <input type="text" class="ControlText" placeholder="Поиск по пользователям">
-
-
-            <button class="FindButton">
-                <img src="/Resourses/svg/magnifying-glass (3).svg" class="AddUserImg">
-            </button>
-        </div>
-
-    </div>
+                    }
+                </script>
 
 
-</div>
+                @using (Ajax.BeginForm("FindUsersParital", new AjaxOptions { UpdateTargetId = "results", OnSuccess = "OnSuccess" }))
+                {
+                    <div class="FindUsersControl">
 
 
+                        <input type="text" name="name" class="ControlText" placeholder="Поиск по пользователям">
 
-
-
-<div>
-
-
-
-<div id="TableTwo">
-    <table id="TableTwoStyle">
-
-        <tr class="ignoreTr">
-
-            <tr id="impotantTr">
-                <th style="width: 20px;"><span>№</span></th>
-                <th style="width: 250px;"><span>Имя</span></th>
-                <th style="width: 300px;"><span>Фамилия</span></th>
-                <th style="width: 350px;"><span>Отчество</span></th>
-                <th style="width: 100px;"></th>
-
-            </tr>
-
-
-        </tr>
-    </table>
-
-
-
-    @{
-        var companyes = SendDbUtility.GelAllCompanyList();
-
-        foreach (var company in companyes)
-        {
-            <div class="bufferDiv">
-
-
-                <div class="CompanyAligment">
-
-
-
-
-
-                    <div class="SaveAligment" style="width: 230px;">
-                        <span id="CompanyStyleEdit">@company.CompanyName</span>
-
-
-
-                        @using (Html.BeginForm("SaveCompany", "Pattern", FormMethod.Post, new {@class = "CompanyEditor"}))
-                        {
-                                        @*<div class="CompanyEditor">*@
-                            @Html.EditorFor(model => (model[1] as CompanyModel).CompanyName, new {htmlAttributes = new {@class = "EditCompanyInput", PlaceHolder = "Имя коммпании"}})
-                            @Html.Hidden("Id", company.Id)
-                            ;
-                            <button class='IconButtonsSave'>
-                                <img src='/Resourses/svg/save-file.svg' class='ManageIconStyle'>
-                            </button>
-                                        @*</div>*@
-                        }
-
-
-                        <button class="closeTableBut" value="@company.Id">
-                            <img src="/Resourses/svg/down-arrow (2).svg" style="width: 20px; height: 17px"/>
-                        </button>
-
-
-
-
-
-                        <!-- <img src="/Главная страница/svg/save-icon-silhouette.svg" class="SaveIconStyle"> -->
-
-                    </div>
-
-
-
-                    <div class="IconUtilitiesCompany">
-
-
-                        <button class="CompanyEdit">
-                            <img src="/Resourses/svg/pencil-edit-button (2).svg" class="ManageIconStyleCompany">
-                        </button>
-
-                        <button class="CompanyDelete" value="@company.Id">
-                            <img src="/Resourses/svg/delete.svg" class="ManageIconStyleCompany">
+                        <button class="FindButton">
+                            <img src="/Resourses/svg/magnifying-glass (3).svg" class="AddUserImg">
                         </button>
 
 
 
                     </div>
 
+                }
 
 
-                </div>
+            </div>
+
+
+    </div>
+
+   
 
 
 
-                <table id="TableTwoStyle" value="@company.Id">
+        <div>
 
+
+
+            <div id="TableTwo">
+                <table id="TableTwoStyle">
 
                     <tr class="ignoreTr">
 
-
-                        <th style="width: 20px;"></th>
-                        <th style="width: 250px;"></th>
-                        <th style="width: 300px;"></th>
-                        <th style="width: 350px;"></th>
+                    <tr id="impotantTr">
+                        <th style="width: 20px;"><span>№</span></th>
+                        <th style="width: 250px;"><span>Имя</span></th>
+                        <th style="width: 300px;"><span>Фамилия</span></th>
+                        <th style="width: 350px;"><span>Отчество</span></th>
                         <th style="width: 100px;"></th>
 
                     </tr>
 
 
+                    </tr>
+                </table>
+
+                <div id="results">
+
+                </div>
+                
+                
+            
+             
+           
+
+                @{
+                    var companyes = SendDbUtility.GelAllCompanyList();
+
+                    foreach (var company in companyes)
+                    {
+                        <div class="bufferDiv">
 
 
-                    @{
+                            <div class="CompanyAligment">
 
 
 
-                        var users = SendDbUtility.GetAllUsers();
+
+
+                                <div class="SaveAligment" style="width: 230px;">
+                                    <span id="CompanyStyleEdit">@company.CompanyName</span>
 
 
 
-                        foreach (var VARIABLE in users)
-                        {
-                            var OnceCompany = SendDbUtility.GetCompanyById(VARIABLE.CompanyId);
+                                    @using (Html.BeginForm("SaveCompany", "Pattern", FormMethod.Post, new { @class = "CompanyEditor" }))
+                                    {
 
-                            if (OnceCompany.CompanyName == company.CompanyName)
-                            {
-                                using (Html.BeginForm("SaveUser", "Pattern", FormMethod.Post, new {}))
-                                {
+                                        @Html.EditorFor(model => (model[1] as CompanyModel).CompanyName, new { htmlAttributes = new { @class = "EditCompanyInput", PlaceHolder = "Имя коммпании" } })
+                                        @Html.Hidden("Id", company.Id)
 
+                                        <button class='IconButtonsSave'>
+                                            <img src='/Resourses/svg/save-file.svg' class='ManageIconStyle'>
+                                        </button>
 
-                                    <tr class="normalTr" userId="@VARIABLE.Id">
-                                        <td class="id">
-                                            @VARIABLE.Id
+                                    }
 
 
-                                        </td>
-
-                                        <td>
-                                            <span>@VARIABLE.Name</span>
-                                            @*<input type="text" class="EditCol" disabled>*@
-                                            @Html.EditorFor(model => (model[0] as UserModel).Name, new {htmlAttributes = new {@class = "EditCol", PlaceHolder = "Имя"}})
-                                        </td>
-
-                                        <td>
-                                            <span>@VARIABLE.Surname</span>
-                                            @*<input type="text" class="EditCol" disabled>*@
-                                            @Html.EditorFor(model => (model[0] as UserModel).Surname, new {htmlAttributes = new {@class = "EditCol", PlaceHolder = "Фамилия*"}})
-                                        </td>
-
-                                        <td>
-                                            <span>@VARIABLE.Patronymic</span>
-                                            @*<input type="text" class="EditCol" disabled="disabled">*@
-                                            @Html.EditorFor(model => (model[0] as UserModel).Patronymic, new {htmlAttributes = new {@class = "EditCol", PlaceHolder = "Отчество*"}})
-
-                                            <button class='IconButtonsSaveUser'>
-                                                <img src='/Resourses/svg/save-file.svg' class='ManageIconStyle'>
-                                            </button>
+                                    <button class="closeTableBut" value="@company.Id">
+                                        <img src="/Resourses/svg/down-arrow (2).svg" style="width: 20px; height: 17px" />
+                                    </button>
 
 
-                                        </td>
 
 
-                                        @Html.Hidden("CompanyId", VARIABLE.CompanyId)
-                                        @Html.Hidden("Id", VARIABLE.Id)
 
-                                    </tr>
+                                    <!-- <img src="/Главная страница/svg/save-icon-silhouette.svg" class="SaveIconStyle"> -->
+
+                                </div>
 
 
+
+                                <div class="IconUtilitiesCompany">
+
+
+                                    <button class="CompanyEdit">
+                                        <img src="/Resourses/svg/pencil-edit-button (2).svg" class="ManageIconStyleCompany">
+                                    </button>
+
+                                    <button class="CompanyDelete" value="@company.Id">
+                                        <img src="/Resourses/svg/delete.svg" class="ManageIconStyleCompany">
+                                    </button>
+
+
+
+                                </div>
+
+
+
+                            </div>
+
+
+
+                            <table id="TableTwoStyle" value="@company.Id">
+
+
+                                <tr class="ignoreTr">
+
+
+                                    <th style="width: 20px;"></th>
+                                    <th style="width: 250px;"></th>
+                                    <th style="width: 300px;"></th>
+                                    <th style="width: 350px;"></th>
+                                    <th style="width: 100px;"></th>
+
+                                </tr>
+
+
+
+
+                                @{
+
+
+
+                                    var users = SendDbUtility.GetAllUsers();
+
+
+
+                                    foreach (var VARIABLE in users)
+                                    {
+                                        var OnceCompany = SendDbUtility.GetCompanyById(VARIABLE.CompanyId);
+
+                                        if (OnceCompany.CompanyName == company.CompanyName)
+                                        {
+                                            using (Html.BeginForm("SaveUser", "Pattern", FormMethod.Post, new { }))
+                                            {
+
+
+                                                <tr class="normalTr" userId="@VARIABLE.Id">
+                                                    <td class="id">
+                                                        @VARIABLE.Id
+
+
+                                                    </td>
+
+                                                    <td>
+                                                        <span>@VARIABLE.Name</span>
+                                                        @*<input type="text" class="EditCol" disabled>*@
+                                                        @Html.EditorFor(model => (model[0] as UserModel).Name, new { htmlAttributes = new { @class = "EditCol", PlaceHolder = "Имя" } })
+                                                    </td>
+
+                                                    <td>
+                                                        <span>@VARIABLE.Surname</span>
+                                                        @*<input type="text" class="EditCol" disabled>*@
+                                                        @Html.EditorFor(model => (model[0] as UserModel).Surname, new { htmlAttributes = new { @class = "EditCol", PlaceHolder = "Фамилия*" } })
+                                                    </td>
+
+                                                    <td>
+                                                        <span>@VARIABLE.Patronymic</span>
+                                                        @*<input type="text" class="EditCol" disabled="disabled">*@
+                                                        @Html.EditorFor(model => (model[0] as UserModel).Patronymic, new { htmlAttributes = new { @class = "EditCol", PlaceHolder = "Отчество*" } })
+
+                                                        <button class='IconButtonsSaveUser'>
+                                                            <img src='/Resourses/svg/save-file.svg' class='ManageIconStyle'>
+                                                        </button>
+
+
+                                                    </td>
+
+
+                                                    @Html.Hidden("CompanyId", VARIABLE.CompanyId)
+                                                    @Html.Hidden("Id", VARIABLE.Id)
+
+                                                </tr>
+
+
+
+
+
+
+
+                                            }
+
+
+                                        }
+                                    }
 
 
 
 
 
                                 }
+                            </table>
 
 
-                            }
-                        }
 
 
+
+                        </div>
 
 
 
                     }
-                </table>
+
+
+                }
+
 
 
 
@@ -263,23 +305,9 @@
 
             </div>
 
+        </div>
 
-
-        }
-
-
-    }
-
-
-
-
-
-
-</div>
-
-</div>
-
-</div>
+    </div>
 
 @using (Html.BeginForm("UserToDb", "Pattern", FormMethod.Post, new {@id = "openModal", @class = "modal"}))
 {
@@ -380,6 +408,10 @@
 <script>
     $(document).ready(function() {
 
+        
+
+
+      
 
         $(".CompanyDelete").click(function(e) {
 
@@ -511,6 +543,11 @@
         //    $(poshel).fadeIn();
         //}
     });
+
+
+  
+
+
 
 
 </script>
