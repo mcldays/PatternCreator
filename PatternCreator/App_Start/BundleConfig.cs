@@ -25,6 +25,31 @@ namespace PatternCreator
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/site.css"));
+
+
+
+            //Layout
+            bundles.Add(new StyleBundle("~/bundles/Layout-css").Include(
+                "~/Content/LayoutStyles.css",
+                "~/Content/stylePreload.css"
+            ));
+            bundles.Add(new ScriptBundle("~/bundles/Layout-js").Include(
+                "~/Scripts/jquery-{version}.js",
+                "~/Scripts/jquery-ui-1.12.1.min.js",
+                "~/Scripts/jquery.validate*",
+                "~/Scripts/jquery.unobtrusive-ajax.js",
+                "~/Scripts/preloader.js"
+            ));
+
+            //EditorPattern
+            bundles.Add(new StyleBundle("~/bundles/EditorPattern-css").Include(
+                "~/Content/EditorPatternStyles.css"
+            ));
+            bundles.Add(new ScriptBundle("~/bundles/EditorPattern-js").Include(
+                "~/Scripts/wheelzoom.js",
+                "~/Scripts/EditorPatternScripts.js"
+            ));
+
         }
     }
 }

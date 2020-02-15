@@ -14,21 +14,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" type="text/css" href="/Content/HomeStyles.css" />
-    <link rel="stylesheet" href="/Content/stylePreload.css">
     <title>Document</title>
 </head>
 
 <body>
 
-    <div class="preloader" id="preloader-id">
-        <div class="container" id="page-preloader">
-            <div class="📦"></div>
-            <div class="📦"></div>
-            <div class="📦"></div>
-            <div class="📦"></div>
-            <div class="📦"></div>
-        </div>
-    </div>
+    
 
     <div id=BlockOne>
         <div id="UserControl">
@@ -82,9 +73,9 @@
             </div>
 
 
-    </div>
+        </div>
 
-   
+
 
 
 
@@ -113,11 +104,11 @@
                 <div id="results">
 
                 </div>
-                
-                
-            
-             
-           
+
+
+
+
+
 
                 @{
                     var companyes = SendDbUtility.GelAllCompanyList();
@@ -257,23 +248,9 @@
                                                     @Html.Hidden("Id", VARIABLE.Id)
 
                                                 </tr>
-
-
-
-
-
-
-
                                             }
-
-
                                         }
                                     }
-
-
-
-
-
                                 }
                             </table>
 
@@ -301,109 +278,108 @@
 
     </div>
 
-@using (Html.BeginForm("UserToDb", "Pattern", FormMethod.Post, new {@id = "openModal", @class = "modal"}))
-{
+    @using (Html.BeginForm("UserToDb", "Pattern", FormMethod.Post, new { @id = "openModal", @class = "modal" }))
+    {
         @*<div id="openModal" class="modal">*@
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Добавить пользователя</h3>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Добавить пользователя</h3>
 
-                <a href="#close" title="Close" class="close">×</a>
-            </div>
-            <div class="modal-body">
+                    <a href="#close" title="Close" class="close">×</a>
+                </div>
+                <div class="modal-body">
 
 
-                <div class="AddUserModal">
-                    @Html.EditorFor(model => (model[0] as UserModel).Name, new {htmlAttributes = new {@class = "inputUser", PlaceHolder = "Имя"}})
-                    @Html.EditorFor(model => (model[0] as UserModel).Surname, new {htmlAttributes = new {@class = "inputUser", PlaceHolder = "Фамилия*"}})
-                    @Html.EditorFor(model => (model[0] as UserModel).Patronymic, new {htmlAttributes = new {@class = "inputUser", PlaceHolder = "Отчество*"}})
+                    <div class="AddUserModal">
+                        @Html.EditorFor(model => (model[0] as UserModel).Name, new { htmlAttributes = new { @class = "inputUser", PlaceHolder = "Имя" } })
+                        @Html.EditorFor(model => (model[0] as UserModel).Surname, new { htmlAttributes = new { @class = "inputUser", PlaceHolder = "Фамилия*" } })
+                        @Html.EditorFor(model => (model[0] as UserModel).Patronymic, new { htmlAttributes = new { @class = "inputUser", PlaceHolder = "Отчество*" } })
 
-                    @*<input type="text" class="inputUser" placeholder="Имя">
+                        @*<input type="text" class="inputUser" placeholder="Имя">
                             <input type="text" class="inputUser" placeholder="Фамилия">
                             <input type="text" class="inputUser" placeholder="Отчество">*@
 
-                    @Html.DropDownList("CompanyName", null, "Выберите компанию", new {@class = "inputCompany"})
+                        @Html.DropDownList("CompanyName", null, "Выберите компанию", new { @class = "inputCompany" })
 
 
 
 
 
-                    @*<select class="inputCompany">
+                        @*<select class="inputCompany">
                                 <option style="margin-left: 10px;" value="" disabled="" selected="">Выберите коммпанию</option>
                                 <option>Пункт 2</option>
                             </select>*@
 
-                    <div class="buttonAligment">
-                        <a href="#close" title="Close" class="close">
-                            <button id="SaveModalButton">
-                                <span>Сохранить</span>
-                            </button>
-                        </a>
+                        <div class="buttonAligment">
+                            <a href="#close" title="Close" class="close">
+                                <button id="SaveModalButton">
+                                    <span>Сохранить</span>
+                                </button>
+                            </a>
+                        </div>
+
                     </div>
 
+
+
+
+
                 </div>
-
-
-
-
-
             </div>
         </div>
-    </div>
-}
+    }
 
 
-@using (Html.BeginForm("CompanyToDb", "Pattern", FormMethod.Post, new {@id = "openModalCompany", @class = "modal"}))
-{
+    @using (Html.BeginForm("CompanyToDb", "Pattern", FormMethod.Post, new { @id = "openModalCompany", @class = "modal" }))
+    {
         @*<div id="openModalCompany" class="modal">*@
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Добавить компанию</h3>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Добавить компанию</h3>
 
-                <a href="#close" title="Close" class="close">×</a>
-            </div>
-            <div class="modal-body">
+                    <a href="#close" title="Close" class="close">×</a>
+                </div>
+                <div class="modal-body">
 
 
-                <div class="AddUserModal">
-                    @*<input type="text" class="inputUser" placeholder="Название компании">*@
-                    @Html.EditorFor(model => (model[0] as CompanyModel).CompanyName, new {htmlAttributes = new {@class = "inputUser", PlaceHolder = "Название компании*"}})
-                    @Html.HiddenFor(model => (model[0] as CompanyModel).Id, new {@class = "hiddenId"})
+                    <div class="AddUserModal">
+                        @*<input type="text" class="inputUser" placeholder="Название компании">*@
+                        @Html.EditorFor(model => (model[0] as CompanyModel).CompanyName, new { htmlAttributes = new { @class = "inputUser", PlaceHolder = "Название компании*" } })
+                        @Html.HiddenFor(model => (model[0] as CompanyModel).Id, new { @class = "hiddenId" })
 
-                    <div class="buttonAligment">
-                        <a href="#close" title="Close" class="close">
-                            <button id="SaveModalButton">
-                                <span>Сохранить</span>
-                            </button>
-                        </a>
+                        <div class="buttonAligment">
+                            <a href="#close" title="Close" class="close">
+                                <button id="SaveModalButton">
+                                    <span>Сохранить</span>
+                                </button>
+                            </a>
+                        </div>
+
                     </div>
 
+
+
+
+
+
                 </div>
-
-
-
-
-
-
             </div>
         </div>
-    </div>
         @*</div>*@
 
-}
+    }
 
 
-
-
-<script>
+    @section Scripts{
+        <script>
     $(document).ready(function() {
 
-        
 
 
-      
+
+
 
         $(".CompanyDelete").click(function(e) {
 
@@ -527,25 +503,15 @@
 
 
         $(button).fadeToggle("slow", "linear");
-
-
-        //if ($(poshel).is(":hidden")) {
-        //    $(poshel).fadeOut();
-        //} else {
-        //    $(poshel).fadeIn();
-        //}
     });
 
-
-  
-
+        </script>
 
 
+        <script src="/Scripts/HomeScripts.js"></script>
+    }
 
-</script>
 
-
-<script src="/Scripts/HomeScripts.js"></script>
 </body>
 
 </html>

@@ -10,59 +10,57 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    @Styles.Render("~/Content/LayoutStyles.css")
-    @*<link rel="stylesheet" type="text/css" href="LayoutStyles.css" />*@
-
+    @Styles.Render("~/bundles/Layout-css")
     <title>Document</title>
 </head>
 <body>
-    <div id="MainBlock">
-
-
-
-
-        <div id="Header">
-            <div id="ButtonsAligment">
-
-
-                @using (Html.BeginForm("Home", "Pattern", FormMethod.Post))
-                {
-                    <button class="UserJob">
-
-                        <span class="HeaderFonts">Работа с пользователями</span>
-
-                    </button>
-                }
-                @using (Html.BeginForm("EditorPattern", "Pattern", FormMethod.Post))
-                {
-
-                    <button class="UserJob">
-
-                        <span class="HeaderFonts">Работа с шаблонами </span>
-                    </button>
-                }
-
-                @using (Html.BeginForm("PrintPage", "Pattern", FormMethod.Post))
-                {
-                    <button class="UserJob">
-
-                        <span class="HeaderFonts">Печать</span>
-
-                    </button>
-                }
-            </div>
-
-        </div>
-        <hr>
-        @RenderBody()
+<div class="preloader" id="preloader-id">
+    <div class="container" id="page-preloader">
+        <div class="📦"></div>
+        <div class="📦"></div>
+        <div class="📦"></div>
+        <div class="📦"></div>
+        <div class="📦"></div>
     </div>
+</div>
+<div id="MainBlock">
+    <div id="Header">
+        <div id="ButtonsAligment">
 
 
-<script type="text/javascript" src="~/Scripts/jquery-3.4.1.js"></script>
-<script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
-<script src="~/Scripts/preloader.js"></script>
-@Scripts.Render("~/Scripts/jquery.validate.min.js")
-@Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.js")
+            @using (Html.BeginForm("Home", "Pattern", FormMethod.Post))
+            {
+                <button class="UserJob">
+
+                    <span class="HeaderFonts">Работа с пользователями</span>
+
+                </button>
+            }
+            @using (Html.BeginForm("EditorPattern", "Pattern", FormMethod.Post))
+            {
+
+                <button class="UserJob">
+
+                    <span class="HeaderFonts">Работа с шаблонами </span>
+                </button>
+            }
+
+            @using (Html.BeginForm("PrintPage", "Pattern", FormMethod.Post))
+            {
+                <button class="UserJob">
+
+                    <span class="HeaderFonts">Печать</span>
+
+                </button>
+            }
+        </div>
+
+    </div>
+    <hr>
+    @RenderBody()
+</div>
+@Scripts.Render("~/bundles/Layout-js")
+@RenderSection("Scripts", false)
 
 </body>
 </html>

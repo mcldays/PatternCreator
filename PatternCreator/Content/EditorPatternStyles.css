@@ -448,31 +448,44 @@ height: 22px;
 
 
 
-#img-wrap{
+#img-wrap {
     height: 100%;
     border: 1px solid gray;
+    position: relative;
 }
 
 .draggable-div{
     width: max-content;
+    position: absolute !important;
+    top: 0;
 }
-.draggable-text{
+.draggable-text {
     background: transparent;
-    resize: horizontal;
     height: 1.1em;
-    border: 2px solid rgb(0, 174, 239);
+    border: 0;
     border-radius: 0 6px 6px 6px;
-    min-width: 175px;
+    min-width: 185px;
     max-width: 730px;
     padding: 6px;
+    resize: none;
+    outline: 0;
+}
+
+.draggable-div.block-visible .draggable-text {
+    resize: horizontal;
+    border: 2px solid rgb(0, 174, 239);
 }
 
 .draggable-hint{
-    height: 100%;
-    position: relative;
+height: 100%;
+position: relative;
+    opacity: 0;
+}
+.draggable-div.block-visible .draggable-hint {
+    opacity: 1;
 }
 
-.hint-svg{
+.hint-svg {
     position: absolute;
     right: 0;
     width: 15px;
@@ -510,7 +523,7 @@ height: 22px;
     border-radius: 6px 0 0 0;
 }
 
-.unselectable {
+    .unselectable {
     -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none;   /* Chrome/Safari/Opera */
     -khtml-user-select: none;    /* Konqueror */
@@ -532,14 +545,14 @@ height: 22px;
     font-family: sans-serif;
 }
 
-.hint-data-type{
+.hint-data-type {
     border: 0;
     color: white;
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    padding: 0px 9px 0px 29px;
-    background: url(svg/list-white.svg) 10% / 16% no-repeat transparent;
+    padding: 0px 0px 0px 36px;
+    background: url(../Resourses/svg/list-white.svg) 10% / 10% no-repeat transparent;
 }
 .hint-data-type option{
     background: white;

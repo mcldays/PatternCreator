@@ -282,6 +282,9 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Resourses\svg\delete-white.svg" />
+    <Content Include="Resourses\svg\list-white.svg" />
+    <Content Include="Resourses\svg\move-white.svg" />
     <Content Include="Resourses\testImg.jpg" />
     <Content Include="Resourses\Eclipse-1s-200px.gif" />
     <Content Include="Resourses\icons8-restore-page-100.png" />
@@ -324,6 +327,7 @@
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\EditorPatternScripts.js" />
     <Content Include="Scripts\esm\popper-utils.js" />
     <Content Include="Scripts\esm\popper-utils.min.js" />
     <Content Include="Scripts\esm\popper.js" />
