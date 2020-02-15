@@ -22,6 +22,8 @@ namespace PatternCreator.Utilities
 
         public  DbSet<UserModel> UserModels { get; set;}
 
+        public DbSet<PictureModel> PicturesModels { get; set; }
+
 
     }
 }

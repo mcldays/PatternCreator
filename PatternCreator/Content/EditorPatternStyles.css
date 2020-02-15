@@ -79,17 +79,24 @@ justify-content: center;
 
 }
 
-.blueButton{
-    width: 260px;
-height: 41px;
-border-radius: 5px;
-background-color: #00aeef;
-border: 0;
-margin-left: 10px;
-cursor: pointer;
-display: flex;
-justify-content: center;
+.hidden-input {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    position: absolute;
+    z-index: -10;
+}
 
+.blueButton {
+    width: 260px;
+    height: 41px;
+    border-radius: 5px;
+    background-color: #00aeef;
+    border: 0;
+    margin-left: 10px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-around;
 }
 
 .greyButton{
@@ -133,12 +140,13 @@ letter-spacing: 0.75px;
 }
 
 
-.blueButtonText{
+.blueButtonText {
+    color: #ffffff;
+    font-family: "Open Sans";
+    font-size: 17px;
+    font-weight: 400;
+    padding: 10px 0 0 0;
 
-color: #ffffff;
-font-family: "Open Sans";
-font-size: 17px;
-font-weight: 400;
 }
 
 .greyButtonText{
@@ -149,11 +157,10 @@ font-size: 17px;
 font-weight: 400;
 }
 
-.AddPatternImg{
-    position: absolute;
+.AddPatternImg {
     width: 25px;
-height: 19px;
-margin-left: 110px;
+    height: 19px;
+    padding: 10px 0px 0px 0px;
 }
 
 .DeletePatternImg{
@@ -191,6 +198,7 @@ margin-left: 25px;
 
 .imgStyle{
     height: 100%;
+    width: 100%;
 }
 
 
