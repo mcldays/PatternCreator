@@ -238,11 +238,14 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Resourses\testImg.jpg" />
     <Content Include="Resourses\Eclipse-1s-200px.gif" />
+    <Content Include="Resourses\icons8-restore-page-100.png" />
     <Content Include="Resourses\svg\add doc %281%29 white.svg" />
     <Content Include="Resourses\svg\add doc %281%29.svg" />
     <Content Include="Resourses\svg\add-user.svg" />
     <Content Include="Resourses\svg\add.svg" />
+    <Content Include="Resourses\svg\black-mail-art-email-computer-icons-message-bounce-address-email-icon-png-clip-art-thumbnail.png" />
     <Content Include="Resourses\svg\check-mark.svg" />
     <Content Include="Resourses\svg\close %284%29.svg" />
     <Content Include="Resourses\svg\delete-grey.svg" />
@@ -379,6 +382,7 @@
     <Content Include="Scripts\umd\popper-utils.min.js" />
     <Content Include="Scripts\umd\popper.js" />
     <Content Include="Scripts\umd\popper.min.js" />
+    <Content Include="Scripts\wheelzoom.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

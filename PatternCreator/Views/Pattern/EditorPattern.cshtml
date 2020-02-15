@@ -10,152 +10,177 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" type="text/css" href="/Content/EditorPatternStyles.css" />
+    <script src="/Scripts/wheelzoom.js"></script>
+    <script type="text/javascript" src="/Scripts/jquery-3.4.1.js"></script>
     <title>Document</title>
 </head>
 <body>
-    
-        
-        <div id=BlockOne>
-            <div class="ButtonsContain">
 
-                <button class=blueButton>
-                    <span class="blueButtonText">Добавить шаблон</span>
-                    <img src="/Resourses/svg/add doc (1) white.svg" class="AddPatternImg">
 
-                </button>
+    <div id=BlockOne>
+        <div class="ButtonsContain">
 
-                <button class="greyButton">
-                    <span class="greyButtonText">Удалить шаблон</span>
-                    <img src="/Resourses/svg/delete-grey.svg" class="DeletePatternImg">
-                </button>
+            <button class=blueButton>
+                <span class="blueButtonText">Добавить шаблон</span>
+                <img src="/Resourses/svg/add doc (1) white.svg" class="AddPatternImg">
 
-                <div class="findButton">
-                    <input type="text" class="InputStyle" placeholder="Поиск по шаблонам">
-                    <button class="findIcon">
-                        <img src="/Resourses/svg/zoom-in.svg" style=" width: 15px;
+            </button>
+
+            <button class="greyButton">
+                <span class="greyButtonText">Удалить шаблон</span>
+                <img src="/Resourses/svg/delete-grey.svg" class="DeletePatternImg">
+            </button>
+
+            <div class="findButton">
+                <input type="text" class="InputStyle" placeholder="Поиск по шаблонам">
+                <button class="findIcon">
+                    <img src="/Resourses/svg/zoom-in.svg" style=" width: 15px;
                     height: 15px;">
-                    </button>
-                </div>
-
-
-
-            </div>
-
-
-            <div id="patternsContain">
-
-
-                <div class="patternRectangle">
-                    <a href="#openModal">
-                        <button class="patternBut">
-                            <img src="/Печать/Без названия.png" class="imgStyle">
-                        </button>
-                    </a>
-                </div>
-
-
-
-                <div class="patternRectangle">
-                    <a href="#openModal">
-                        <button class="patternBut">
-                            <img src="/Печать/Без названия.png" class="imgStyle">
-                        </button>
-                    </a>
-                </div>
-
-
-
-                <div class="patternRectangle">
-                    <a href="#openModal">
-                        <button class="patternBut">
-                            <img src="/Печать/Без названия.png" class="imgStyle">
-                        </button>
-                    </a>
-                </div>
-
-
-
-                <div class="patternRectangle">
-                    <a href="#openModal">
-                        <button class="patternBut">
-                            <img src="/Печать/Без названия.png" class="imgStyle">
-                        </button>
-                    </a>
-                </div>
-
-
+                </button>
             </div>
 
 
 
         </div>
 
-        <div id="openModal" class="modal">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <a href="#close" title="Close" class="close">×</a>
-                    </div>
-                    <div class="modal-body">
+
+        <div id="patternsContain">
 
 
-                        <div class="modelContent">
-                            <div class="modelBlockOne">
-                                <div class="manageBlockModel">
-                                    <div class="namePatternModel">
-                                        <input type="text" placeholder="Название шаблона" class="inputModelName">
-                                    </div>
+            <div class="patternRectangle">
+                <a href="#openModal">
+                    <button class="patternBut">
+                        <img src="/Печать/Без названия.png" class="imgStyle">
+                    </button>
+                </a>
+            </div>
 
+
+
+            <div class="patternRectangle">
+                <a href="#openModal">
+                    <button class="patternBut">
+                        <img src="/Печать/Без названия.png" class="imgStyle">
+                    </button>
+                </a>
+            </div>
+
+
+
+            <div class="patternRectangle">
+                <a href="#openModal">
+                    <button class="patternBut">
+                        <img src="/Печать/Без названия.png" class="imgStyle">
+                    </button>
+                </a>
+            </div>
+
+
+
+            <div class="patternRectangle">
+                <a href="#openModal">
+                    <button class="patternBut">
+                        <img src="/Печать/Без названия.png" class="imgStyle">
+                    </button>
+                </a>
+            </div>
+
+
+        </div>
+
+
+
+    </div>
+
+    <div id="openModal" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="#close" title="Close" class="close">×</a>
+                </div>
+                <div class="modal-body">
+
+
+                    <div class="modelContent">
+                        <div class="modelBlockOne">
+                            <div class="manageBlockModel">
+                                <div class="namePatternModel">
+                                    <input type="text" placeholder="Название шаблона" class="inputModelName">
                                 </div>
 
-                                <div class="buttonsContainModal">
-                                    <button class="blueButtonsModal">
-                                        <span>Добавить текст</span>
-                                    </button>
-
-                                    <button class="blueButtonsModal">
-                                        <span>Загрузить документ</span>
-                                    </button>
-                                </div>
-
-                                <div class="mainEditor">
-                                    <img src="/Печать/Без названия.png" class="imgModalStyle">
-
-                                    <div class="ZoomContain">
-                                        <button class="rectangleWhite">
-                                            <img src="/Resourses/svg/zoom-in.svg" class="InzoomModal">
-                                        </button>
-
-                                        <button class="rectangleBlue">
-                                            <img src="/Resourses/svg/zoom-out.svg" class="InzoomModal">
-                                        </button>
-
-
-
-                                    </div>
-
-
-                                </div>
-
-                                <div class="saveButtonModal">
-                                    <button class="blueButtonsModal">
-                                        <span>Соханить</span>
-                                    </button>
-
-                                </div>
                             </div>
 
+                            <div class="buttonsContainModal">
+                                <button class="blueButtonsModal">
+                                    <span>Добавить текст</span>
+                                </button>
+
+                                <button class="blueButtonsModal">
+                                    <span>Загрузить документ</span>
+                                </button>
+                            </div>
+
+                            <div class="mainEditor">
+                                <img src="/Resourses/testImg.jpg" class="imgModalStyle">
 
 
+                                <div class="ZoomContain">
+
+
+                                    <button class="rectangleWhite">
+                                        <img src="/Resourses/icons8-restore-page-100.png" class="InzoomModal" />
+                                    </button>
+
+                                </div>
+
+
+                            </div>
+
+                            <div class="saveButtonModal">
+                                <button class="blueButtonsModal">
+                                    <span>Соханить</span>
+                                </button>
+
+                            </div>
                         </div>
+
+
+
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+
+    <script>
+
+        let image = document.getElementsByClassName('imgModalStyle');
+
+        wheelzoom(document.getElementsByClassName('imgModalStyle'), {maxZoom: 2});
+
+
+        $(".rectangleWhite").click(function () {
+
+            console.log("kek.")
+            $(".imgModalStyle").css("background-size", "740px 600px");
+            $(".imgModalStyle").css("background-position", "0px 0px");
+
+
+        });
 
 
 
-   
+
+
+
+
+
+
+
+    </script>
+
+
+
 
 </body>
 </html>
