@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity.Migrations;
 using System.Diagnostics.Eventing.Reader;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -68,7 +69,17 @@ namespace PatternCreator.Controllers
 
         public ActionResult EditorPattern()
         {
-            return View();
+
+            using (UserContext dbUse = new UserContext())
+            {
+                var model = dbUse.PicturesModels.ToList<PictureModel>();
+
+
+
+
+                return View(model);
+            }
+
         }
 
 
@@ -157,6 +168,40 @@ namespace PatternCreator.Controllers
 
             return true;
         }
+
+
+
+        [HttpPost]
+        public ActionResult Create(PictureModel pic, HttpPostedFileBase uploadImage)
+        {
+            if (ModelState.IsValid && uploadImage != null)
+            {
+                byte[] imageData = null;
+              
+                using (var binaryReader = new BinaryReader(uploadImage.InputStream))
+                {
+                    imageData = binaryReader.ReadBytes(uploadImage.ContentLength);
+                }
+             
+                pic.Image = imageData;
+
+                using (UserContext dbUse = new UserContext())
+                {
+                    dbUse.PicturesModels.Add(pic);
+                    dbUse.SaveChanges();
+                }
+
+
+                return RedirectToAction("EditorPattern");
+            }
+
+            return View(false);
+
+        }
+
+
+
+      
 
 
     }

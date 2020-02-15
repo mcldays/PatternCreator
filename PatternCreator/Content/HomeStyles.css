@@ -113,6 +113,7 @@ input[type="text"]:disabled {
     font-weight: 400;
     margin-left: 10px;
     border: 0;
+    outline: 0;
 }
 
 
@@ -616,20 +617,18 @@ body {
 
 
 button.glo {
-   
-    
-    /* padding: 15px 20px; */
+    background: white;
     text-transform: uppercase;
     /* width: 278px; */
     text-decoration: none;
     /* text-align: center; */
     margin: 30px 0;
     display: block;
-    background-image: linear-gradient(to left,transparent,transparent 50%,#00aeef 50%,#00aeef);
+    background-image: linear-gradient(to left,transparent 50%,#00aeef 50%,#00aeef);
     background-position: 100% 0;
     background-size: 200% 100%;
     transition: all .25s ease-in;
-     font: 400 18px tahoma; 
+    font: 400 18px tahoma;
     border: 1px solid #00aeeF;
     width: 215px;
     height: 36px;
