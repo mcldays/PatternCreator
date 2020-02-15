@@ -2,22 +2,15 @@
 
 
 $(document).ready(function() {
-
-
- 
-
     $(".CompanyEdit").click(function(e) {
 
         let span = $(e.target).parents()[2].children[0].children[0];
         let EditorContain = $(e.target).parents()[2].children[0].children[1];
         let button = $(e.target).parents()[2].children[0].children[2];
 
-
         $(button).css("display", "none");
         $(EditorContain).css("display", "flex");
         $(span).css("display", "none");
-
-
 
     });
 
@@ -26,7 +19,6 @@ $(document).ready(function() {
 
         let block = $(`<div id="TableTwo">
           <table id="TableTwoStyle">
-
               <tr>
                   <div class="CompanyAligment">
 
@@ -62,8 +54,6 @@ $(document).ready(function() {
               </tr>
               </table>
               </div>`);
-
-
         console.log($("table:last"))
         $("table:last").after(block);
 
@@ -97,6 +87,10 @@ $(document).ready(function() {
 
 
     //});
+
+
+
+
 
 
 

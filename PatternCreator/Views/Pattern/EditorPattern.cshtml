@@ -120,7 +120,7 @@
 
                                 <div class="mainEditor">
                                     <img src="/Печать/Без названия.png" class="imgModalStyle">
-
+                                    <div id="img-wrap"></div>
                                     <div class="ZoomContain">
                                         <button class="rectangleWhite">
                                             <img src="/Resourses/svg/zoom-in.svg" class="InzoomModal">
@@ -156,7 +156,23 @@
 
 
    
+<script>
+    $(document).on("dragstart", "block-delete-svg", function(e){
+        e.preventDefault();
+    });
 
+    $(document).on("click", ".block-delete-svg", function(){
+        $(this).parent().parent().remove();
+    });
+    $("#add-text").on("click", ()=>{ 
+        let block = $("<div class='draggable-div'><div class='draggable-hint'><div class='hint-left'><select class='hint-data-type'><option>Имя</option><option>Фамилия</option></select></div><img draggable='false' class='hint-svg block-move-svg' src='svg/move-white.svg'/><img draggable='false' class='hint-svg block-delete-svg' src='svg/delete-white.svg'/></div><textarea class='draggable-text'/></div>");
+        $("#img-wrap").append(block);
+        block.draggable({
+            containment: $("#img-wrap"),
+            handle: "img.block-move-svg"
+        });
+    })
+</script>
 </body>
 </html>
 
