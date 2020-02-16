@@ -50,7 +50,7 @@ $(document).on("click", ".draggable-text", function (e) {
 
 $(".save").on("click", function () {
     let bounds = $(this).parent().parent().find(".draggable-div").toArray().map(elem => {
-        return [elem.offsetLeft, elem.offsetTop, elem.offsetWidth, elem.parentElement.getAttribute("picture-id"), elem.getAttribute("position-id")];
+        return [elem.offsetLeft, elem.offsetTop, elem.offsetWidth, elem.parentElement.getAttribute("picture-id"), elem.getAttribute("position-id"), $(elem).find(".hint-data-type").val()];
     }); 
     $.ajax({
         url: "../Pattern/SetBlocks",
@@ -81,5 +81,6 @@ for (var i in positions) {
     });
     blockHtml.css("left", block.getAttribute("position-x") + "px");
     blockHtml.css("top", block.getAttribute("position-y") + "px");
+    blockHtml.find(".hint-data-type").val(block.getAttribute("Type"));
 }
 

@@ -224,7 +224,8 @@ namespace PatternCreator.Controllers
                             PictureId = int.Parse(block[3]),
                             PosX = double.Parse(block[0]),
                             PosY = double.Parse(block[1]),
-                            Width = double.Parse(block[2])
+                            Width = double.Parse(block[2]),
+                            Type = block[5]
                         });
                     }
                     catch (Exception e)
