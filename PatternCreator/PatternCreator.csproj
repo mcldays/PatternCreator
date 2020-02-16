@@ -224,6 +224,10 @@
     <Compile Include="Migrations\202002160017305_pohuy2.designer.cs">
       <DependentUpon>202002160017305_pohuy2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202002161153043_Pohuy3.cs" />
+    <Compile Include="Migrations\202002161153043_Pohuy3.designer.cs">
+      <DependentUpon>202002161153043_Pohuy3.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AutModel.cs" />
     <Compile Include="Models\CompanyModel.cs" />
@@ -343,6 +347,7 @@
     <Content Include="Scripts\esm\popper-utils.min.js" />
     <Content Include="Scripts\esm\popper.js" />
     <Content Include="Scripts\esm\popper.min.js" />
+    <Content Include="Scripts\html2canvas.js" />
     <Content Include="Scripts\index.js.flow" />
     <Content Include="Scripts\esm\popper.min.js.map" />
     <Content Include="Scripts\esm\popper.js.map" />
@@ -500,6 +505,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202002160017305_pohuy2.resx">
       <DependentUpon>202002160017305_pohuy2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002161153043_Pohuy3.resx">
+      <DependentUpon>202002161153043_Pohuy3.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

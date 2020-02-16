@@ -39,15 +39,19 @@ namespace PatternCreator
                 "~/Scripts/jquery.validate*",
                 "~/Scripts/jquery.unobtrusive-ajax.js",
                 "~/Scripts/preloader.js"
+                
             ));
 
             //EditorPattern
             bundles.Add(new StyleBundle("~/bundles/EditorPattern-css").Include(
                 "~/Content/EditorPatternStyles.css"
+               
             ));
             bundles.Add(new ScriptBundle("~/bundles/EditorPattern-js").Include(
+                
                 "~/Scripts/wheelzoom.js",
                 "~/Scripts/EditorPatternScripts.js"
+               
             ));
 
         }

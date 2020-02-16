@@ -39,6 +39,9 @@ $(".imgModalStyle").on("click", function(e) {
     }
 });
 
+
+
+
 $(document).on("click", ".draggable-text", function (e) {
     let elem = $(e.target);
     elem.parent().addClass("block-visible");

@@ -14,5 +14,7 @@ namespace PatternCreator.Models
         public double PosX { get; set; }
         public double PosY { get; set; }
         public double Width { get; set; }
+
+        public string Type { get; set; }
     }
 }
