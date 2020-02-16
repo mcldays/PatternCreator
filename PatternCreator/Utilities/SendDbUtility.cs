@@ -135,6 +135,22 @@ namespace PatternCreator.Utilities
             return models;
         }
 
+        public static List<PictureModel> GetAllTemplates()
+        {
+            using (UserContext dbUse = new UserContext())
+            {
+                return dbUse.PicturesModels.ToList();
+            }
+        }
+
+        public static List<PositionModel> GetAllPositions()
+        {
+            using (UserContext dbUse = new UserContext())
+            {
+                return dbUse.PositionModels.ToList();
+            }
+        }
+
         public static CompanyModel GetCompanyById(int id)
         {
             CompanyModel model = new CompanyModel();

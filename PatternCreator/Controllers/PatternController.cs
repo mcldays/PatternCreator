@@ -30,14 +30,7 @@ namespace PatternCreator.Controllers
         public ActionResult Home()
         {
             List<string> Groups = new List<string>();
-
-          
-           
-
-
-
             var models = Utilities.SendDbUtility.GelAllCompanyList();
-
             List<SelectListItem> items = new List<SelectListItem>();
 
             foreach (var company in models)
