@@ -215,10 +215,19 @@
     <Compile Include="Migrations\202002151838255_Migration.designer.cs">
       <DependentUpon>202002151838255_Migration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202002152253437_pohuy1.cs" />
+    <Compile Include="Migrations\202002152253437_pohuy1.designer.cs">
+      <DependentUpon>202002152253437_pohuy1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002160017305_pohuy2.cs" />
+    <Compile Include="Migrations\202002160017305_pohuy2.designer.cs">
+      <DependentUpon>202002160017305_pohuy2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AutModel.cs" />
     <Compile Include="Models\CompanyModel.cs" />
     <Compile Include="Models\PictureModel.cs" />
+    <Compile Include="Models\PositionModel.cs" />
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\SendDbUtility.cs" />
@@ -483,6 +492,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202002151838255_Migration.resx">
       <DependentUpon>202002151838255_Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002152253437_pohuy1.resx">
+      <DependentUpon>202002152253437_pohuy1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002160017305_pohuy2.resx">
+      <DependentUpon>202002160017305_pohuy2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

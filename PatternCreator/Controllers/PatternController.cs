@@ -6,6 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.Ajax.Utilities;
+using Newtonsoft.Json;
 using PatternCreator.Models;
 using PatternCreator.Utilities;
 
@@ -73,11 +75,16 @@ namespace PatternCreator.Controllers
             using (UserContext dbUse = new UserContext())
             {
                 var model = dbUse.PicturesModels.ToList<PictureModel>();
+                var positions = dbUse.PositionModels.ToList();
+                var list = new object[]
+                {
+                    model,
+                    positions
+                };
 
 
 
-
-                return View(model);
+                return View(list);
             }
 
         }
@@ -200,8 +207,44 @@ namespace PatternCreator.Controllers
         }
 
 
+        [HttpPost]
+        public bool SetBlocks(string data)
+        {
+            var a = JsonConvert.DeserializeObject<List<List<string>>>(data);
+            using (var dbUse = new UserContext())
+            {
+                foreach (var block in a)
+                {
+                    try
+                    {
+                        var id = int.Parse(block[4]);
+                        dbUse.PositionModels.AddOrUpdate(new PositionModel()
+                        {
+                            Id = id,
+                            PictureId = int.Parse(block[3]),
+                            PosX = double.Parse(block[0]),
+                            PosY = double.Parse(block[1]),
+                            Width = double.Parse(block[2])
+                        });
+                    }
+                    catch (Exception e)
+                    {
+                        dbUse.PositionModels.AddOrUpdate(new PositionModel()
+                        {
+                            PictureId = int.Parse(block[3]),
+                            PosX = double.Parse(block[0]),
+                            PosY = double.Parse(block[1]),
+                            Width = double.Parse(block[2])
+                        });
 
-      
+                    }
+                    
+                    
+                }
+                dbUse.SaveChanges();
+            }
+            return true;
+        }
 
 
     }

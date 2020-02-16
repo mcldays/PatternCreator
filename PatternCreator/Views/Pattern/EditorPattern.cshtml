@@ -1,5 +1,5 @@
 ﻿@using PatternCreator.Models
-@model List<PictureModel>
+@model object[]
 
 
 @Styles.Render("~/bundles/EditorPattern-css")
@@ -11,128 +11,126 @@
 
 
 
-    <div id=BlockOne>
-        <div class="ButtonsContain">
-            @using (Html.BeginForm("Create", "Pattern", FormMethod.Post, new { enctype = "multipart/form-data", id = "submitImg" }))
-            {
+<div id=BlockOne>
+    <div class="ButtonsContain">
+        @using (Html.BeginForm("Create", "Pattern", FormMethod.Post, new { enctype = "multipart/form-data", id = "submitImg" }))
+        {
                 @*<span class="blueButtonText">Добавить шаблон</span>*@
 
-                <input type="file" name="uploadImage" value="" id="file-input" class="hidden-input" />
-                <label for="file-input" class="blueButton">
-                    <span class="blueButtonText">Загрузить документ</span>
-                    <img src="/Resourses/svg/add doc (1) white.svg" class="AddPatternImg">
+            <input type="file" name="uploadImage" value="" id="file-input" class="hidden-input" />
+            <label for="file-input" class="blueButton">
+                <span class="blueButtonText">Загрузить документ</span>
+                <img src="/Resourses/svg/add doc (1) white.svg" class="AddPatternImg">
 
-                </label>
-            }
-            <button class="greyButton">
-                <span class="greyButtonText">Удалить шаблон</span>
-                <img src="/Resourses/svg/delete-grey.svg" class="DeletePatternImg">
+            </label>
+        }
+        <button class="greyButton">
+            <span class="greyButtonText">Удалить шаблон</span>
+            <img src="/Resourses/svg/delete-grey.svg" class="DeletePatternImg">
+        </button>
+
+        <div class="findButton">
+            <input type="text" class="InputStyle" placeholder="Поиск по шаблонам">
+            <button class="findIcon">
+                <img src="/Resourses/svg/zoom-in.svg" style=" width: 15px;
+                                      height: 15px;">
             </button>
-
-            <div class="findButton">
-                <input type="text" class="InputStyle" placeholder="Поиск по шаблонам">
-                <button class="findIcon">
-                    <img src="/Resourses/svg/zoom-in.svg" style=" width: 15px;
-                    height: 15px;">
-                </button>
-            </div>
-
-
-
-        </div>
-
-
-        <div id="patternsContain">
-
-            @foreach (var item in (List<PictureModel>)Model)
-            {
-                var item1 = "openModal" + item.Id;
-                var item2 = "#openModal" + item.Id;
-                <div class="patternRectangle">
-                    <a href=@item2>
-                        <button class="patternBut">
-                            @Html.Raw("<img class='imgStyle' src=\"data:image/jpeg;base64,"
-                                      + Convert.ToBase64String(item.Image) + "\" />")
-                        </button>
-                    </a>
-                </div>
-
-
-
-
-                <div id=@item1 class="modal">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <a href="#close" title="Close" class="close">×</a>
-                            </div>
-                            <div class="modal-body">
-
-
-                                <div class="modelContent">
-                                    <div class="modelBlockOne">
-                                        <div class="manageBlockModel">
-                                            <div class="namePatternModel">
-                                                <input type="text" placeholder="Название шаблона" class="inputModelName">
-                                            </div>
-
-                                        </div>
-
-                                        <div class="buttonsContainModal">
-                                            <button class="blueButtonsModal" id="add-text">
-                                                <span>Добавить текст</span>
-                                            </button>
-
-                                        </div>
-
-                                        <div class="mainEditor">
-                                            <div id="img-wrap">
-                                                @Html.Raw("<img class='imgModalStyle' src=\"data:image/jpeg;base64,"
-                                                          + Convert.ToBase64String(item.Image) + "\" />")
-                                            </div>
-
-
-
-                                            <div class="ZoomContain">
-
-
-                                                <button class="rectangleWhite">
-                                                    <img src="/Resourses/icons8-restore-page-100.png" class="InzoomModal" />
-                                                </button>
-
-                                            </div>
-
-
-                                        </div>
-
-                                        <div class="saveButtonModal">
-                                            <button class="blueButtonsModal">
-                                                <span>Соханить</span>
-                                            </button>
-
-                                        </div>
-                                    </div>
-
-
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-
-
-            }
-
-
-
         </div>
 
 
 
     </div>
+
+
+    <div id="patternsContain">
+
+        @foreach (var item in (Model[0] as List<PictureModel>))
+        {
+            var item1 = "openModal" + item.Id;
+            var item2 = "#openModal" + item.Id;
+            <div class="patternRectangle">
+                <a href=@item2>
+                    <button class="patternBut">
+                        @Html.Raw("<img class='imgStyle' src=\"data:image/jpeg;base64,"
+                                  + Convert.ToBase64String(item.Image) + "\" />")
+                    </button>
+                </a>
+            </div>
+
+
+
+
+            <div id=@item1 class="modal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <a href="#close" title="Close" class="close">×</a>
+                        </div>
+                        <div class="modal-body">
+
+
+                            <div class="modelContent">
+                                <div class="modelBlockOne">
+                                    <div class="manageBlockModel">
+                                        <div class="namePatternModel">
+                                            <input type="text" placeholder="Название шаблона" class="inputModelName">
+                                        </div>
+
+                                    </div>
+
+                                    <div class="buttonsContainModal">
+                                        <button class="blueButtonsModal add-text">
+                                            <span>Добавить текст</span>
+                                        </button>
+
+                                    </div>
+
+                                    <div class="mainEditor">
+                                        <div class="img-wrap" picture-id="@item.Id">
+                                            @Html.Raw("<img class='imgModalStyle' src=\"data:image/jpeg;base64,"
+                                                      + Convert.ToBase64String(item.Image) + "\" />")
+                                        </div>
+
+
+
+                                        <div class="ZoomContain">
+
+
+                                            <button class="rectangleWhite">
+                                                <img src="/Resourses/icons8-restore-page-100.png" class="InzoomModal" />
+                                            </button>
+
+                                        </div>
+
+
+                                    </div>
+
+                                    <div class="saveButtonModal">
+                                        <button class="blueButtonsModal save">
+                                            <span>Соханить</span>
+                                        </button>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+
+
+</div>
+<div id="positions" style="display: none;">
+    @foreach (var block in (Model[1] as List<PositionModel>))
+    {
+        <div position-id="@block.Id" position-x="@block.PosX" position-y="@block.PosY" position-width="@block.Width" picture-id="@block.PictureId"></div>
+    }
+
+</div>
 
 @section Scripts{
     @Scripts.Render("~/bundles/EditorPattern-js")
