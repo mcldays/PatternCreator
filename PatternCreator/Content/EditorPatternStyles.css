@@ -448,7 +448,7 @@ height: 22px;
 
 
 
-#img-wrap {
+.img-wrap {
     height: 100%;
     border: 1px solid gray;
     position: relative;
@@ -462,7 +462,7 @@ height: 22px;
 .draggable-text {
     background: transparent;
     height: 1.1em;
-    border: 0;
+    border: 2px solid transparent;
     border-radius: 0 6px 6px 6px;
     min-width: 185px;
     max-width: 730px;
@@ -476,13 +476,13 @@ height: 22px;
     border: 2px solid rgb(0, 174, 239);
 }
 
-.draggable-hint{
-height: 100%;
-position: relative;
-    opacity: 0;
+.draggable-hint {
+    height: 100%;
+    position: relative;
+    z-index: -1;
 }
 .draggable-div.block-visible .draggable-hint {
-    opacity: 1;
+    z-index: 1;
 }
 
 .hint-svg {
