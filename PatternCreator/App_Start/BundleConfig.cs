@@ -44,12 +44,14 @@ namespace PatternCreator
 
             //EditorPattern
             bundles.Add(new StyleBundle("~/bundles/EditorPattern-css").Include(
-                "~/Content/EditorPatternStyles.css",
-                "~/Scripts/html2canvas.js"
+                "~/Content/EditorPatternStyles.css"
+               
             ));
             bundles.Add(new ScriptBundle("~/bundles/EditorPattern-js").Include(
+                
                 "~/Scripts/wheelzoom.js",
                 "~/Scripts/EditorPatternScripts.js"
+               
             ));
 
         }

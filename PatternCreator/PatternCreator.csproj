@@ -223,6 +223,10 @@
     <Compile Include="Migrations\202002160017305_pohuy2.designer.cs">
       <DependentUpon>202002160017305_pohuy2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202002161153043_Pohuy3.cs" />
+    <Compile Include="Migrations\202002161153043_Pohuy3.designer.cs">
+      <DependentUpon>202002161153043_Pohuy3.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AutModel.cs" />
     <Compile Include="Models\CompanyModel.cs" />
@@ -498,6 +502,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202002160017305_pohuy2.resx">
       <DependentUpon>202002160017305_pohuy2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002161153043_Pohuy3.resx">
+      <DependentUpon>202002161153043_Pohuy3.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

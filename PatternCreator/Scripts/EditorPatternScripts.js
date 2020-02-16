@@ -39,6 +39,9 @@ $(".imgModalStyle").on("click", function(e) {
     }
 });
 
+
+
+
 $(document).on("click", ".draggable-text", function (e) {
     let elem = $(e.target);
     elem.parent().addClass("block-visible");
@@ -80,24 +83,3 @@ for (var i in positions) {
     blockHtml.css("top", block.getAttribute("position-y") + "px");
 }
 
-$(document).on("click",
-    ".draggable-text",
-    function(e) {
-        let elem = $(e.target);
-        elem.parent().addClass("block-visible");
-        $(".draggable-text").removeAttr("readonly");
-    });
-
-window.onload = function () {
-
-    html2canvas(document.getElementById("test")).then(function (canvas) {
-
-        var my_screen = canvas;
-
-        
-
-    });
-
-
-
-}
