@@ -11,12 +11,9 @@ namespace PatternCreator.Utilities
 {
     public static class ComputePhoto
     {
-        public static string Compute(UserModel user, PictureModel template, List<PositionModel> positions)
+        public static byte[] Compute(UserModel user, PictureModel template, List<PositionModel> positions)
         {
             Bitmap bmp;
-
-            RectangleF rectf = new RectangleF(70, 90, 90, 50);
-
             using (var ms = new MemoryStream(template.Image))
                 bmp = new Bitmap(ms);
             Graphics g = Graphics.FromImage(bmp);
@@ -27,11 +24,33 @@ namespace PatternCreator.Utilities
 
             foreach (var position in positions)
             {
-                g.DrawString("yourText", new Font("Tahoma", 8), Brushes.Black, rectf);
+                RectangleF rectf = new RectangleF((float)position.PosX + 2, (float)position.PosY + 20, (float)position.Width - 4, 20);
+                string text = "";
+                switch (position.Type)
+                {
+                    case "Имя":
+                        text = user.Name;
+                        break;
+                    case "Фамилия":
+                        text = user.Surname;
+                        break;
+                    case "Отчество":
+                        text = user.Patronymic;
+                        break;
+                    case "Статичный текст":
+                        break;
+                }
+                g.DrawString(text, new Font("Tahoma", 14), Brushes.Black, rectf);
             }
-
             g.Flush();
-            return "";
+
+            return ImageToByte(bmp);
+        }
+
+        public static byte[] ImageToByte(Image img)
+        {
+            ImageConverter converter = new ImageConverter();
+            return (byte[])converter.ConvertTo(img, typeof(byte[]));
         }
     }
 }

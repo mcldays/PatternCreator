@@ -10,9 +10,9 @@ namespace PatternCreator.Controllers
     public class PrintController : Controller
     {
         [HttpPost]
-        public string[] GetComputedPhotos(string data)
+        public byte[][] GetComputedPhotos(string data)
         {
-            var photos = new List<string>();
+            var photos = new List<byte[]>();
             var users = Utilities.SendDbUtility.GetAllUsers();
             var templates = Utilities.SendDbUtility.GetAllTemplates();
             var positions = Utilities.SendDbUtility.GetAllPositions();
