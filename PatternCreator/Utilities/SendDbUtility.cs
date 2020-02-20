@@ -280,5 +280,21 @@ namespace PatternCreator.Utilities
             }
         }
 
+
+        public static bool UpdateImage(int Id, string Name)
+        {
+            using (UserContext dbUse = new UserContext())
+            {
+                var modelPicture = dbUse.PicturesModels.FirstOrDefault(t => t.Id == Id);
+
+                modelPicture.Name = Name;
+
+                dbUse.PicturesModels.AddOrUpdate(modelPicture);
+                dbUse.SaveChanges();
+
+                return true;
+            }
+        }
+
     }
 }

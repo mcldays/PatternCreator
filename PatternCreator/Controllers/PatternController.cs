@@ -185,9 +185,16 @@ namespace PatternCreator.Controllers
              
                 pic.Image = imageData;
 
+                var Name = uploadImage.FileName.Split('.')[0];
+
+
                 using (UserContext dbUse = new UserContext())
                 {
-                    dbUse.PicturesModels.Add(pic);
+                    dbUse.PicturesModels.Add(new PictureModel()
+                    {
+                        Image = imageData,
+                        Name = Name
+                    });
                     dbUse.SaveChanges();
                 }
 
@@ -239,6 +246,30 @@ namespace PatternCreator.Controllers
                 dbUse.SaveChanges();
             }
             return true;
+        }
+
+
+        public bool DeletePicture(string pictureID)
+        {
+            using (UserContext dbUse = new UserContext())
+            {
+                var intID = int.Parse(pictureID);
+
+                var model = dbUse.PicturesModels.FirstOrDefault(t => t.Id == intID);
+                dbUse.PicturesModels.Remove(model);
+                dbUse.SaveChanges();
+                return true;
+            }
+
+
+        }
+
+
+        public ActionResult UpdatePicture(string Name, int Id)
+        {
+            SendDbUtility.UpdateImage(Id, Name);
+
+            return RedirectToAction("EditorPattern", "Pattern");
         }
 
 

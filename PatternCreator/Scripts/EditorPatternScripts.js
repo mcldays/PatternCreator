@@ -41,6 +41,58 @@ $(".imgModalStyle").on("click", function(e) {
 
 
 
+$(document).on("click",
+    ".deleteButton",
+    function (e) {
+        $.ajax({
+            url: "/Pattern/DeletePicture",
+            data: { pictureID: $($(e.target).parents()[1]).find(".patternBut").attr("pictureID") },
+            method: "POST",
+            success: () => {
+
+                console.log(e.target);
+                $(e.target).parent().parent().remove();
+            }
+
+        });
+
+
+
+
+    });
+
+$(document).on("click", ".greyButton", function () {
+
+    let block = $(`<div style="display:none;" class="deleteContain"><button class="deleteButton"style="width:100%">Удалить</button></div>`);
+
+    $(".patternRectangle").find("#link").after(block);
+
+    $(".deleteContain").fadeIn("slow");
+
+
+
+
+
+
+});
+
+
+
+
+
+$("body").on("click",
+    function (e) {
+
+        $(".deleteContain").hide("slow", function() {
+            $(".deleteContain").remove();
+        });
+            
+        
+
+});
+
+
+
 
 $(document).on("click", ".draggable-text", function (e) {
     let elem = $(e.target);
@@ -83,4 +135,20 @@ for (var i in positions) {
     blockHtml.css("top", block.getAttribute("position-y") + "px");
     blockHtml.find(".hint-data-type").val(block.getAttribute("Type"));
 }
+
+
+$(document).on("click",
+    ".findIcon",
+    function () {
+        $(".ImageName").toArray().forEach((elem) => {
+            if (!elem.innerText.includes($(this).parent().find("input").val())) {
+                $(elem).parent().fadeOut("slow");
+
+            } else {
+                $(elem).parent().fadeIn("slow");
+            }
+
+        });
+
+    });
 
