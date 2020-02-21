@@ -1,4 +1,7 @@
-﻿
+﻿@model object[]
+
+
+
 @{
     ViewBag.Title = "PrintPage";
 }
@@ -13,9 +16,9 @@
     <title>Document</title>
 </head>
 <body>
-    
-       
 
+
+    
         <div id="BlockOne">
             <div class="TextAligment">
                 <span class="PrintDescription">
@@ -27,14 +30,20 @@
 
                 <div id="patternAligment">
 
-                    <select class="selectStyle">
-                        <option style="margin-left: 10px;" value="" disabled selected>Выберите шаблон</option>
-                        <option class="chosePattern">Шаблон 1</option>
-                        <option class="chosePattern">Шаблон 2</option>
-                        <option class="chosePattern">Шаблон 3</option>
-                        <option class="chosePattern">Шаблон 4</option>
-                        <option class="chosePattern">Шаблон 5</option>
-                    </select>
+
+                    @Html.DropDownList("IdCom", ViewBag.Companyes as SelectList, "Выберите компанию", new { @class = "selectStyle", multiple = "multiple" })
+                    @*@Html.ListBox("Name", new List<SelectListItem>(ViewBag.Companyes), new {})*@
+
+
+
+                    @*<select class="selectStyle">
+                            <option style="margin-left: 10px;" value="" disabled selected>Выберите шаблон</option>
+                            <option class="chosePattern">Шаблон 1</option>
+                            <option class="chosePattern">Шаблон 2</option>
+                            <option class="chosePattern">Шаблон 3</option>
+                            <option class="chosePattern">Шаблон 4</option>
+                            <option class="chosePattern">Шаблон 5</option>
+                        </select>*@
 
                 </div>
 
@@ -58,7 +67,7 @@
 
                     <div class="Pattern">
                         <span class="PrintDescription"> Шаблон 1</span>
-                        <button clas="DeleteButton">
+                        <button class="DeleteButton">
                             <img src="/Resourses/svg/delete.svg" class="deleteImage">
                         </button>
 
@@ -70,21 +79,34 @@
 
                 <div id="organisationAligment">
 
-                    <select class="selectStyle">
-                        <option value="" disabled selected>Выберите пользователя/организацию</option>
-                        <option class="chosePattern">Шаблон 1</option>
-                        <option class="chosePattern">Шаблон 2</option>
-                        <option class="chosePattern">Шаблон 3</option>
-                        <option class="chosePattern">Шаблон 4</option>
-                        <option class="chosePattern">Шаблон 5</option>
-                    </select>
+
+                    @Html.DropDownList("IdPic", ViewBag.Pictures as SelectList, "Выберите шаблон", new { @class = "selectStyle", multiple = "multiple" })
+
+
 
                 </div>
+
+                <a href="#openModal" class="AddUserPrint">
+                    <div style="margin-top: 20px;">
+
+                        <span>Добавить пользователя</span>
+
+
+
+                    </div>
+                </a>
+
 
 
                 <div id="acceptedPattern">
 
-                    <span class="PrintDescription">Выбранные пользователи организации:</span>
+
+
+
+
+
+
+                    <span class="PrintDescription">Выбранные пользователи, организации:</span>
 
                     <div class="Pattern">
                         <span class="PrintDescription"> Пользователь 1</span>
@@ -128,9 +150,63 @@
 
 
         </div>
+    
+
+    
 
 
- 
+        <div id="openModal" class="modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Добавить пользователя</h3>
+
+                        <a href="#close" title="Close" class="close">×</a>
+                    </div>
+                    <div class="modal-body">
+                        @using (Ajax.BeginForm("PrintParital", new AjaxOptions { UpdateTargetId = "results", OnSuccess = "OnSuccess" }))
+                        {
+                            <div class="AddUserModal">
+
+                                <div class="FindUsersControl">
+
+                                    <input type="text" name="name" class="ControlText" placeholder="Поиск по пользователям">
+
+
+
+
+                                    <!-- <span class="ControlText">Поиск по пользователям</span> -->
+                                    <button class="FindButton">
+                                        <img src="/Resourses/svg/magnifying-glass (3).svg" class="AddUserImg">
+                                    </button>
+                                </div>
+
+
+
+
+
+                            </div>
+                        }
+                        <div id="results"></div>
+
+
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function OnSuccess() {
+
+                $("#TableTwoStyle").fadeIn();
+
+            }
+        </script>
+    
+
 </body>
 </html>
 

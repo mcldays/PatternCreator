@@ -296,5 +296,16 @@ namespace PatternCreator.Utilities
             }
         }
 
+
+
+        public static List<PictureModel> GetAllPictures()
+        {
+            using (UserContext dbUse = new UserContext())
+            {
+                var models = dbUse.PicturesModels.ToList();
+                return models;
+            }
+        }
+
     }
 }

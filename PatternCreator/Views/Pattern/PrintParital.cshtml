@@ -1,0 +1,33 @@
+﻿@using PatternCreator.Models
+@model List<UserModel>
+
+    <table id="TableTwoStyle" style="display: none">
+
+        <th style="width: 20px;"><span>№</span></th>
+        <th style="width: 250px;"><span>Имя</span></th>
+        <th style="width: 300px;"><span>Фамилия</span></th>
+        <th style="width: 350px;"><span>Отчество</span></th>
+        <th style="width: 20px"></th>
+
+
+        @foreach (var userModel in Model)
+        {
+
+            <tr>
+                <td><span>@userModel.Id</span></td>
+                <td>@userModel.Name</td>
+                <td><span>@userModel.Surname</span></td>
+                <td><span>@userModel.Patronymic</span></td>
+                <td>
+                    <button class="AddButton">
+                        <img src="/Resourses/svg/add.svg" style="width: 20px; height: 15px" />
+                    </button>
+                </td>
+            </tr>
+
+
+
+        }
+    </table>
+
+

@@ -29,7 +29,7 @@ namespace PatternCreator.Controllers
 
         public ActionResult Home()
         {
-            List<string> Groups = new List<string>();
+           
             var models = Utilities.SendDbUtility.GelAllCompanyList();
             List<SelectListItem> items = new List<SelectListItem>();
 
@@ -59,7 +59,39 @@ namespace PatternCreator.Controllers
 
         public ActionResult PrintPage()
         {
-            return View();
+
+            var modelsPic = SendDbUtility.GetAllPictures();
+            var modelsCom = SendDbUtility.GelAllCompanyList();
+        
+         
+            
+           
+                SelectList itemsPic = new SelectList(modelsPic, "Id", "Name");
+               SelectList itemsCom = new SelectList(modelsCom, "Id", "CompanyName");
+
+
+
+
+
+
+            ViewBag.Pictures = itemsPic;
+            ViewBag.Companyes = itemsCom;
+
+
+            object[] x = new object[]
+            {
+                new CompanyModel(),
+                new UserModel(),
+                new PictureModel(), 
+               
+
+            };
+
+
+
+
+
+            return View(x);
         }
 
         public ActionResult EditorPattern()
@@ -273,5 +305,16 @@ namespace PatternCreator.Controllers
         }
 
 
+
+        public ActionResult PrintParital(string name)
+        {
+            using (UserContext dbUse = new UserContext())
+            {
+                var data = dbUse.UserModels.Where(t => t.Name == name).ToList<UserModel>();
+                return PartialView(data);
+            }
+
+
+        }
     }
 }

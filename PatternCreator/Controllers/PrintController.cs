@@ -29,5 +29,12 @@ namespace PatternCreator.Controllers
 
             return photos.ToArray();
         }
+
+
+
+        public bool TestList(string[] IdPic, string[] IdCom)
+        {
+            return true;
+        }
     }
 }
