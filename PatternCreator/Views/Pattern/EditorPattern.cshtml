@@ -16,12 +16,10 @@
         @using (Html.BeginForm("Create", "Pattern", FormMethod.Post, new { enctype = "multipart/form-data", id = "submitImg" }))
         {
                 @*<span class="blueButtonText">Добавить шаблон</span>*@
-
             <input type="file" name="uploadImage" value="" id="file-input" class="hidden-input" />
             <label for="file-input" class="blueButton">
                 <span class="blueButtonText">Загрузить документ</span>
                 <img src="/Resourses/svg/add doc (1) white.svg" class="AddPatternImg">
-
             </label>
         }
         <button class="greyButton">
@@ -49,23 +47,19 @@
             var item1 = "openModal" + item.Id;
             var item2 = "#openModal" + item.Id;
 
-            <div class="patternRectangle">
-                <span class="ImageName">
-                    @item.Name
-                </span>
-                <a href=@item2 id="link">
-                    <button class="patternBut" pictureID="@item.Id">
-                        @Html.Raw("<img class='imgStyle'  src=\"data:image/jpeg;base64,"
-                                  + Convert.ToBase64String(item.Image) + "\" />")
-                    </button>
-                </a>
-            </div>
-
-
-
-            using (Html.BeginForm("UpdatePicture", "Pattern", FormMethod.Post, new {}))
+        <div class="patternRectangle">
+            <span class="ImageName">
+                @item.Name
+            </span>
+            <a href=@item2 id="link">
+                <button class="patternBut" pictureID="@item.Id">
+                    @Html.Raw("<img class='imgStyle' src=\"data:image/jpeg;base64,"
+                              + Convert.ToBase64String(item.Image) + "\" />")
+                </button>
+            </a>
+            @using (Html.BeginForm("UpdatePicture", "Pattern", FormMethod.Post, new { }))
             {
-                <div id=@item1 class="modal">
+                <div id=@item1 class="update-picture-modal">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -79,14 +73,13 @@
                                         <div class="manageBlockModel">
                                             <div class="namePatternModel">
                                                 @Html.Hidden("Id", item.Id)
-                                                @*<input type="text" placeholder="Название шаблона" class="inputModelName">*@
-                                                @Html.EditorFor(model => (model[0] as PictureModel).Name, new {htmlAttributes = new {@class = "inputModelName", PlaceHolder = item.Name}})
+                                                <input type="text" name="Name" value="@item.Name" class="inputModelName">
                                             </div>
 
                                         </div>
 
                                         <div class="buttonsContainModal">
-                                            <button class="blueButtonsModal add-text">
+                                            <button type="button" class="blueButtonsModal add-text">
                                                 <span>Добавить текст</span>
                                             </button>
 
@@ -104,7 +97,7 @@
 
 
                                                 <button class="rectangleWhite">
-                                                    <img src="/Resourses/icons8-restore-page-100.png" class="InzoomModal"/>
+                                                    <img src="/Resourses/icons8-restore-page-100.png" class="InzoomModal" />
                                                 </button>
 
                                             </div>
@@ -126,6 +119,7 @@
                     </div>
                 </div>
             }
+        </div>
         }
         </div>
           

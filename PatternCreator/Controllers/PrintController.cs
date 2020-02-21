@@ -1,35 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using Microsoft.Ajax.Utilities;
 using Newtonsoft.Json;
+using PatternCreator.Utilities;
 
 namespace PatternCreator.Controllers
 {
     public class PrintController : Controller
     {
         [HttpPost]
-        public byte[][] GetComputedPhotos(string data)
+        public string GetComputedPhotos(string data)
         {
-            var photos = new List<byte[]>();
-            var users = Utilities.SendDbUtility.GetAllUsers();
-            var templates = Utilities.SendDbUtility.GetAllTemplates();
-            var positions = Utilities.SendDbUtility.GetAllPositions();
+            var photos = new List<string>();
+            var users = SendDbUtility.GetAllUsers();
+            var templates = SendDbUtility.GetAllTemplates();
+            var positions = SendDbUtility.GetAllPositions();
 
             var parsed = JsonConvert.DeserializeObject<Dictionary<string, List<int>>>(data);
-            foreach (var user in parsed["users"])
-            {
-                foreach (var template in parsed["templates"])
-                {
-                    photos.Add(Utilities.ComputePhoto.Compute(users.Find(t=>t.Id == user), templates.Find(t=>t.Id == template), positions.Where(t => t.PictureId == template).ToList()));
-                }
-            }
+            var usersFromCompanies = users.Where(t => parsed["companies"].Contains(t.CompanyId)).Select(t => t.Id);
 
-            return photos.ToArray();
+            var neededUsers = parsed["users"].Concat(usersFromCompanies);
+            foreach (var user in neededUsers)
+            foreach (var template in parsed["templates"])
+                photos.Add(Convert.ToBase64String(ComputePhoto.Compute(users.Find(t => t.Id == user),
+                    templates.Find(t => t.Id == template), positions.Where(t => t.PictureId == template).ToList())));
+
+            return string.Join("<separator>", photos);
         }
-
 
 
         public bool TestList(string[] IdPic, string[] IdCom)

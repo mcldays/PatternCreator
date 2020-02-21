@@ -13,6 +13,9 @@
          }
 
 
+* {
+    font-family: sans-serif;
+}
 
 
 #MainBlock{
@@ -67,10 +70,9 @@ hr{
 }
 
 .chosePatternAligment{
-margin-top: 20px;
-width: 754px;
-height: 43px;
-text-align: center;
+    margin-top: 20px;
+    width: 754px;
+    text-align: center;
 }
 
 #acceptedPattern{
@@ -78,11 +80,7 @@ text-align: center;
 }
 
 .selectStyle{
-width: 100%;
-height: 43px;
-border-radius: 5px;
-background-color: #e1e1e1;
-border: 0;
+
 }
 
 .TextAligment{
@@ -94,22 +92,20 @@ border: 0;
  
 }
 
-.Pattern{
+.Pattern {
     display: flex;
-    width: 100%;
     height: 43px;
     border-radius: 5px;
-    border: 1px solid #cccccc; 
-    margin-top: 15px;
-  
+    border: 1px solid #cccccc;
+    margin: 5px;
+    position: relative;
 }
 
 .PrintDescription{
     padding: 12px 0 0 12px;
 }
 
-#organisationAligment{
-    margin-top: 40px;
+.organisationAligment{
 }
 
 #orgTextAligment{
@@ -125,7 +121,6 @@ border: 0;
 }
 
 #manageButtons{
-    margin-top: 20%;
 }
 
 .butttonTextStyle{
@@ -154,14 +149,17 @@ letter-spacing: 0.75px;
 
 .DeleteButton{
     border: 0;
-
     background-color: white;
     cursor: pointer;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 
 /* свойства модального окна по умолчанию */
-.modal {
+.users-modal {
     position: fixed; /* фиксированное положение */
     top: 0;
     right: 0;
@@ -176,12 +174,14 @@ letter-spacing: 0.75px;
     pointer-events: none; /* элемент невидим для событий мыши */
     margin: 0;
     padding: 0;
+    z-index: -1;
 }
     /* при отображении модального окно */
-    .modal:target {
+    .users-modal:target {
         opacity: 1; /* делаем окно видимым */
         pointer-events: auto; /* элемент видим для событий мыши */
         overflow-y: auto; /* добавляем прокрутку по y, когда элемент не помещается на страницу */
+        z-index: 999;
     }
 /* ширина модального окна и его отступы от экрана */
 .modal-dialog {
@@ -297,12 +297,13 @@ letter-spacing: 0.75px;
     margin-left: 10px;
     border: 0;
     outline: 0;
+    width: 100%;
+    height: 96%;
 }
 
 .FindButton {
     border: 0;
     background: white;
-    margin-left: 43%;
     cursor: pointer;
 }
 
@@ -313,12 +314,23 @@ letter-spacing: 0.75px;
 
 .AddUserPrint {
     width: 198px;
-    height: 43px;
+    height: 38px;
+    background-color: #007bff;
+    border-color: #007bff;
     border-radius: 5px;
-    background-color: #00aeef;
-    border: 0;
     text-decoration: none;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
+
+    .AddUserPrint:hover {
+        color: #fff;
+        text-decoration: none;
+        background-color: #0069d9;
+        border-color: #0062cc;
+    }
 
 td {
     text-align: center;
@@ -340,5 +352,60 @@ td {
     background: none;
 }
 
+.input-users-wrap {
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 26px;
+    margin-bottom: 10px;
+}
 
-    
+.photo {
+    height: 200px;
+    border: 2px solid gray;
+    border-radius: 5px;
+    padding: 1px;
+}
+
+#photosForPrint {
+    min-height: 100px;
+    border: 1px solid gray;
+    border-radius: 5px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#acceptedUsers {
+    border: 1px solid gray;
+    min-height: 35px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+#acceptedTemplates {
+    border: 1px solid gray;
+    min-height: 35px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+#patternAligment {
+    margin-bottom: 10px;
+}
+
+.photo-wrap {
+    position: relative;
+    width: max-content;
+    margin: 10px;
+    display: inline-block;
+}
+
+.photo-delete {
+    position: absolute;
+    width: 30px;
+    right: 9px;
+    top: 10px;
+    background: #007bff;
+    padding: 4px;
+    border-radius: 13px;
+    cursor: pointer;
+}

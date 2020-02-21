@@ -228,6 +228,14 @@
     <Compile Include="Migrations\202002161153043_Pohuy3.designer.cs">
       <DependentUpon>202002161153043_Pohuy3.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202002211800597_addKefs.cs" />
+    <Compile Include="Migrations\202002211800597_addKefs.designer.cs">
+      <DependentUpon>202002211800597_addKefs.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002211820207_removeKefs.cs" />
+    <Compile Include="Migrations\202002211820207_removeKefs.designer.cs">
+      <DependentUpon>202002211820207_removeKefs.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AutModel.cs" />
     <Compile Include="Models\CompanyModel.cs" />
@@ -348,15 +356,15 @@
     <Content Include="Scripts\esm\popper.js" />
     <Content Include="Scripts\esm\popper.min.js" />
     <Content Include="Scripts\html2canvas.js" />
+    <Content Include="Scripts\bootstrap.min.js.map" />
+    <Content Include="Scripts\bootstrap.js.map" />
+    <Content Include="Scripts\bootstrap.bundle.min.js.map" />
+    <Content Include="Scripts\bootstrap.bundle.js.map" />
     <Content Include="Scripts\index.js.flow" />
     <Content Include="Scripts\esm\popper.min.js.map" />
     <Content Include="Scripts\esm\popper.js.map" />
     <Content Include="Scripts\esm\popper-utils.min.js.map" />
     <Content Include="Scripts\esm\popper-utils.js.map" />
-    <Content Include="Scripts\bootstrap.min.js.map" />
-    <Content Include="Scripts\bootstrap.js.map" />
-    <Content Include="Scripts\bootstrap.bundle.min.js.map" />
-    <Content Include="Scripts\bootstrap.bundle.js.map" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\HomeScripts.js" />
     <Content Include="Scripts\jcfilter.js" />
@@ -465,6 +473,7 @@
     <Content Include="Views\Pattern\EditorPattern.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Pattern\FindUsersParital.cshtml" />
+    <Content Include="Views\Pattern\PrintParital.cshtml" />
     <Content Include="Scripts\umd\popper.min.js.map" />
     <Content Include="Scripts\umd\popper.js.map" />
     <Content Include="Scripts\umd\popper.js.flow" />
@@ -475,7 +484,6 @@
     <Content Include="Scripts\popper.js.map" />
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
-    <Content Include="Views\Pattern\PrintParital.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -510,12 +518,18 @@
     <EmbeddedResource Include="Migrations\202002161153043_Pohuy3.resx">
       <DependentUpon>202002161153043_Pohuy3.cs</DependentUpon>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <TypeScriptCompile Include="Scripts\index.d.ts" />
+    <EmbeddedResource Include="Migrations\202002211800597_addKefs.resx">
+      <DependentUpon>202002211800597_addKefs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002211820207_removeKefs.resx">
+      <DependentUpon>202002211820207_removeKefs.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="Scripts\index.d.ts" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

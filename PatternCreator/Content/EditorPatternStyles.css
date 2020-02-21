@@ -95,8 +95,10 @@ justify-content: center;
     border: 0;
     margin-left: 10px;
     cursor: pointer;
-    display: flex;
     justify-content: space-around;
+    position: relative;
+    display: flex;
+    align-items: center;
 }
 
 .greyButton{
@@ -106,18 +108,17 @@ justify-content: center;
     border: 2px solid #d7d7d7;
     background-color: #ffffff;
     margin-left: 10px;
-
+    position: relative;
 }
 
-.findButton{
+.findButton {
     width: 417px;
-
-border-radius: 5px;
-border: 2px solid #00aeef;
-margin-left: 10px;
-cursor: pointer;
-display: flex;
-
+    height: 41px;
+    border-radius: 5px;
+    border: 2px solid #00aeef;
+    margin-left: 10px;
+    cursor: pointer;
+    display: flex;
 }
 
 .findIcon{
@@ -145,8 +146,6 @@ letter-spacing: 0.75px;
     font-family: "Open Sans";
     font-size: 17px;
     font-weight: 400;
-    padding: 10px 0 0 0;
-
 }
 
 .greyButtonText{
@@ -158,26 +157,24 @@ font-weight: 400;
 }
 
 .AddPatternImg {
-    width: 25px;
-    height: 19px;
-    padding: 10px 0px 0px 0px;
+    position: absolute;
+    right: 9px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
 }
 
-.DeletePatternImg{
+.DeletePatternImg {
     position: absolute;
-    width: 25px;
-height: 19px;
-margin-left: 2%;
+    width: 20px;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 
 #patternsContain{
-
     margin-top: 20px;
-    display: flex;
-    justify-content: center;
-    margin-top: 40px;
-
 }
 
 .patternRectangle {
@@ -188,7 +185,8 @@ margin-left: 2%;
     border-radius: 5px;
     border: 2px solid #d7d7d7;
     background-color: #ffffff;
-    margin-left: 25px;
+    float: left;
+    margin: 15px;
 }
 
 .patternBut{
@@ -199,12 +197,12 @@ margin-left: 2%;
 }
 
 .imgStyle {
-    width: 265px;
+    /*width: 265px;*/
     height: 200px;
 }
 
 
-.modal {
+.update-picture-modal {
     position: fixed; /* фиксированное положение */
     top: 0;
     right: 0;
@@ -219,13 +217,15 @@ margin-left: 2%;
     pointer-events: none; /* элемент невидим для событий мыши */
     margin: 0;
     padding: 0;
+    display: none;
 }
 /* при отображении модального окно */
-.modal:target {
-    opacity: 1; /* делаем окно видимым */
-	  pointer-events: auto; /* элемент видим для событий мыши */
-    overflow-y: auto; /* добавляем прокрутку по y, когда элемент не помещается на страницу */
-}
+    .update-picture-modal:target {
+        opacity: 1; /* делаем окно видимым */
+        pointer-events: auto; /* элемент видим для событий мыши */
+        overflow-y: auto; /* добавляем прокрутку по y, когда элемент не помещается на страницу */
+        display: block;
+    }
 /* ширина модального окна и его отступы от экрана */
 .modal-dialog {
     position: relative;
@@ -487,14 +487,15 @@ height: 22px;
 }
 .draggable-text {
     background: transparent;
-    height: 1.1em;
+    height: 1.8em;
     border: 2px solid transparent;
     border-radius: 0 6px 6px 6px;
     min-width: 185px;
     max-width: 730px;
-    padding: 6px;
+    padding: 4px;
     resize: none;
     outline: 0;
+    overflow: hidden;
 }
 
 .draggable-div.block-visible .draggable-text {
@@ -514,7 +515,7 @@ height: 22px;
 .hint-svg {
     position: absolute;
     right: 0;
-    width: 15px;
+    width: 25px;
     background: #00aeef;
     border-radius: 50%;
     padding: 3px;

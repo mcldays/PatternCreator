@@ -68,12 +68,6 @@ $(document).on("click", ".greyButton", function () {
     $(".patternRectangle").find("#link").after(block);
 
     $(".deleteContain").fadeIn("slow");
-
-
-
-
-
-
 });
 
 
@@ -86,23 +80,23 @@ $("body").on("click",
         $(".deleteContain").hide("slow", function() {
             $(".deleteContain").remove();
         });
-            
-        
-
 });
 
 
-
-
-$(document).on("click", ".draggable-text", function (e) {
-    let elem = $(e.target);
-    elem.parent().addClass("block-visible");
-    $(".draggable-text").removeAttr("readonly");
-})
+$(document).on("click",
+    ".draggable-text",
+    function(e) {
+        let elem = $(e.target);
+        elem.parent().addClass("block-visible");
+        $(".draggable-text").removeAttr("readonly");
+    });
 
 $(".save").on("click", function () {
+    let img = $(this).parent().parent().find(".imgModalStyle")[0];
+    let kefX = img.naturalWidth / img.width;
+    let kefY = img.naturalHeight / img.height;
     let bounds = $(this).parent().parent().find(".draggable-div").toArray().map(elem => {
-        return [elem.offsetLeft, elem.offsetTop, elem.offsetWidth, elem.parentElement.getAttribute("picture-id"), elem.getAttribute("position-id"), $(elem).find(".hint-data-type").val()];
+        return [(elem.offsetLeft + 2) * kefX, (elem.offsetTop + 20) * kefY, (elem.offsetWidth - 4) * kefX, elem.parentElement.getAttribute("picture-id"), elem.getAttribute("position-id"), $(elem).find(".hint-data-type").val()];
     }); 
     $.ajax({
         url: "../Pattern/SetBlocks",
@@ -111,30 +105,6 @@ $(".save").on("click", function () {
     });
 });
 
-let positions = $("#positions div").toArray();
-let dataPositions;
-for (var i in positions) {
-    //dataPositions.push({
-    //    id: block.getAttribute("position-id"),
-    //    posX: block.getAttribute("position-x"),
-    //    posY: block.getAttribute("position-y"),
-    //    width: block.getAttribute("position-width"),
-    //    picId: block.getAttribute("picture-id")
-    //});
-    let block = positions[i];
-    let blockHtml = $("<div class='draggable-div block-visible'><div class='draggable-hint'><div class='hint-left'><select class='hint-data-type'><option>Имя</option><option>Фамилия</option><option>Отчество</option><option>Статичный текст</option></select></div><img draggable='false' class='hint-svg block-move-svg' src='../Resourses/svg/move-white.svg'/><img draggable='false' class='hint-svg block-delete-svg' src='../Resourses/svg/delete-white.svg'/></div><textarea class='draggable-text'/></div>");
-    
-    blockHtml.find(".draggable-text").css("width", block.getAttribute("position-width"));
-    blockHtml.attr("position-id", block.getAttribute("position-id"));
-    $(".img-wrap[picture-id='" + block.getAttribute("picture-id") + "']").append(blockHtml);
-    blockHtml.draggable({
-        containment: blockHtml.parent(),
-        handle: "img.block-move-svg"
-    });
-    blockHtml.css("left", block.getAttribute("position-x") + "px");
-    blockHtml.css("top", block.getAttribute("position-y") + "px");
-    blockHtml.find(".hint-data-type").val(block.getAttribute("Type"));
-}
 
 
 $(document).on("click",
@@ -152,3 +122,68 @@ $(document).on("click",
 
     });
 
+
+//$(".imgModalStyle").ready(() => {
+//    let positions = $("#positions div").toArray();
+//    let dataPositions;
+//    for (var i in positions) {
+//        //dataPositions.push({
+//        //    id: block.getAttribute("position-id"),
+//        //    posX: block.getAttribute("position-x"),
+//        //    posY: block.getAttribute("position-y"),
+//        //    width: block.getAttribute("position-width"),
+//        //    picId: block.getAttribute("picture-id")
+//        //});
+//        let block = positions[i];
+//        let blockHtml = $("<div class='draggable-div block-visible'><div class='draggable-hint'><div class='hint-left'><select class='hint-data-type'><option>Имя</option><option>Фамилия</option><option>Отчество</option><option>Статичный текст</option></select></div><img draggable='false' class='hint-svg block-move-svg' src='../Resourses/svg/move-white.svg'/><img draggable='false' class='hint-svg block-delete-svg' src='../Resourses/svg/delete-white.svg'/></div><textarea class='draggable-text'/></div>");
+
+//        blockHtml.find(".draggable-text").css("width", block.getAttribute("position-width"));
+//        blockHtml.attr("position-id", block.getAttribute("position-id"));
+//        $(".img-wrap[picture-id='" + block.getAttribute("picture-id") + "']").append(blockHtml);
+//        blockHtml.draggable({
+//            containment: blockHtml.parent(),
+//            handle: "img.block-move-svg"
+//        });
+//        let img = $(".img-wrap[picture-id='" + block.getAttribute("picture-id") + "']").find('.imgModalStyle')[0];
+//        if (img) {
+//            let kefX = img.naturalWidth / img.width;
+//            let kefY = img.naturalHeight / img.height;
+//            blockHtml.css("left", Math.round(block.getAttribute("position-x").replace(/,/, '.') / kefX - 2) + "px");
+//            blockHtml.css("top", Math.round(block.getAttribute("position-y").replace(/,/, '.') / kefY - 20) + "px");
+//            blockHtml.css("width", Math.round(block.getAttribute("position-width").replace(/,/, '.') / kefX + 4) + "px");
+//            blockHtml.find(".hint-data-type").val(block.getAttribute("Type"));
+//        }
+
+//    }
+//});
+
+$(document).on("click", ".patternBut", function () {
+    let id = $(this).attr("pictureid");
+
+    if ($(".img-wrap[picture-id='" + id + "']").find("draggable-div").length == 0) {
+        setTimeout(() => {
+            let positions = $(`[position-id][picture-id='${id}']`).toArray();
+            for (let i in positions) {
+                let block = positions[i];
+                let blockHtml = $("<div class='draggable-div block-visible'><div class='draggable-hint'><div class='hint-left'><select class='hint-data-type'><option>Имя</option><option>Фамилия</option><option>Отчество</option><option>Статичный текст</option></select></div><img draggable='false' class='hint-svg block-move-svg' src='../Resourses/svg/move-white.svg'/><img draggable='false' class='hint-svg block-delete-svg' src='../Resourses/svg/delete-white.svg'/></div><textarea class='draggable-text'/></div>");
+                blockHtml.find(".draggable-text").css("width", block.getAttribute("position-width"));
+                blockHtml.attr("position-id", block.getAttribute("position-id"));
+                $(".img-wrap[picture-id='" + block.getAttribute("picture-id") + "']").append(blockHtml);
+                blockHtml.draggable({
+                    containment: blockHtml.parent(),
+                    handle: "img.block-move-svg"
+                });
+                let img = $(".img-wrap[picture-id='" + block.getAttribute("picture-id") + "']").find('.imgModalStyle')[0];
+                if (img) {
+                    let kefX = img.naturalWidth / img.width;
+                    let kefY = img.naturalHeight / img.height;
+                    blockHtml.css("left", Math.round(block.getAttribute("position-x").replace(/,/, '.') / kefX - 2) + "px");
+                    blockHtml.css("top", Math.round(block.getAttribute("position-y").replace(/,/, '.') / kefY - 20) + "px");
+                    blockHtml.css("width", Math.round(block.getAttribute("position-width").replace(/,/, '.') / kefX + 4) + "px");
+                    blockHtml.find(".hint-data-type").val(block.getAttribute("Type"));
+                }
+            }
+        },1000);
+    }
+    
+});

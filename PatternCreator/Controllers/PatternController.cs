@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity.Migrations;
-using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Microsoft.Ajax.Utilities;
 using Newtonsoft.Json;
 using PatternCreator.Models;
 using PatternCreator.Utilities;
@@ -18,40 +16,26 @@ namespace PatternCreator.Controllers
         // GET: Pattern
         public ActionResult MainPage(AutModel model)
         {
-            if (Utilities.SendDbUtility.verifyAutefication(model) == true)
-            {
-                return RedirectToAction("Home", "Pattern");
-            }
+            if (SendDbUtility.verifyAutefication(model)) return RedirectToAction("Home", "Pattern");
 
 
-        return View();
+            return View();
         }
 
         public ActionResult Home()
         {
-           
-            var models = Utilities.SendDbUtility.GelAllCompanyList();
-            List<SelectListItem> items = new List<SelectListItem>();
+            var models = SendDbUtility.GelAllCompanyList();
+            var items = new List<SelectListItem>();
 
             foreach (var company in models)
-            {
-              
-
-                items.Add(new SelectListItem { Text = company.CompanyName, Value = company.Id.ToString() });
-
-            }
-
-
+                items.Add(new SelectListItem {Text = company.CompanyName, Value = company.Id.ToString()});
 
             ViewBag.CompanyName = items;
-           
 
-
-            object[] x = new object[]
+            object[] x =
             {
-                new CompanyModel(), 
-                new UserModel(), 
-                
+                new CompanyModel(),
+                new UserModel()
             };
 
             return View(x);
@@ -59,59 +43,44 @@ namespace PatternCreator.Controllers
 
         public ActionResult PrintPage()
         {
-
             var modelsPic = SendDbUtility.GetAllPictures();
             var modelsCom = SendDbUtility.GelAllCompanyList();
-        
-         
-            
-           
-                SelectList itemsPic = new SelectList(modelsPic, "Id", "Name");
-               SelectList itemsCom = new SelectList(modelsCom, "Id", "CompanyName");
 
+            //SelectList itemsPic = new SelectList(modelsPic, "Id", "Name");
+            //SelectList itemsCom = new SelectList(modelsCom, "Id", "CompanyName");
+            ViewBag.Pictures = modelsPic;
+            ViewBag.Companies = modelsCom;
 
-
-
-
-
-            ViewBag.Pictures = itemsPic;
-            ViewBag.Companyes = itemsCom;
-
-
-            object[] x = new object[]
+            object[] x =
             {
                 new CompanyModel(),
                 new UserModel(),
-                new PictureModel(), 
-               
-
+                new PictureModel()
             };
-
-
-
-
 
             return View(x);
         }
 
         public ActionResult EditorPattern()
         {
-
-            using (UserContext dbUse = new UserContext())
+            using (var dbUse = new UserContext())
             {
-                var model = dbUse.PicturesModels.ToList<PictureModel>();
-                var positions = dbUse.PositionModels.ToList();
-                var list = new object[]
+                try
                 {
-                    model,
-                    positions
-                };
-
-
-
-                return View(list);
+                    var model = dbUse.PicturesModels.ToList();
+                    var positions = dbUse.PositionModels.ToList();
+                    var list = new object[]
+                    {
+                        model,
+                        positions
+                    };
+                    return View(list);
+                }
+                catch (Exception e)
+                {
+                    return View(new object[] {new List<PictureModel>(), new List<PositionModel>()});
+                }
             }
-
         }
 
 
@@ -120,14 +89,14 @@ namespace PatternCreator.Controllers
             SendDbUtility.sendCompanyModel(CompanyName);
 
 
-            return RedirectToAction("Home",  "Pattern");
+            return RedirectToAction("Home", "Pattern");
         }
 
 
         public ActionResult UserToDb(UserModel model, string CompanyName)
         {
             model.CompanyId = int.Parse(CompanyName);
-            Utilities.SendDbUtility.SendUserToDb(model);
+            SendDbUtility.SendUserToDb(model);
 
             return RedirectToAction("Home", "Pattern");
         }
@@ -136,7 +105,7 @@ namespace PatternCreator.Controllers
         {
             SendDbUtility.DeleteAllUsersInCompany(id);
             SendDbUtility.DeleteCompany(id);
-            
+
             return true;
         }
 
@@ -149,19 +118,16 @@ namespace PatternCreator.Controllers
 
         public ActionResult SaveUser(UserModel model)
         {
-            Utilities.SendDbUtility.UpdateUser(model);
+            SendDbUtility.UpdateUser(model);
 
 
             return RedirectToAction("Home", "Pattern");
         }
 
 
-
         public ActionResult SaveCompany(CompanyModel model)
         {
-
-            Utilities.SendDbUtility.SaveCompany(model);
-
+            SendDbUtility.SaveCompany(model);
 
 
             return RedirectToAction("Home", "Pattern");
@@ -169,19 +135,17 @@ namespace PatternCreator.Controllers
 
         public ActionResult FindUsersParital(string name)
         {
-            using (UserContext dbUse= new UserContext())
+            using (var dbUse = new UserContext())
             {
-               var data= dbUse.UserModels.Where(t => t.Name == name).ToList<UserModel>();
-               return PartialView(data);
+                var data = dbUse.UserModels.Where(t => t.Name == name).ToList();
+                return PartialView(data);
             }
-
-
         }
 
 
         public bool EditUserParital(int userId, string Name, string Surname, string Patronymic, int CompanyId)
         {
-            UserModel model = new UserModel()
+            var model = new UserModel
             {
                 Id = userId,
                 CompanyId = CompanyId,
@@ -190,39 +154,35 @@ namespace PatternCreator.Controllers
                 Patronymic = Patronymic
             };
 
-            using (UserContext dbUse = new UserContext()) 
+            using (var dbUse = new UserContext())
             {
                 dbUse.UserModels.AddOrUpdate(model);
                 dbUse.SaveChanges();
             }
 
 
-
             return true;
         }
 
 
-
         [HttpPost]
-        public ActionResult Create(PictureModel pic, HttpPostedFileBase uploadImage)
+        public ActionResult Create(HttpPostedFileBase uploadImage)
         {
             if (ModelState.IsValid && uploadImage != null)
             {
                 byte[] imageData = null;
-              
+
                 using (var binaryReader = new BinaryReader(uploadImage.InputStream))
                 {
                     imageData = binaryReader.ReadBytes(uploadImage.ContentLength);
                 }
-             
-                pic.Image = imageData;
 
                 var Name = uploadImage.FileName.Split('.')[0];
 
 
-                using (UserContext dbUse = new UserContext())
+                using (var dbUse = new UserContext())
                 {
-                    dbUse.PicturesModels.Add(new PictureModel()
+                    dbUse.PicturesModels.Add(new PictureModel
                     {
                         Image = imageData,
                         Name = Name
@@ -235,7 +195,6 @@ namespace PatternCreator.Controllers
             }
 
             return View(false);
-
         }
 
 
@@ -246,44 +205,41 @@ namespace PatternCreator.Controllers
             using (var dbUse = new UserContext())
             {
                 foreach (var block in a)
-                {
                     try
                     {
                         var id = int.Parse(block[4]);
-                        dbUse.PositionModels.AddOrUpdate(new PositionModel()
+                        dbUse.PositionModels.AddOrUpdate(new PositionModel
                         {
                             Id = id,
                             PictureId = int.Parse(block[3]),
-                            PosX = double.Parse(block[0]),
-                            PosY = double.Parse(block[1]),
-                            Width = double.Parse(block[2]),
+                            PosX = double.Parse(block[0].Replace('.', ',')),
+                            PosY = double.Parse(block[1].Replace('.', ',')),
+                            Width = double.Parse(block[2].Replace('.', ',')),
                             Type = block[5]
                         });
                     }
                     catch (Exception e)
                     {
-                        dbUse.PositionModels.AddOrUpdate(new PositionModel()
+                        dbUse.PositionModels.AddOrUpdate(new PositionModel
                         {
                             PictureId = int.Parse(block[3]),
-                            PosX = double.Parse(block[0]),
-                            PosY = double.Parse(block[1]),
-                            Width = double.Parse(block[2]),
+                            PosX = double.Parse(block[0].Replace('.', ',')),
+                            PosY = double.Parse(block[1].Replace('.', ',')),
+                            Width = double.Parse(block[2].Replace('.', ',')),
                             Type = block[5]
                         });
-
                     }
-                    
-                    
-                }
+
                 dbUse.SaveChanges();
             }
+
             return true;
         }
 
 
         public bool DeletePicture(string pictureID)
         {
-            using (UserContext dbUse = new UserContext())
+            using (var dbUse = new UserContext())
             {
                 var intID = int.Parse(pictureID);
 
@@ -292,8 +248,6 @@ namespace PatternCreator.Controllers
                 dbUse.SaveChanges();
                 return true;
             }
-
-
         }
 
 
@@ -305,16 +259,14 @@ namespace PatternCreator.Controllers
         }
 
 
-
         public ActionResult PrintParital(string name)
         {
-            using (UserContext dbUse = new UserContext())
+            using (var dbUse = new UserContext())
             {
-                var data = dbUse.UserModels.Where(t => t.Name == name).ToList<UserModel>();
+                var data = dbUse.UserModels.Where(t =>
+                    t.Name.Contains(name) || t.Surname.Contains(name) || t.Patronymic.Contains(name)).ToList();
                 return PartialView(data);
             }
-
-
         }
     }
 }

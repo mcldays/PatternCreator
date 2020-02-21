@@ -30,6 +30,7 @@ namespace PatternCreator
 
             //Layout
             bundles.Add(new StyleBundle("~/bundles/Layout-css").Include(
+                "~/Content/bootstrap.css",
                 "~/Content/LayoutStyles.css",
                 "~/Content/stylePreload.css"
             ));
@@ -38,6 +39,8 @@ namespace PatternCreator
                 "~/Scripts/jquery-ui-1.12.1.min.js",
                 "~/Scripts/jquery.validate*",
                 "~/Scripts/jquery.unobtrusive-ajax.js",
+                "~/Scripts/umd/popper.js",
+                "~/Scripts/bootstrap.js",
                 "~/Scripts/preloader.js"
                 
             ));
