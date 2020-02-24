@@ -208,9 +208,17 @@
 
             $("#PrintBut").click(() => {
 
-                var images = document.getElementById("photosForPrint").getElementsByClassName('photo');
 
-                printJS({ printable: [$(images[0]).attr("src"), $(images[1]).attr("src"), $(images[2]).attr("src")], type: 'image', imageStyle:'margin:auto; width:100%'});
+                var images = $(document.getElementById("photosForPrint").getElementsByClassName('photo'));
+                var buffer = [];
+
+                for (var i = 0; i < images.length; i++) {
+
+                    buffer[i] = $(images[i]).attr('src');
+                }
+
+
+                printJS({ printable: buffer, type: 'image', imageStyle:'margin:auto; width:100%'});
 
 
 
