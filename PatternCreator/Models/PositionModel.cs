@@ -16,5 +16,6 @@ namespace PatternCreator.Models
         public double Width { get; set; }
 
         public string Type { get; set; }
+        public int FontSize { get; set; }
     }
 }

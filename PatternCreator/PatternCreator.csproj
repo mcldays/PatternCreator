@@ -236,11 +236,16 @@
     <Compile Include="Migrations\202002211820207_removeKefs.designer.cs">
       <DependentUpon>202002211820207_removeKefs.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202002241321082_addFontSize.cs" />
+    <Compile Include="Migrations\202002241321082_addFontSize.designer.cs">
+      <DependentUpon>202002241321082_addFontSize.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AutModel.cs" />
     <Compile Include="Models\CompanyModel.cs" />
     <Compile Include="Models\PictureModel.cs" />
     <Compile Include="Models\PositionModel.cs" />
+    <Compile Include="Models\SetBlockModel.cs" />
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\ComputePhoto.cs" />
@@ -523,6 +528,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202002211820207_removeKefs.resx">
       <DependentUpon>202002211820207_removeKefs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002241321082_addFontSize.resx">
+      <DependentUpon>202002241321082_addFontSize.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
