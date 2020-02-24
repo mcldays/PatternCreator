@@ -201,36 +201,58 @@ namespace PatternCreator.Controllers
         [HttpPost]
         public bool SetBlocks(string data)
         {
-            var a = JsonConvert.DeserializeObject<List<List<string>>>(data);
+            var b = JsonConvert.DeserializeObject<SetBlockModel>(data);
+            var picId = Int32.Parse(b.picId);
+            List<List<string>> a;
+
+            a = b.bounds;
+            if (a.Count == 0)
+            {
+                using (var dbUse = new UserContext())
+                {
+                    dbUse.PositionModels.RemoveRange(dbUse.PositionModels.Where(t => t.PictureId == picId));
+                    dbUse.SaveChanges();
+                }
+
+                return false;
+            }
+
+
             using (var dbUse = new UserContext())
             {
+                dbUse.PositionModels.RemoveRange(dbUse.PositionModels.Where(t=>t.PictureId == picId));
                 foreach (var block in a)
+                {
                     try
                     {
                         var id = int.Parse(block[4]);
+                        
                         dbUse.PositionModels.AddOrUpdate(new PositionModel
                         {
                             Id = id,
-                            PictureId = int.Parse(block[3]),
+                            PictureId = picId,
                             PosX = double.Parse(block[0].Replace('.', ',')),
                             PosY = double.Parse(block[1].Replace('.', ',')),
                             Width = double.Parse(block[2].Replace('.', ',')),
-                            Type = block[5]
+                            Type = block[5],
+                            FontSize = int.Parse(block[6])
                         });
                     }
                     catch (Exception e)
                     {
                         dbUse.PositionModels.AddOrUpdate(new PositionModel
                         {
-                            PictureId = int.Parse(block[3]),
+                            PictureId = picId,
                             PosX = double.Parse(block[0].Replace('.', ',')),
                             PosY = double.Parse(block[1].Replace('.', ',')),
                             Width = double.Parse(block[2].Replace('.', ',')),
-                            Type = block[5]
+                            Type = block[5],
+                            FontSize = int.Parse(block[6])
                         });
                     }
 
-                dbUse.SaveChanges();
+                    dbUse.SaveChanges();
+                }
             }
 
             return true;

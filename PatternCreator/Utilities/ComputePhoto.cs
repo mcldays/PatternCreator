@@ -41,7 +41,7 @@ namespace PatternCreator.Utilities
                             break;
                     }
 
-                    g.DrawString(text, new Font("Tahoma", 20), Brushes.Black, rectf);
+                    g.DrawString(text, new Font("Tahoma", position.FontSize), Brushes.Black, rectf);
                 }
 
                 g.Flush();

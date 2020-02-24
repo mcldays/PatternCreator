@@ -490,7 +490,7 @@ height: 22px;
     height: 1.8em;
     border: 2px solid transparent;
     border-radius: 0 6px 6px 6px;
-    min-width: 185px;
+    min-width: 260px;
     max-width: 730px;
     padding: 4px;
     resize: none;
@@ -588,4 +588,15 @@ height: 22px;
 
 #link {
     margin: auto;
+}
+
+.hint-font-size {
+    width: 40px;
+    background: transparent;
+    border: 0;
+    color: white;
+}
+
+.hint-font-size:focus {
+    outline: none;
 }
