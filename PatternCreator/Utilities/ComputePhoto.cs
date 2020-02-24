@@ -45,6 +45,7 @@ namespace PatternCreator.Utilities
                 }
 
                 g.Flush();
+                
                 return ImageToByte(bmp2);
             }
         }
