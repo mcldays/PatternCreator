@@ -30,9 +30,6 @@ namespace PatternCreator.Controllers
         }
 
 
-        public bool TestList(string[] IdPic, string[] IdCom)
-        {
-            return true;
-        }
+      
     }
 }
