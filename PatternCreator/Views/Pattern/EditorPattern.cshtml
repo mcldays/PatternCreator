@@ -130,7 +130,7 @@
 <div id="positions" style="display: none;">
     @foreach (var block in (Model[1] as List<PositionModel>))
     {
-        <div position-id="@block.Id" position-x="@block.PosX" position-y="@block.PosY" position-width="@block.Width" picture-id="@block.PictureId" Type="@block.Type"></div>
+        <div position-id="@block.Id" position-x="@block.PosX" position-y="@block.PosY" position-width="@block.Width" picture-id="@block.PictureId" Type="@block.Type" font-size="@block.FontSize"></div>
     }
 
 </div>

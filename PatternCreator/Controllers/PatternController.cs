@@ -267,6 +267,7 @@ namespace PatternCreator.Controllers
 
                 var model = dbUse.PicturesModels.FirstOrDefault(t => t.Id == intID);
                 dbUse.PicturesModels.Remove(model);
+                dbUse.PositionModels.RemoveRange(dbUse.PositionModels.Where(t => t.PictureId == intID));
                 dbUse.SaveChanges();
                 return true;
             }

@@ -203,9 +203,16 @@ $(document).on("click", ".patternBut", function () {
                     blockHtml.css("top", Math.round(block.getAttribute("position-y").replace(/,/, '.') / kefY - 20) + "px");
                     blockHtml.find(".draggable-text").css("width", Math.round(block.getAttribute("position-width").replace(/,/, '.') / kefX + 4) + "px");
                     blockHtml.find(".hint-data-type").val(block.getAttribute("Type"));
+                    blockHtml.find(".hint-font-size").val(Math.round(block.getAttribute("font-size") / kefY));
+                    $(".hint-font-size").trigger("change");
                 }
             }
         },1000);
     }
     
 });
+
+
+$(document).on("change", ".hint-font-size", function () {
+    $(this).parent().parent().parent().find(".draggable-text").css("font-size", this.value + "px");
+})

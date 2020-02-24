@@ -24,7 +24,7 @@ namespace PatternCreator.Utilities
                 foreach (var position in positions)
                 {
                     var rectf = new RectangleF((float) position.PosX, (float) position.PosY,
-                        (float) position.Width, 20);
+                        (float) position.Width, position.FontSize + 6);
                     var text = "";
                     switch (position.Type)
                     {
