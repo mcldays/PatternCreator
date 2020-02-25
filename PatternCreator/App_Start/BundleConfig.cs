@@ -57,6 +57,23 @@ namespace PatternCreator
                
             ));
 
+            //Home
+            bundles.Add(new StyleBundle("~/bundles/Home-css").Include(
+                "~/Content/HomeStyles.css"));
+
+            bundles.Add(new ScriptBundle("~/bundles/Home-js").Include(
+                "~/Scripts/HomeScripts.js"
+            ));
+
+            //Print
+            bundles.Add(new StyleBundle("~/bundles/Print-css").Include(
+                "~/Content/print.min.css",
+                "~/Content/PrintPageStyles.css"));
+
+            bundles.Add(new ScriptBundle("~/bundles/Print-js").Include(
+                "~/Scripts/print.min.js"
+            ));
+
         }
     }
 }

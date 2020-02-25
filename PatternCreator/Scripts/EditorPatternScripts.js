@@ -23,7 +23,23 @@ $(document).on("click", ".block-delete-svg", function () {
 });
 $(".add-text").on("click", function() {
     let modelBlockOne = $(this).parent().parent();
-    let block = $("<div class='draggable-div block-visible'><div class='draggable-hint'><div class='hint-left'><select class='hint-data-type'><option>Имя</option><option>Фамилия</option><option>Отчество</option><option>Статичный текст</option></select></div><img draggable='false' class='hint-svg block-move-svg' src='../Resourses/svg/move-white.svg'/><img draggable='false' class='hint-svg block-delete-svg' src='../Resourses/svg/delete-white.svg'/></div><textarea class='draggable-text'/></div>");
+    let block = $(`
+                <div class='draggable-div block-visible'>
+                    <div class='draggable-hint'>
+                        <div class='hint-left'>
+                            <select class='hint-data-type'>
+                                <option>Имя</option>
+                                <option>Фамилия</option>
+                                <option>Отчество</option>
+                                <option>Статичный текст</option>
+                            </select>
+                            <input class='hint-font-size' type='number' min='12' max='72' value='16' />
+                        </div>
+                        <img draggable='false' class='hint-svg block-move-svg' src='../Resourses/svg/move-white.svg'/>
+                        <img draggable='false' class='hint-svg block-delete-svg' src='../Resourses/svg/delete-white.svg'/>
+                    </div>
+                    <textarea class='draggable-text'/>
+                </div>`);
     modelBlockOne.find(".img-wrap").append(block);
     block.draggable({
         containment: modelBlockOne.find(".img-wrap"),
@@ -39,8 +55,6 @@ $(".imgModalStyle").on("click", function(e) {
     }
 });
 
-
-
 $(document).on("click",
     ".deleteButton",
     function (e) {
@@ -49,24 +63,15 @@ $(document).on("click",
             data: { pictureID: $($(e.target).parents()[1]).find(".patternBut").attr("pictureID") },
             method: "POST",
             success: () => {
-
                 console.log(e.target);
                 $(e.target).parent().parent().remove();
             }
-
         });
-
-
-
-
     });
 
 $(document).on("click", ".greyButton", function () {
-
     let block = $(`<div style="display:none;" class="deleteContain"><button class="deleteButton"style="width:100%">Удалить</button></div>`);
-
     $(".patternRectangle").find("#link").after(block);
-
     $(".deleteContain").fadeIn("slow");
 });
 
@@ -76,7 +81,6 @@ $(document).on("click", ".greyButton", function () {
 
 $("body").on("click",
     function (e) {
-
         $(".deleteContain").hide("slow", function() {
             $(".deleteContain").remove();
         });
@@ -96,13 +100,14 @@ $(".save").on("click", function () {
     let kefX = img.naturalWidth / img.width;
     let kefY = img.naturalHeight / img.height;
     let bounds = $(this).parent().parent().find(".draggable-div").toArray().map(elem => {
-        return [((elem.offsetLeft + 2) * kefX).toString(),
-            ((elem.offsetTop + 20) * kefY).toString(),
+        return [((elem.offsetLeft + 6) * kefX).toString(),
+            ((elem.offsetTop + 29) * kefY).toString(),
             ((elem.offsetWidth - 4) * kefX).toString(),
             elem.parentElement.getAttribute("picture-id"),
             elem.getAttribute("position-id") || "null",
             $(elem).find(".hint-data-type").val(),
-            (elem.getElementsByClassName('hint-font-size')[0].value.split('px')[0]).toString()];
+            (elem.getElementsByClassName('hint-font-size')[0].value.split('px')[0] * kefY).toString(),
+            elem.getElementsByClassName('hint-font-size')[0].value.split('px')[0].toString()];
     }); 
     $.ajax({
         url: "../Pattern/SetBlocks",
@@ -199,11 +204,11 @@ $(document).on("click", ".patternBut", function () {
                 if (img) {
                     let kefX = img.naturalWidth / img.width;
                     let kefY = img.naturalHeight / img.height;
-                    blockHtml.css("left", Math.round(block.getAttribute("position-x").replace(/,/, '.') / kefX - 2) + "px");
-                    blockHtml.css("top", Math.round(block.getAttribute("position-y").replace(/,/, '.') / kefY - 20) + "px");
+                    blockHtml.css("left", Math.round(block.getAttribute("position-x").replace(/,/, '.') / kefX - 6) + "px");
+                    blockHtml.css("top", Math.round(block.getAttribute("position-y").replace(/,/, '.') / kefY - 29) + "px");
                     blockHtml.find(".draggable-text").css("width", Math.round(block.getAttribute("position-width").replace(/,/, '.') / kefX + 4) + "px");
                     blockHtml.find(".hint-data-type").val(block.getAttribute("Type"));
-                    blockHtml.find(".hint-font-size").val(block.getAttribute("font-size"));
+                    blockHtml.find(".hint-font-size").val(Math.round(block.getAttribute("font-size")));
                     $(".hint-font-size").trigger("change");
                 }
             }

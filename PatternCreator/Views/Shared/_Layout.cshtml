@@ -1,17 +1,12 @@
 ﻿@using System.Web.UI.WebControls
-
-@{
-    ViewBag.Title = "_Layout";
-}
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     @Styles.Render("~/bundles/Layout-css")
-    <title>Document</title>
+    <title>@ViewBag.Title</title>
 </head>
 <body>
 <div class="preloader" id="preloader-id">
@@ -26,21 +21,16 @@
 <div id="MainBlock">
     <div id="Header">
         <div id="ButtonsAligment">
-
-
             @using (Html.BeginForm("Home", "Pattern", FormMethod.Post))
             {
                 <button class="UserJob">
-
                     <span class="HeaderFonts">Работа с пользователями</span>
-
                 </button>
             }
             @using (Html.BeginForm("EditorPattern", "Pattern", FormMethod.Post))
             {
 
                 <button class="UserJob">
-
                     <span class="HeaderFonts">Работа с шаблонами </span>
                 </button>
             }
@@ -48,9 +38,7 @@
             @using (Html.BeginForm("PrintPage", "Pattern", FormMethod.Post))
             {
                 <button class="UserJob">
-
                     <span class="HeaderFonts">Печать</span>
-
                 </button>
             }
         </div>
@@ -59,6 +47,7 @@
     <hr>
     @RenderBody()
 </div>
+
 @Scripts.Render("~/bundles/Layout-js")
 @RenderSection("Scripts", false)
 

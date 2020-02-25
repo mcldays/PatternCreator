@@ -1,54 +1,37 @@
 ﻿@using PatternCreator.Models
 @model object[]
 
-
-
 @{
-    ViewBag.Title = "PrintPage";
+    ViewBag.Title = "Вывод на печать";
 }
+@Styles.Render("~/bundles/Print-css")
+<div id="BlockOne">
+    <div class="TextAligment">
+        <span class="PrintDescription">
+            Выберите необходимое количество шаблонов и человек / компаний, <br> для которых будет производиться печать:
+        </span>
+    </div>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" type="text/css" href="/Content/PrintPageStyles.css" />
-    <link rel="stylesheet" type="text/css" href="/Content/print.min.css" />
-    <script src="/Scripts/print.min.js"></script>
-    <title>Document</title>
-</head>
-<body>
+    <div class="chosePatternAligment">
 
-
-    
-        <div id="BlockOne">
-            <div class="TextAligment">
-                <span class="PrintDescription">
-                    Выберите необходимое количество шаблонов и человек / компаний, <br> для которых будет производиться печать:
-                </span>
+        <div id="patternAligment">
+            <div class="dropdown selectStyle">
+                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownTemplates" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Добавить шаблон
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownTemplates">
+                    @foreach (var template in ViewBag.Pictures as List<PictureModel>)
+                    {
+                        <button class="dropdown-item" type="button" template-id="@template.Id">@template.Name</button>
+                    }
+                </div>
             </div>
 
-            <div class="chosePatternAligment">
-
-                <div id="patternAligment">
-                    <div class="dropdown selectStyle">
-                        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownTemplates" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Добавить шаблон
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownTemplates">
-                            @foreach (var template in (ViewBag.Pictures as List<PictureModel>))
-                            {
-                                <button class="dropdown-item" type="button" template-id="@template.Id">@template.Name</button>
-                            }
-                        </div>
-                    </div>
-
-                    @*@Html.ListBox("Name", new List<SelectListItem>(ViewBag.Companyes), new {})*@
+            @*@Html.ListBox("Name", new List<SelectListItem>(ViewBag.Companyes), new {})*@
 
 
 
-                    @*<select class="selectStyle">
+            @*<select class="selectStyle">
             <option style="margin-left: 10px;" value="" disabled selected>Выберите шаблон</option>
             <option class="chosePattern">Шаблон 1</option>
             <option class="chosePattern">Шаблон 2</option>
@@ -57,192 +40,173 @@
             <option class="chosePattern">Шаблон 5</option>
         </select>*@
 
+        </div>
+        <span class="PrintDescription">Выбранные шаблоны:</span>
+        <div id="acceptedTemplates"></div>
+
+
+        <div class="input-users-wrap">
+            <div class="dropdown organisationAligment">
+                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownOgranization" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Добавить компанию
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownOgranization">
+                    @foreach (var company in ViewBag.Companies as List<CompanyModel>)
+                    {
+                        <button class="dropdown-item" type="button" company-id="@company.Id">@company.CompanyName</button>
+                    }
                 </div>
-                <span class="PrintDescription">Выбранные шаблоны:</span>
-                <div id="acceptedTemplates"></div>
+            </div>
 
+            <a href="#openModal" class="AddUserPrint">
+                <span>Добавить пользователя</span>
+            </a>
+        </div>
+        <span class="PrintDescription">Выбранные пользователи, организации:</span>
+        <div id="acceptedUsers"></div>
 
-                <div class="input-users-wrap">
-                    <div class="dropdown organisationAligment">
-                        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownOgranization" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Добавить компанию
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownOgranization">
-                            @foreach (var company in (ViewBag.Companies as List<CompanyModel>))
-                            {
-                                <button class="dropdown-item" type="button" company-id="@company.Id">@company.CompanyName</button>
-                            }
+        <div id="photosForPrint"></div>
+
+        <div id="manageButtons">
+            <button class="BlueButton" id="startProcessPhotos">
+                <span class="butttonTextStyle">Сопоставить</span>
+            </button>
+
+            <button class="BlueButton" id="PrintBut">
+                <span class="butttonTextStyle">Печать</span>
+            </button>
+            @*<button class="BlueButton">
+                <span class="butttonTextStyle">Сохранить в PDF</span>
+            </button>*@
+        </div>
+    </div>
+</div>
+<div id="openModal" class="users-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Добавить пользователя</h3>
+
+                <a href="#close" title="Close" class="close">×</a>
+            </div>
+            <div class="modal-body">
+                @using (Ajax.BeginForm("PrintParital", new AjaxOptions {UpdateTargetId = "results", OnSuccess = "OnSuccess"}))
+                {
+                    <div class="AddUserModal">
+                        <div class="FindUsersControl">
+                            <input type="text" name="name" class="ControlText" placeholder="Поиск по пользователям">
+                            <!-- <span class="ControlText">Поиск по пользователям</span> -->
+                            <button class="FindButton">
+                                <img src="/Resourses/svg/magnifying-glass (3).svg" class="AddUserImg">
+                            </button>
                         </div>
                     </div>
-
-                    <a href="#openModal" class="AddUserPrint">
-                        <span>Добавить пользователя</span>
-                    </a>
-                </div>
-                <span class="PrintDescription">Выбранные пользователи, организации:</span>
-                <div id="acceptedUsers"></div>
-                
-                <div id="photosForPrint"></div>
-
-                <div id="manageButtons">
-                    <button class="BlueButton" id="startProcessPhotos">
-                        <span class="butttonTextStyle">Сопоставить</span>
-                    </button>
-
-                    <button class="BlueButton" id="PrintBut">
-                        <span class="butttonTextStyle">Печать</span>
-                    </button>
-                    <button class="BlueButton">
-                        <span class="butttonTextStyle">Сохранить в PDF</span>
-                    </button>
-                </div>
+                }
+                <div id="results"></div>
             </div>
         </div>
-        <div id="openModal" class="users-modal">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3 class="modal-title">Добавить пользователя</h3>
+    </div>
+</div>
 
-                        <a href="#close" title="Close" class="close">×</a>
-                    </div>
-                    <div class="modal-body">
-                        @using (Ajax.BeginForm("PrintParital", new AjaxOptions { UpdateTargetId = "results", OnSuccess = "OnSuccess" }))
-                        {
-                            <div class="AddUserModal">
-                                <div class="FindUsersControl">
-                                    <input type="text" name="name" class="ControlText" placeholder="Поиск по пользователям">
-                                    <!-- <span class="ControlText">Поиск по пользователям</span> -->
-                                    <button class="FindButton">
-                                        <img src="/Resourses/svg/magnifying-glass (3).svg" class="AddUserImg">
-                                    </button>
-                                </div>
-                            </div>
-                        }
-                        <div id="results"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    
 @section Scripts{
-        <script>
-            function OnSuccess() {
+    @Scripts.Render("~/bundles/Print-js")
+    <script>
+        function OnSuccess() {
+            $("#TableTwoStyle").fadeIn();
+        }
 
-                $("#TableTwoStyle").fadeIn();
+        $(document).on("click",
+            ".DeleteButton",
+            function() {
+                $(this).parent().remove();
+            });
 
-            }
-
-            $(document).on("click",
-                ".DeleteButton",
-                function() {
-                    $(this).parent().remove();
-                });
-
-            $("button[template-id]").on("click",
-                function() {
-                    let tId = this.getAttribute('template-id');
-                    if (!$(".template").toArray().map(e => { return e.getAttribute('tId') }).includes(tId)) {
-                        let newTemplate = $(`<div class="Pattern template" tId=${tId}>
+        $("button[template-id]").on("click",
+            function() {
+                const tId = this.getAttribute('template-id');
+                if (!$(".template").toArray().map(e => { return e.getAttribute('tId') }).includes(tId)) {
+                    const newTemplate = $(`<div class="Pattern template" tId=${tId}>
                         <span class="PrintDescription">${this.innerText}</span>
                         <button class="DeleteButton">
                             <img src="/Resourses/svg/delete.svg" class="deleteImage">
                         </button>
                     </div>`);
-                        $("#acceptedTemplates").append(newTemplate);
-                    }
-                });
+                    $("#acceptedTemplates").append(newTemplate);
+                }
+            });
 
-            $("button[company-id]").on("click",
-                function() {
-                    let cId = this.getAttribute('company-id');
-                    if (!$(".company").toArray().map(e => { return e.getAttribute('cId') }).includes(cId)) {
-                        let newCompany = $(`<div class="Pattern company" cId=${cId}>
+        $("button[company-id]").on("click",
+            function() {
+                const cId = this.getAttribute('company-id');
+                if (!$(".company").toArray().map(e => { return e.getAttribute('cId') }).includes(cId)) {
+                    const newCompany = $(`<div class="Pattern company" cId=${cId}>
                         <span class="PrintDescription">${this.innerText}</span>
                         <button class="DeleteButton">
                             <img src="/Resourses/svg/delete.svg" class="deleteImage">
                         </button>
                     </div>`);
-                        $("#acceptedUsers").append(newCompany);
-                    }
-                });
+                    $("#acceptedUsers").append(newCompany);
+                }
+            });
 
-            $(document).on("click",
-                ".AddButton",
-                function() {
-                    let user = $(this).parent().parent().children();
-                    let uId = user[0].innerText;
-                    let allName = user[1].innerText + " " + user[2].innerText + " " + user[3].innerText;
-                    if (!$(".user").toArray().map(e => { return e.getAttribute('uId') }).includes(uId)) {
-                        let newUser = $(`<div class="Pattern user" uId=${uId}>
+        $(document).on("click",
+            ".AddButton",
+            function() {
+                const user = $(this).parent().parent().children();
+                const uId = user[0].innerText;
+                const allName = user[1].innerText + " " + user[2].innerText + " " + user[3].innerText;
+                if (!$(".user").toArray().map(e => { return e.getAttribute('uId') }).includes(uId)) {
+                    const newUser = $(`<div class="Pattern user" uId=${uId}>
                         <span class="PrintDescription">${allName}</span>
                         <button class="DeleteButton">
                             <img src="/Resourses/svg/delete.svg" class="deleteImage">
                         </button>
                     </div>`);
-                        $("#acceptedUsers").append(newUser);
-                    }
-                });
+                    $("#acceptedUsers").append(newUser);
+                }
+            });
 
-            $("#startProcessPhotos").on("click",
-                () => {
-                    $.ajax({
-                        url: "../Print/GetComputedPhotos",
-                        method: "POST",
-                        data: { data: JSON.stringify({
+        $("#startProcessPhotos").on("click",
+            () => {
+                $.ajax({
+                    url: "../Print/GetComputedPhotos",
+                    method: "POST",
+                    data: {
+                        data: JSON.stringify({
                             "users": $(".user").toArray().map(e => e.getAttribute("uId")),
                             "companies": $(".company").toArray().map(e => e.getAttribute("cId")),
                             "templates": $(".template").toArray().map(e => e.getAttribute("tId"))
                         })
-                        },
-                        success: (result) => {
-                            let photos = result.split("<separator>");
-                            for (let photo in photos) {
-                                $("#photosForPrint").append(`<div class='photo-wrap'><img class='photo' src="data:image/jpeg;base64,${photos[photo]}"/><img class='photo-delete' src='../Resourses/svg/delete-white.svg' /></div>`);
-                            }
-                            $("#preloader-id").addClass("done");
+                    },
+                    success: (result) => {
+                        const photos = result.split("<separator>");
+                        for (let photo in photos) {
+                            $("#photosForPrint")
+                                .append(
+                                    `<div class='photo-wrap'><img class='photo' src="data:image/jpeg;base64,${photos
+                                    [photo]
+                                    }"/><img class='photo-delete' src='../Resourses/svg/delete-white.svg' /></div>`);
                         }
-                    });
-                    $("#preloader-id").removeClass("done");
+                        $("#preloader-id").addClass("done");
+                    }
                 });
-
-            $("#PrintBut").click(() => {
-
-
-                var images = $(document.getElementById("photosForPrint").getElementsByClassName('photo'));
-                var buffer = [];
-
-                for (var i = 0; i < images.length; i++) {
-
-                    buffer[i] = $(images[i]).attr('src');
-                }
-
-
-                printJS({ printable: buffer, type: 'image', imageStyle:'margin:auto; width:100%'});
-
-
-
-
+                $("#preloader-id").removeClass("done");
             });
-           
-                   
 
+        $("#PrintBut").click(() => {
+            var images = $(document.getElementById("photosForPrint").getElementsByClassName('photo'));
+            var buffer = [];
+            for (let i = 0; i < images.length; i++) {
 
-              
-                
+                buffer[i] = $(images[i]).attr('src');
+            }
+            printJS({ printable: buffer, type: 'image', imageStyle: 'margin:auto; width:100%' });
+        });
 
-
-
-            $(document).on("click",
-                ".photo-delete",
-                function() {
-                    $(this).parent().remove();
-                });
-        </script>
+        $(document).on("click",
+            ".photo-delete",
+            function() {
+                $(this).parent().remove();
+            });
+    </script>
 }
-
-    
-
-</body>
-</html>
-

@@ -5,11 +5,8 @@
 @Styles.Render("~/bundles/EditorPattern-css")
 
 @{
-    ViewBag.Title = "EditorPattern";
+    ViewBag.Title = "Редактор шаблонов";
 }
-
-
-
 
 <div id=BlockOne>
     <div class="ButtonsContain">
@@ -30,15 +27,10 @@
         <div class="findButton">
             <input type="text" class="InputStyle" placeholder="Поиск по шаблонам">
             <button class="findIcon">
-                <img src="/Resourses/svg/zoom-in.svg" style=" width: 15px;
-                                      height: 15px;">
+                <img src="/Resourses/svg/zoom-in.svg" style=" width: 15px; height: 15px;">
             </button>
         </div>
-
-
-
     </div>
-
 
     <div id="patternsContain">
 
@@ -67,7 +59,6 @@
                             </div>
                             <div class="modal-body">
 
-
                                 <div class="modelContent">
                                     <div class="modelBlockOne">
                                         <div class="manageBlockModel">
@@ -75,14 +66,12 @@
                                                 @Html.Hidden("Id", item.Id)
                                                 <input type="text" name="Name" value="@item.Name" class="inputModelName">
                                             </div>
-
                                         </div>
 
                                         <div class="buttonsContainModal">
                                             <button type="button" class="blueButtonsModal add-text">
                                                 <span>Добавить текст</span>
                                             </button>
-
                                         </div>
 
                                         <div class="mainEditor">
@@ -90,21 +79,12 @@
                                                 @Html.Raw("<img class='imgModalStyle' src=\"data:image/jpeg;base64,"
                                                           + Convert.ToBase64String(item.Image) + "\" />")
                                             </div>
-
-
-
-                                            <div class="ZoomContain">
-
-
+                                            @*<div class="ZoomContain">
                                                 <button class="rectangleWhite">
                                                     <img src="/Resourses/icons8-restore-page-100.png" class="InzoomModal" />
                                                 </button>
-
-                                            </div>
-
-
+                                            </div>*@
                                         </div>
-
                                         <div class="saveButtonModal">
                                             <button class="blueButtonsModal save">
                                                 <span>Соханить</span>
@@ -112,7 +92,6 @@
 
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                         </div>
@@ -122,9 +101,6 @@
         </div>
         }
         </div>
-          
-
-
 
 </div>
 <div id="positions" style="display: none;">
@@ -137,8 +113,6 @@
 
 @section Scripts{
     @Scripts.Render("~/bundles/EditorPattern-js")
-    
-
 }
 
 

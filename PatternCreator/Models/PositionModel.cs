@@ -17,5 +17,6 @@ namespace PatternCreator.Models
 
         public string Type { get; set; }
         public int FontSize { get; set; }
+        public double Height { get; set; }
     }
 }

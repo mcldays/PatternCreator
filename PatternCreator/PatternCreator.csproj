@@ -240,6 +240,10 @@
     <Compile Include="Migrations\202002241321082_addFontSize.designer.cs">
       <DependentUpon>202002241321082_addFontSize.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202002251143109_addHeight.cs" />
+    <Compile Include="Migrations\202002251143109_addHeight.designer.cs">
+      <DependentUpon>202002251143109_addHeight.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AutModel.cs" />
     <Compile Include="Models\CompanyModel.cs" />
@@ -533,6 +537,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202002241321082_addFontSize.resx">
       <DependentUpon>202002241321082_addFontSize.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002251143109_addHeight.resx">
+      <DependentUpon>202002251143109_addHeight.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

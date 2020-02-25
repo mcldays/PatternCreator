@@ -12,9 +12,6 @@
     font-weight: normal;
 }
 
-
-
-
 #MainBlock {
     width: 65%;
     margin: auto;
@@ -499,14 +496,14 @@ body {
 }
 
 /* свойства модального окна по умолчанию */
-.modal {
+.modal-company {
     position: fixed; /* фиксированное положение */
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
     background: rgba(0,0,0,0.5); /* цвет фона */
-    z-index: 1050;
+    z-index: -1;
     opacity: 0; /* по умолчанию модальное окно прозрачно */
     -webkit-transition: opacity 200ms ease-in;
     -moz-transition: opacity 200ms ease-in;
@@ -516,10 +513,11 @@ body {
     padding: 0;
 }
     /* при отображении модального окно */
-    .modal:target {
+    .modal-company:target {
         opacity: 1; /* делаем окно видимым */
         pointer-events: auto; /* элемент видим для событий мыши */
         overflow-y: auto; /* добавляем прокрутку по y, когда элемент не помещается на страницу */
+        z-index: 1050;
     }
 /* ширина модального окна и его отступы от экрана */
 .modal-dialog {

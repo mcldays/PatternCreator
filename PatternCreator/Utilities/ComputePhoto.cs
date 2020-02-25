@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -24,7 +25,7 @@ namespace PatternCreator.Utilities
                 foreach (var position in positions)
                 {
                     var rectf = new RectangleF((float) position.PosX, (float) position.PosY,
-                        (float) position.Width, position.FontSize + 6);
+                        (float) position.Width, (float) position.Height);
                     var text = "";
                     switch (position.Type)
                     {
@@ -40,8 +41,12 @@ namespace PatternCreator.Utilities
                         case "Статичный текст":
                             break;
                     }
-
-                    g.DrawString(text, new Font("Tahoma", position.FontSize), Brushes.Black, rectf);
+                    //SolidBrush b = new SolidBrush(Color.Red);  //кисть для заливки
+                    //g.FillRectangle(b, rectf); //заполняю
+                    //b.Dispose();
+                    var format = new StringFormat();
+                    format.LineAlignment = StringAlignment.Center;
+                    g.DrawString(text, new Font("Tahoma", (float) position.Height-8, GraphicsUnit.Pixel), Brushes.Black, rectf, format);
                 }
 
                 g.Flush();

@@ -221,13 +221,13 @@ namespace PatternCreator.Controllers
             using (var dbUse = new UserContext())
             {
                 dbUse.PositionModels.RemoveRange(dbUse.PositionModels.Where(t=>t.PictureId == picId));
+                dbUse.SaveChanges();
                 foreach (var block in a)
                 {
-                    try
+                    PositionModel model;
+                    if (int.TryParse(block[4], out int id))
                     {
-                        var id = int.Parse(block[4]);
-                        
-                        dbUse.PositionModels.AddOrUpdate(new PositionModel
+                        model = new PositionModel()
                         {
                             Id = id,
                             PictureId = picId,
@@ -235,22 +235,25 @@ namespace PatternCreator.Controllers
                             PosY = double.Parse(block[1].Replace('.', ',')),
                             Width = double.Parse(block[2].Replace('.', ',')),
                             Type = block[5],
-                            FontSize = int.Parse(block[6])
-                        });
+                            FontSize = int.Parse(block[7]),
+                            Height = double.Parse(block[6].Replace('.', ','))
+                        };
                     }
-                    catch (Exception e)
+                    else
                     {
-                        dbUse.PositionModels.AddOrUpdate(new PositionModel
+                        model = new PositionModel()
                         {
                             PictureId = picId,
                             PosX = double.Parse(block[0].Replace('.', ',')),
                             PosY = double.Parse(block[1].Replace('.', ',')),
                             Width = double.Parse(block[2].Replace('.', ',')),
                             Type = block[5],
-                            FontSize = int.Parse(block[6])
-                        });
+                            FontSize = int.Parse(block[7]),
+                            Height = double.Parse(block[6].Replace('.', ','))
+                        };
                     }
 
+                    dbUse.PositionModels.AddOrUpdate(model);
                     dbUse.SaveChanges();
                 }
             }

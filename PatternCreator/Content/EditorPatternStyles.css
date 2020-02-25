@@ -393,18 +393,17 @@ margin-top: 20px;
 .mainEditor{
     margin-top: 20px;
     width: 740px;
-    height: 610px;
 }
 
 .imgModalStyle{
     width: 100%;
-    height: 100%;
+    /*height: 100%;*/
 }
 
-.saveButtonModal{
+.saveButtonModal {
     display: flex;
     justify-content: center;
-    margin-top: 50px;
+    margin-bottom: 20px;
 }
 
 .rectangleWhite{
@@ -470,14 +469,10 @@ height: 22px;
     top: 150px;
 }
 
-
-
-
-
 .img-wrap {
-    height: 100%;
     border: 1px solid gray;
     position: relative;
+    margin-bottom: 20px;
 }
 
 .draggable-div{
@@ -504,7 +499,7 @@ height: 22px;
 }
 
 .draggable-hint {
-    height: 100%;
+    height: 25px;
     position: relative;
     z-index: -1;
 }
