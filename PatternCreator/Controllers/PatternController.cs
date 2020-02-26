@@ -254,9 +254,12 @@ namespace PatternCreator.Controllers
                     }
 
                     dbUse.PositionModels.AddOrUpdate(model);
-                    dbUse.SaveChanges();
+                    
                 }
+                dbUse.SaveChanges();
             }
+
+            SendDbUtility.UpdateImage(int.Parse(b.Id), b.Name);
 
             return true;
         }

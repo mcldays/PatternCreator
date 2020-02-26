@@ -9,5 +9,7 @@ namespace PatternCreator.Models
     {
         public string picId { get; set; }
         public List<List<string>> bounds { get; set; }
+        public string Id { get; set; }
+        public string Name { get; set; }
     }
 }

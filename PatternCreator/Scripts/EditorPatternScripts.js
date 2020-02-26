@@ -107,12 +107,15 @@ $(".save").on("click", function () {
             elem.getAttribute("position-id") || "null",
             $(elem).find(".hint-data-type").val(),
             (elem.getElementsByClassName('hint-font-size')[0].value.split('px')[0] * kefY).toString(),
-            elem.getElementsByClassName('hint-font-size')[0].value.split('px')[0].toString()];
+            Math.round(elem.getElementsByClassName('hint-font-size')[0].value.split('px')[0] * kefY).toString()];
     }); 
     $.ajax({
         url: "../Pattern/SetBlocks",
         method: "POST",
-        data: { data: JSON.stringify({"bounds": bounds, "picId":  $(img).parent().attr("picture-id")}) }
+        data: { data: JSON.stringify({ "bounds": bounds, "picId": $(img).parent().attr("picture-id"), "Id": $(img).parent().parent().parent().find("[name='Id']").val(), "Name": $(img).parent().parent().parent().find("[name='Name']").val() }) },
+        success: () => {
+            document.location = "../Pattern/EditorPattern";
+        }
     });
 });
 
@@ -192,7 +195,7 @@ $(document).on("click", ".patternBut", function () {
                         <img draggable='false' class='hint-svg block-move-svg' src='../Resourses/svg/move-white.svg'/>
                         <img draggable='false' class='hint-svg block-delete-svg' src='../Resourses/svg/delete-white.svg'/>
                     </div>
-                    <textarea class='draggable-text'/>
+                    <textarea class='draggable-text'>Текст</textarea>
                 </div>`);
                 blockHtml.attr("position-id", block.getAttribute("position-id"));
                 $(".img-wrap[picture-id='" + block.getAttribute("picture-id") + "']").append(blockHtml);
@@ -208,7 +211,7 @@ $(document).on("click", ".patternBut", function () {
                     blockHtml.css("top", Math.round(block.getAttribute("position-y").replace(/,/, '.') / kefY - 29) + "px");
                     blockHtml.find(".draggable-text").css("width", Math.round(block.getAttribute("position-width").replace(/,/, '.') / kefX + 4) + "px");
                     blockHtml.find(".hint-data-type").val(block.getAttribute("Type"));
-                    blockHtml.find(".hint-font-size").val(Math.round(block.getAttribute("font-size")));
+                    blockHtml.find(".hint-font-size").val(Math.round(block.getAttribute("font-size") / kefY));
                     $(".hint-font-size").trigger("change");
                 }
             }

@@ -8,9 +8,9 @@ $(document).ready(function() {
         let EditorContain = $(e.target).parents()[2].children[0].children[1];
         let button = $(e.target).parents()[2].children[0].children[2];
 
-        $(button).css("display", "none");
-        $(EditorContain).css("display", "flex");
-        $(span).css("display", "none");
+        //$(button).css("display", "none");
+        //$(EditorContain).css("display", "flex");
+        //$(span).css("display", "none");
 
     });
 

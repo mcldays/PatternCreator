@@ -71,34 +71,35 @@
             {
                 <div class="bufferDiv">
                     <div class="CompanyAligment">
-                        <div class="SaveAligment" style="width: 230px;">
-                            <span id="CompanyStyleEdit">@company.CompanyName</span>
-                            @using (Html.BeginForm("SaveCompany", "Pattern", FormMethod.Post, new {@class = "CompanyEditor"}))
-                            {
-                                @Html.EditorFor(model => (model[1] as CompanyModel).CompanyName, new {htmlAttributes = new {@class = "EditCompanyInput", PlaceHolder = "Имя коммпании"}})
+                        @using (Html.BeginForm("SaveCompany", "Pattern", FormMethod.Post, new { @class = "CompanyEditor" }))
+                        {
+                            <div class="SaveAligment" style="width: 230px; display: flex;">
+                                @*<span id="CompanyStyleEdit">@company.CompanyName</span>*@
+
+                                @*@Html.EditorFor(model => (model[1] as CompanyModel).CompanyName, new {htmlAttributes = new {@class = "EditCompanyInput", PlaceHolder = "Имя коммпании"}})*@
+                                <input class="EditCompanyInput" value="@company.CompanyName" name="CompanyName" />
                                 @Html.Hidden("Id", company.Id)
 
+                                
+
+                                <button type="button" class="closeTableBut" value="@company.Id">
+                                    <img src="/Resourses/svg/down-arrow (2).svg" style="height: 17px; width: 20px;" />
+                                </button>
+                                <!-- <img src="/Главная страница/svg/save-icon-silhouette.svg" class="SaveIconStyle"> -->
+                            </div>
+
+                            <div class="IconUtilitiesCompany">
+                                @*<button class="CompanyEdit">
+            <img src="/Resourses/svg/pencil-edit-button (2).svg" class="ManageIconStyleCompany">
+        </button>*@
                                 <button class='IconButtonsSave'>
                                     <img src='/Resourses/svg/save-file.svg' class='ManageIconStyle'>
                                 </button>
-                            }
-
-
-                            <button class="closeTableBut" value="@company.Id">
-                                <img src="/Resourses/svg/down-arrow (2).svg" style="height: 17px; width: 20px;"/>
-                            </button>
-                            <!-- <img src="/Главная страница/svg/save-icon-silhouette.svg" class="SaveIconStyle"> -->
-                        </div>
-
-                        <div class="IconUtilitiesCompany">
-                            <button class="CompanyEdit">
-                                <img src="/Resourses/svg/pencil-edit-button (2).svg" class="ManageIconStyleCompany">
-                            </button>
-
-                            <button class="CompanyDelete" value="@company.Id">
-                                <img src="/Resourses/svg/delete.svg" class="ManageIconStyleCompany">
-                            </button>
-                        </div>
+                                <button type="button" class="CompanyDelete" value="@company.Id">
+                                    <img src="/Resourses/svg/delete.svg" class="ManageIconStyleCompany">
+                                </button>
+                            </div>
+                        }
                     </div>
 
                     <table id="TableTwoStyle" value="@company.Id">
@@ -123,24 +124,34 @@
                                                 @VARIABLE.Id
                                             </td>
                                             <td>
-                                                <span>@VARIABLE.Name</span>
+                                                @*<span>@VARIABLE.Name</span>*@
                                                 @*<input type="text" class="EditCol" disabled>*@
-                                                @Html.EditorFor(model => (model[0] as UserModel).Name, new {htmlAttributes = new {@class = "EditCol", PlaceHolder = "Имя"}})
+                                                @*@Html.Editor(VARIABLE=>VARIABLE.Name, new {htmlAttributes = new {@class = "EditCol", PlaceHolder = "Имя"}})*@
+                                                <input class="EditCol" value="@VARIABLE.Name" name="Name"/>
                                             </td>
 
                                             <td>
-                                                <span>@VARIABLE.Surname</span>
+                                                @*<span>@VARIABLE.Surname</span>*@
                                                 @*<input type="text" class="EditCol" disabled>*@
-                                                @Html.EditorFor(model => (model[0] as UserModel).Surname, new {htmlAttributes = new {@class = "EditCol", PlaceHolder = "Фамилия*"}})
+                                                @*@Html.EditorFor(model => (model[0] as UserModel).Surname, new {htmlAttributes = new {@class = "EditCol", PlaceHolder = "Фамилия*"}})*@
+                                                <input class="EditCol" value="@VARIABLE.Surname" name="Surname" />
                                             </td>
                                             <td>
-                                                <span>@VARIABLE.Patronymic</span>
+                                                @*<span>@VARIABLE.Patronymic</span>*@
                                                 @*<input type="text" class="EditCol" disabled="disabled">*@
-                                                @Html.EditorFor(model => (model[0] as UserModel).Patronymic, new {htmlAttributes = new {@class = "EditCol", PlaceHolder = "Отчество*"}})
-
-                                                <button class='IconButtonsSaveUser'>
-                                                    <img src='/Resourses/svg/save-file.svg' class='ManageIconStyle'>
-                                                </button>
+                                                @*@Html.EditorFor(model => (model[0] as UserModel).Patronymic, new {htmlAttributes = new {@class = "EditCol", PlaceHolder = "Отчество*"}})*@
+                                                <input class="EditCol" value="@VARIABLE.Patronymic" name="Patronymic" />
+                                                
+                                            </td>
+                                            <td>
+                                                <div class='IconUtilities'>
+                                                    <button class='IconButtonsSaveUser'>
+                                                        <img src='/Resourses/svg/save-file.svg' class='ManageIconStyle'>
+                                                    </button>
+                                                    <button type="button" class='IconButtonsDelete'>
+                                                        <img src='/Resourses/svg/delete.svg' class='ManageIconStyle'>
+                                                    </button>
+                                                </div>
                                             </td>
 
                                             @Html.Hidden("CompanyId", VARIABLE.CompanyId)
@@ -251,60 +262,60 @@
             });
         });
 
-        $("tr.normalTr").hover(function() {
-            $(this).addClass("ColoredTr");
-            const block = $(`<div class='IconUtilities'>
-                <button class='IconButtonsEdit'>
-                    <img src='/Resourses/svg/pencil-edit-button (2).svg' class='ManageIconStyle'>
-                </button>
+        //$("tr.normalTr").hover(function() {
+        //    //$(this).addClass("ColoredTr");
+        //    //const block = $(`<div class='IconUtilities'>
+        //    //        <button class='IconButtonsDelete'>
+        //    //        <img src='/Resourses/svg/delete.svg' class='ManageIconStyle'>
+        //    //    </button>
+        //    //</div>`);
 
-                <button class='IconButtonsDelete'>
-                    <img src='/Resourses/svg/delete.svg' class='ManageIconStyle'>
-                </button>
-            </div>`);
+        //    //$(this).append(block);
 
-            $(this).append(block);
+            
+        //},
+        //function() {
 
-            $(".IconButtonsEdit").click(function(e) {
-                const input = $(".ColoredTr > td > input");
-                const span = $(".ColoredTr > td > span");
-                const saveButton = $(".ColoredTr").children()[3].children[2];
-                console.log(saveButton);
-                $(span).css("display", "none");
+        //    $(".ColoredTr").removeClass();
+        //    $("div.IconUtilities").remove();
 
-                $(input).css("display", "initial");
-                $(saveButton).css("display", "contents");
-            });
+        //    });
 
-            $(".IconButtonsSave").click(function() {
-            });
+        $(".IconButtonsEdit").click(function(e) {
+            const input = $(".ColoredTr > td > input");
+            const span = $(".ColoredTr > td > span");
+            const saveButton = $(".ColoredTr").children()[3].children[2];
+            console.log(saveButton);
+            $(span).css("display", "none");
 
-            $(".IconButtonsDelete").click(function() {
-                $(".ColoredTr").remove();
+            $(input).css("display", "initial");
+            $(saveButton).css("display", "contents");
+        });
+
+        $(".IconButtonsSave").click(function() {
+        });
+
+        $(".IconButtonsDelete").click(function() {
+            if (confirm("Вы уверены?")) {
                 $.ajax({
                     type: "GET",
                     url: "@Url.Action("RemoveUser", "Pattern")",
-                    data: `id=${$(this).parent().parent().attr("userId")}`,
-                    success: function(data) {
-                        //$(e.target).parent().parent().parent().remove();
+                    data: `id=${$(this).parent().parent().parent().attr("userId")}`,
+                    success: ()=> {
+                        $(this).parent().parent().parent().remove();
                     },
                     error: function(data) {
                         alert(data);
                     }
                 });
-            });
-        },
-        function() {
-
-            $(".ColoredTr").removeClass();
-            $("div.IconUtilities").remove();
-
+            }
         });
 
         $(".closeTableBut").click(function(e) {
             @*$("table[value='@company.Id']").slideToggle("slow");*@
-            const button = $(e.target).parent().parent().parent().parent().children()[1];
+            const button = $(this).parent().parent().parent().parent().find("table");
             $(button).fadeToggle("slow", "linear");
+            $(this).toggleClass('rotated');
         });
 
         function OnSuccess() {

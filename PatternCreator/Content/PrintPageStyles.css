@@ -409,3 +409,7 @@ td {
     border-radius: 13px;
     cursor: pointer;
 }
+
+.checkbox-label {
+    margin-top: 10px;
+}

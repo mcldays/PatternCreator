@@ -10,13 +10,22 @@ namespace PatternCreator.Utilities
 {
     public static class ComputePhoto
     {
-        public static byte[] Compute(UserModel user, PictureModel template, List<PositionModel> positions)
+        public static byte[] Compute(UserModel user, PictureModel template, List<PositionModel> positions, bool substrate)
         {
             Bitmap bmp;
             using (var ms = new MemoryStream(template.Image))
             {
                 bmp = new Bitmap(ms);
-                var bmp2 = bmp.Clone(new Rectangle(0, 0, bmp.Width, bmp.Height), PixelFormat.Format32bppPArgb);
+                Bitmap bmp2;
+                if (substrate)
+                {
+                    bmp2 = bmp.Clone(new Rectangle(0, 0, bmp.Width, bmp.Height), PixelFormat.Format32bppPArgb);
+                }
+                else
+                {
+                    bmp2 = new Bitmap(bmp.Width, bmp.Height);
+                }
+
                 var g = Graphics.FromImage(bmp2);
                 g.SmoothingMode = SmoothingMode.AntiAlias;
                 g.InterpolationMode = InterpolationMode.HighQualityBicubic;
@@ -46,7 +55,7 @@ namespace PatternCreator.Utilities
                     //b.Dispose();
                     var format = new StringFormat();
                     format.LineAlignment = StringAlignment.Center;
-                    g.DrawString(text, new Font("Tahoma", (float) position.Height-8, GraphicsUnit.Pixel), Brushes.Black, rectf, format);
+                    g.DrawString(text, new Font("Tahoma", position.FontSize, GraphicsUnit.Pixel), Brushes.Black, rectf, format);
                 }
 
                 g.Flush();

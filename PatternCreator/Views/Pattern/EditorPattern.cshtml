@@ -49,8 +49,9 @@
                               + Convert.ToBase64String(item.Image) + "\" />")
                 </button>
             </a>
-            @using (Html.BeginForm("UpdatePicture", "Pattern", FormMethod.Post, new { }))
-            {
+            @*@using (Html.BeginForm("UpdatePicture", "Pattern", FormMethod.Post, new { }))*@
+            @*{*@
+            <div>
                 <div id=@item1 class="update-picture-modal">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -97,7 +98,8 @@
                         </div>
                     </div>
                 </div>
-            }
+                @*}*@
+            </div>
         </div>
         }
         </div>
