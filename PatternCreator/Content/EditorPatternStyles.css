@@ -175,8 +175,7 @@ font-weight: 400;
 
 #patternsContain {
     margin-top: 20px;
-    height: 100%;
-    display: flex;
+
 }
 
 .patternRectangle {
@@ -389,9 +388,10 @@ display: flex;
 margin-top: 20px;
 }
 
-.mainEditor{
+.mainEditor {
     margin-top: 20px;
     width: 740px;
+    position: relative;
 }
 
 .imgModalStyle{
@@ -417,6 +417,7 @@ justify-content: center;
 border: 0;
 cursor: pointer;
 outline: 0;
+    z-index: 100;
 
 
 }
@@ -459,13 +460,13 @@ height: 22px;
     padding: 5px 0px 5px 0;
 }
 
-.ZoomContain{
+.ZoomContain {
     display: flex;
     flex-direction: column;
     position: absolute;
     /* top: 140px; */
-    right: 70px;
-    top: 150px;
+    right: 25px;
+    top: 25px;
 }
 
 .img-wrap {
@@ -478,6 +479,7 @@ height: 22px;
     width: max-content;
     position: absolute !important;
     top: 0;
+    z-index: 2;
 }
 .draggable-text {
     background: transparent;
@@ -618,4 +620,20 @@ button.glo {
 button.glo:hover {
     background-position: 0 0;
     color: #fff;
+}
+
+td {
+    width: auto;
+    height: auto;
+    border: 2px solid black;
+}
+
+#tableRed {
+    width: 100%;
+    height: 100%;
+    border-collapse: collapse;
+    position: absolute;
+    z-index: 1;
+    opacity: 0.5;
+    display: none;
 }

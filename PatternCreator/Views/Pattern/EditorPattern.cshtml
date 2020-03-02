@@ -39,68 +39,86 @@
             var item1 = "openModal" + item.Id;
             var item2 = "#openModal" + item.Id;
 
-        <div class="patternRectangle">
-            <span class="ImageName">
-                @item.Name
-            </span>
-            <a href=@item2 id="link">
-                <button class="patternBut" pictureID="@item.Id">
-                    @Html.Raw("<img class='imgStyle' src=\"data:image/jpeg;base64,"
-                              + Convert.ToBase64String(item.Image) + "\" />")
-                </button>
-            </a>
-            @*@using (Html.BeginForm("UpdatePicture", "Pattern", FormMethod.Post, new { }))*@
-            @*{*@
-            <div>
-                <div id=@item1 class="update-picture-modal">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <a href="#close" title="Close" class="close">×</a>
-                            </div>
-                            <div class="modal-body">
+            <div class="patternRectangle">
+                <span class="ImageName">
+                    @item.Name
+                </span>
+                <a href=@item2 id="link">
+                    <button class="patternBut" pictureID="@item.Id">
+                        @Html.Raw("<img class='imgStyle' src=\"data:image/jpeg;base64,"
+                                  + Convert.ToBase64String(item.Image) + "\" />")
+                    </button>
+                </a>
+                @*@using (Html.BeginForm("UpdatePicture", "Pattern", FormMethod.Post, new { }))*@
+                @*{*@
+                <div>
+                    <div id=@item1 class="update-picture-modal">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <a href="#close" title="Close" class="close">×</a>
+                                </div>
+                                <div class="modal-body">
 
-                                <div class="modelContent">
-                                    <div class="modelBlockOne">
-                                        <div class="manageBlockModel">
-                                            <div class="namePatternModel">
-                                                @Html.Hidden("Id", item.Id)
-                                                <input type="text" name="Name" value="@item.Name" class="inputModelName">
+                                    <div class="modelContent">
+                                        <div class="modelBlockOne">
+                                            <div class="manageBlockModel">
+                                                <div class="namePatternModel">
+                                                    @Html.Hidden("Id", item.Id)
+                                                    <input type="text" name="Name" value="@item.Name" class="inputModelName">
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <div class="buttonsContainModal">
-                                            <button type="button" class="blueButtonsModal add-text">
-                                                <span>Добавить текст</span>
-                                            </button>
-                                        </div>
-
-                                        <div class="mainEditor">
-                                            <div class="img-wrap" picture-id="@item.Id">
-                                                @Html.Raw("<img class='imgModalStyle' src=\"data:image/jpeg;base64,"
-                                                          + Convert.ToBase64String(item.Image) + "\" />")
-                                            </div>
-                                            @*<div class="ZoomContain">
-                                                <button class="rectangleWhite">
-                                                    <img src="/Resourses/icons8-restore-page-100.png" class="InzoomModal" />
+                                            <div class="buttonsContainModal">
+                                                <button type="button" class="blueButtonsModal add-text">
+                                                    <span>Добавить текст</span>
                                                 </button>
-                                            </div>*@
-                                        </div>
-                                        <div class="saveButtonModal">
-                                            <button class="blueButtonsModal save">
-                                                <span>Соханить</span>
-                                            </button>
 
+                                                <button type="button" class="blueButtonsModal GridUp">
+                                                    <span>Увеличить сетку</span>
+                                                </button>
+
+                                                <button type="button" class="blueButtonsModal GridDown">
+                                                    <span>Уменьшить сетку</span>
+                                                </button>
+                                            </div>
+
+
+
+                                            <div class="mainEditor">
+
+                                                <table id="tableRed">
+                                                    <tr><td></td><td></td><td></td><td></td></tr>
+                                                    <tr><td></td><td></td><td></td><td></td></tr>
+                                                    <tr><td></td><td></td><td></td><td></td></tr>
+                                                    <tr><td></td><td></td><td></td><td></td></tr>
+                                                </table>
+
+                                                <div class="img-wrap" picture-id="@item.Id">
+                                                    @Html.Raw("<img class='imgModalStyle' src=\"data:image/jpeg;base64,"
+                                                              + Convert.ToBase64String(item.Image) + "\" />")
+                                                </div>
+                                                <div class="ZoomContain">
+                                                    <button type="button" class="rectangleWhite">
+                                                        <img src="/Resourses/svg/grid.svg" class="InzoomModal"/>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="saveButtonModal">
+                                                <button class="blueButtonsModal save">
+                                                    <span>Соханить</span>
+                                                </button>
+
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    @*}*@
                 </div>
-                @*}*@
             </div>
-        </div>
         }
         </div>
 

@@ -316,6 +316,7 @@
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Resourses\svg\delete-white.svg" />
+    <Content Include="Resourses\svg\grid.svg" />
     <Content Include="Resourses\svg\list-white.svg" />
     <Content Include="Resourses\svg\move-white.svg" />
     <Content Include="Resourses\testImg.jpg" />

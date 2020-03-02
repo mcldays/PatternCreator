@@ -8,11 +8,7 @@ function handleFiles() {
     $(inputElement).submit();
 }
 
-$(".rectangleWhite").click(function () {
-    console.log("kek.")
-    $(".imgModalStyle").css("background-size", "740px 600px");
-    $(".imgModalStyle").css("background-position", "0px 0px");
-});
+
 
 $(document).on("dragstart", "block-delete-svg", function (e) {
     e.preventDefault();
@@ -23,6 +19,7 @@ $(document).on("click", ".block-delete-svg", function () {
 });
 $(".add-text").on("click", function() {
     let modelBlockOne = $(this).parent().parent();
+    let tableSelect = $(this).parents()[1].children[2].children[1];
     let block = $(`
                 <div class='draggable-div block-visible'>
                     <div class='draggable-hint'>
@@ -42,6 +39,8 @@ $(".add-text").on("click", function() {
                 </div>`);
     modelBlockOne.find(".img-wrap").append(block);
     block.draggable({
+        snap: "td",
+        snapTolerance: 10,
         containment: modelBlockOne.find(".img-wrap"),
         handle: "img.block-move-svg"
     });
@@ -242,3 +241,37 @@ $(document).on("click", "button.glo", function () {
 
 
 });
+
+
+$(".GridDown").click(function (e) {
+
+    $($(this).parents()[1].children[2].children[0]).find("tr").last().remove();
+});
+
+$(".GridUp").click(function (e) {
+
+    $($(this).parents()[1].children[2].children[0]).append("<tr><td></td><td></td><td></td><td></td></tr>");
+
+    
+});
+
+
+$(".rectangleWhite").click(function (e) {
+
+    var block = $($(this).parents()[1].children[0]);
+    if ($(block).is(":visible")) {
+
+        block.css("display", "none");
+       
+    } else {
+        
+        block.css("display", "inline-table");
+    }
+   
+   
+
+    
+
+});
+
+
