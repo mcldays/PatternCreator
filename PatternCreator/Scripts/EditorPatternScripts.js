@@ -35,7 +35,7 @@ $(".add-text").on("click", function() {
                         <img draggable='false' class='hint-svg block-move-svg' src='../Resourses/svg/move-white.svg'/>
                         <img draggable='false' class='hint-svg block-delete-svg' src='../Resourses/svg/delete-white.svg'/>
                     </div>
-                    <textarea class='draggable-text'/>
+                    <textarea class='draggable-text'>Текст</textarea>
                 </div>`);
     modelBlockOne.find(".img-wrap").append(block);
     block.draggable({
@@ -99,8 +99,8 @@ $(".save").on("click", function () {
     let kefX = img.naturalWidth / img.width;
     let kefY = img.naturalHeight / img.height;
     let bounds = $(this).parent().parent().find(".draggable-div").toArray().map(elem => {
-        return [((elem.offsetLeft + 6) * kefX).toString(),
-            ((elem.offsetTop + 29) * kefY).toString(),
+        return [((elem.offsetLeft + 3) * kefX).toString(),
+            ((elem.offsetTop + 25) * kefY).toString(),
             ((elem.offsetWidth - 4) * kefX).toString(),
             elem.parentElement.getAttribute("picture-id"),
             elem.getAttribute("position-id") || "null",
@@ -206,8 +206,8 @@ $(document).on("click", ".patternBut", function () {
                 if (img) {
                     let kefX = img.naturalWidth / img.width;
                     let kefY = img.naturalHeight / img.height;
-                    blockHtml.css("left", Math.round(block.getAttribute("position-x").replace(/,/, '.') / kefX - 6) + "px");
-                    blockHtml.css("top", Math.round(block.getAttribute("position-y").replace(/,/, '.') / kefY - 29) + "px");
+                    blockHtml.css("left", Math.round(block.getAttribute("position-x").replace(/,/, '.') / kefX - 3) + "px");
+                    blockHtml.css("top", Math.round(block.getAttribute("position-y").replace(/,/, '.') / kefY - 25) + "px");
                     blockHtml.find(".draggable-text").css("width", Math.round(block.getAttribute("position-width").replace(/,/, '.') / kefX + 4) + "px");
                     blockHtml.find(".hint-data-type").val(block.getAttribute("Type"));
                     blockHtml.find(".hint-font-size").val(Math.round(block.getAttribute("font-size") / kefY));

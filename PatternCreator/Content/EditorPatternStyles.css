@@ -479,24 +479,32 @@ height: 22px;
     width: max-content;
     position: absolute !important;
     top: 0;
+    display: flex;
+    flex-direction: column;
     z-index: 2;
 }
 .draggable-text {
     background: transparent;
-    height: 1.8em;
-    border: 2px solid transparent;
+    border: 1px solid gray;
     border-radius: 0 6px 6px 6px;
-    min-width: 260px;
     max-width: 730px;
     padding: 4px;
     resize: none;
     outline: 0;
     overflow: hidden;
+    line-height: 0.8em;
+    padding: 0px;
+    height: 1em;
+    min-width: 50px;
+    font-family: "../../Fonts/Times New Roman.ttf";
+    opacity: 0.5;
+    z-index: 2;
 }
 
 .draggable-div.block-visible .draggable-text {
     resize: horizontal;
     border: 2px solid rgb(0, 174, 239);
+    opacity: 1;
 }
 
 .draggable-hint {
@@ -575,7 +583,8 @@ height: 22px;
     -moz-appearance: none;
     appearance: none;
     padding: 0px 0px 0px 36px;
-    background: url(../Resourses/svg/list-white.svg) 10% / 10% no-repeat transparent;
+    background: url(../Resourses/svg/list-white.svg) 20% / 20% no-repeat transparent;
+    width: 70px;
 }
 .hint-data-type option{
     background: white;
