@@ -94,13 +94,13 @@ input[type="text"]:disabled {
 
 .AddUserImg {
     width: 23px;
-    height: 16px;
+    height: 26px;
 }
 
 .FindButton {
     border: 0;
     background: white;
-    margin-left: 37%;
+    margin-left: 35%;
     cursor: pointer;
 }
 
@@ -646,7 +646,7 @@ button.glo {
     background-position: 100% 0;
     background-size: 200% 100%;
     transition: all .25s ease-in;
-    font: 400 18px tahoma;
+    font: 200 15px tahoma;
     border: 1px solid #00aeeF;
     width: 215px;
     height: 36px;

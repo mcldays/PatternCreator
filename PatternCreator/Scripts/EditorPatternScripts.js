@@ -224,3 +224,21 @@ $(document).on("click", ".patternBut", function () {
 $(document).on("change", ".hint-font-size", function () {
     $(this).parent().parent().parent().find(".draggable-text").css("font-size", this.value + "px");
 })
+
+
+$(document).on("click", "button.findIcon", function () {
+    let block = `<button class="glo">
+                <span>Очистить поиск</span>
+            </button>`
+    $("#patternsContain").after(block);
+});
+
+$(document).on("click", "button.glo", function () {
+
+    $(".ImageName").parent().fadeIn(function() {
+        $("button.glo").remove();
+    });
+    
+
+
+});

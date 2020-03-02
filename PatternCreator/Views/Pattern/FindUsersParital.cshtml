@@ -1,101 +1,103 @@
 ﻿@using PatternCreator.Models
+@using PatternCreator.Utilities
 @model List<UserModel>
 
 
-<div id="afterTable" style="display: none">
-    
-    
-    <div style="width: 181px;
+    <div id="afterTable" style="display: none">
+
+
+        <div style="width: 181px;
     color: #333333;
     font-family: &quot;Open Sans&quot;;
     font-size: 18px;
     font-weight: 700; margin-top: 10px; margin-bottom: 10px;">
-        <span>Результаты поиска:</span>
-    </div>
+            <span>Результаты поиска:</span>
+        </div>
 
-    @{
-        foreach (var userModel in Model)
-        {
+        @{
+            foreach (var userModel in Model)
+            {
 
-
-
-
-            <table id="TableTwoStyle">
-
-                <tr class="ignoreTr">
-
-
-                    <th style="width: 20px;"></th>
-                    <th style="width: 250px;"></th>
-                    <th style="width: 300px;"></th>
-                    <th style="width: 350px;"></th>
-                    <th style="width: 100px;"></th>
-
-                </tr>
-
-                <tr class="paritalTr" userId="@userModel.Id">
-
-                    <td>
-
-                        @userModel.Id
-                    </td>
-
-                    <td userName="@userModel.Name">
-                        <span>@userModel.Name</span>
-
-                        @Html.EditorFor(model => (model[0] as UserModel).Name, new {htmlAttributes = new {@class = "EditCol", PlaceHolder = "Имя"}})
-                    </td>
-
-                    <td userSurname="@userModel.Surname">
-                        <span>@userModel.Surname</span>
-
-                        @Html.EditorFor(model => (model[0] as UserModel).Surname, new {htmlAttributes = new {@class = "EditCol", PlaceHolder = "Фамилия*"}})
-                    </td>
-
-                    <td userPatronymic="@userModel.Patronymic">
-
-                        <span>@userModel.Patronymic</span>
-
-                        @Html.EditorFor(model => (model[0] as UserModel).Patronymic, new {htmlAttributes = new {@class = "EditCol", PlaceHolder = "Отчество*"}})
-
-                        <button class='IconButtonsSaveUserParital'>
-                            <img src='/Resourses/svg/save-file.svg' class='ManageIconStyle'>
-                        </button>
-
-
-                    </td>
+                <input class="EditCompanyInput" value="@SendDbUtility.GetCompanyById(userModel.CompanyId).CompanyName" name="CompanyName" />
 
 
 
+                <table id="TableTwoStyle">
 
-                    @Html.Hidden("CompanyId", userModel.CompanyId)
+                    <tr class="ignoreTr">
+
+
+                        <th style="width: 20px;"></th>
+                        <th style="width: 250px;"></th>
+                        <th style="width: 300px;"></th>
+                        <th style="width: 350px;"></th>
+                        <th style="width: 100px;"></th>
+
+                    </tr>
+
+                    <tr class="paritalTr" userId="@userModel.Id">
+
+                        <td>
+
+                            @userModel.Id
+                        </td>
+
+                        <td userName="@userModel.Name">
+                            <span>@userModel.Name</span>
+
+                            @Html.EditorFor(model => (model[0] as UserModel).Name, new { htmlAttributes = new { @class = "EditCol", PlaceHolder = "Имя" } })
+                        </td>
+
+                        <td userSurname="@userModel.Surname">
+                            <span>@userModel.Surname</span>
+
+                            @Html.EditorFor(model => (model[0] as UserModel).Surname, new { htmlAttributes = new { @class = "EditCol", PlaceHolder = "Фамилия*" } })
+                        </td>
+
+                        <td userPatronymic="@userModel.Patronymic">
+
+                            <span>@userModel.Patronymic</span>
+
+                            @Html.EditorFor(model => (model[0] as UserModel).Patronymic, new { htmlAttributes = new { @class = "EditCol", PlaceHolder = "Отчество*" } })
+
+                            <button class='IconButtonsSaveUserParital'>
+                                <img src='/Resourses/svg/save-file.svg' class='ManageIconStyle'>
+                            </button>
+
+
+                        </td>
 
 
 
 
-
-
-
-                </tr>
+                        @Html.Hidden("CompanyId", userModel.CompanyId)
 
 
 
 
 
 
-            </table>
 
-            
+                    </tr>
+
+
+
+
+
+
+                </table>
+
+
+            }
+
+
+            <button class="glo">
+                <span>Очистить поиск</span>
+            </button>
         }
 
 
-        <button class="glo">
-            <span>Очистить поиск</span>
-        </button>
-    }
-
-
-</div>
+    </div>
 
 
     <script>

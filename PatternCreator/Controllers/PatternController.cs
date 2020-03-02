@@ -137,7 +137,7 @@ namespace PatternCreator.Controllers
         {
             using (var dbUse = new UserContext())
             {
-                var data = dbUse.UserModels.Where(t => t.Name == name).ToList();
+                var data = dbUse.UserModels.Where(t => t.Name.Contains(name)).ToList();
                 return PartialView(data);
             }
         }
