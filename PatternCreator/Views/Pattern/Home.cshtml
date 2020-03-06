@@ -26,8 +26,8 @@
     </div>
 
     <div id="AligmentFind">
-        @using (Ajax.BeginForm("FindUsersParital", new AjaxOptions {UpdateTargetId = "results", OnSuccess = "OnSuccess"}))
-        {
+        @*@using (Ajax.BeginForm("FindUsersParital", new AjaxOptions {UpdateTargetId = "results", OnSuccess = "OnSuccess"}))
+        {*@
             <div class="FindUsersControl">
                 <input type="text" name="name" class="ControlText" placeholder="Поиск по пользователям">
 
@@ -35,7 +35,7 @@
                     <img src="/Resourses/svg/magnifying-glass (3).svg" class="AddUserImg">
                 </button>
             </div>
-        }
+        @*}*@
     </div>
 </div>
 <div>

@@ -510,10 +510,10 @@ height: 22px;
 .draggable-hint {
     height: 25px;
     position: relative;
-    z-index: -1;
+    opacity: 0;
 }
 .draggable-div.block-visible .draggable-hint {
-    z-index: 1;
+    opacity: 1;
 }
 
 .hint-svg {

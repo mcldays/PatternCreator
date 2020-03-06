@@ -17,102 +17,56 @@
         @{
             foreach (var userModel in Model)
             {
-
                 <input class="EditCompanyInput" value="@SendDbUtility.GetCompanyById(userModel.CompanyId).CompanyName" name="CompanyName" />
 
-
-
                 <table id="TableTwoStyle">
-
                     <tr class="ignoreTr">
-
-
                         <th style="width: 20px;"></th>
                         <th style="width: 250px;"></th>
                         <th style="width: 300px;"></th>
                         <th style="width: 350px;"></th>
                         <th style="width: 100px;"></th>
-
                     </tr>
 
                     <tr class="paritalTr" userId="@userModel.Id">
-
                         <td>
-
                             @userModel.Id
                         </td>
-
                         <td userName="@userModel.Name">
-                            <span>@userModel.Name</span>
-
-                            @Html.EditorFor(model => (model[0] as UserModel).Name, new { htmlAttributes = new { @class = "EditCol", PlaceHolder = "Имя" } })
+                            @*<span>@userModel.Name</span>*@
+                            @*@Html.EditorFor(model => (model[0] as UserModel).Name, new { htmlAttributes = new { @class = "EditCol", PlaceHolder = "Имя" } })*@
+                            <input name="Name" class="EditCol" value="@userModel.Name"/>
                         </td>
-
                         <td userSurname="@userModel.Surname">
-                            <span>@userModel.Surname</span>
-
-                            @Html.EditorFor(model => (model[0] as UserModel).Surname, new { htmlAttributes = new { @class = "EditCol", PlaceHolder = "Фамилия*" } })
+                            @*<span>@userModel.Surname</span>*@
+                            @*@Html.EditorFor(model => (model[0] as UserModel).Surname, new { htmlAttributes = new { @class = "EditCol", PlaceHolder = "Фамилия*" } })*@
+                            <input name="Surname" class="EditCol" value="@userModel.Surname"/>
                         </td>
-
                         <td userPatronymic="@userModel.Patronymic">
-
-                            <span>@userModel.Patronymic</span>
-
-                            @Html.EditorFor(model => (model[0] as UserModel).Patronymic, new { htmlAttributes = new { @class = "EditCol", PlaceHolder = "Отчество*" } })
+                            <span>@*@userModel.Patronymic*@</span>
+                            @*@Html.EditorFor(model => (model[0] as UserModel).Patronymic, new { htmlAttributes = new { @class = "EditCol", PlaceHolder = "Отчество*" } })*@
+                            <input name="Patronymic" class="EditCol" value="@userModel.Patronymic" />
 
                             <button class='IconButtonsSaveUserParital'>
                                 <img src='/Resourses/svg/save-file.svg' class='ManageIconStyle'>
                             </button>
-
-
                         </td>
-
-
-
-
                         @Html.Hidden("CompanyId", userModel.CompanyId)
-
-
-
-
-
-
-
                     </tr>
-
-
-
-
-
-
                 </table>
-
-
             }
-
-
             <button class="glo">
                 <span>Очистить поиск</span>
             </button>
         }
-
-
     </div>
 
-
     <script>
-
      $(document).ready(function() {
-
-
          $("button.glo").click(function() {
              $(document.querySelector("#afterTable")).fadeOut("slow");
              $("div.bufferDiv").fadeIn("slow");
          });
-
-
-
-
          $(".IconButtonsSaveUserParital").click(function(e) {
              $.ajax({
                  type: "GET",
@@ -123,24 +77,16 @@
                      Surname: $(this).parent().parent().children()[2].children[1].value,
                      Patronymic: $(this).parent().parent().children()[3].children[1].value,
                      CompanyId: $(this).parent().parent().children()[4].value
-                    
-
-
                  },
                  success: function(data) {
                      document.location = "/Pattern/Home";
-
-
                  },
                  error: function(data) {
                      alert(data);
                  }
 
              });
-
          });
-
-
 
         $(".CompanyDelete").click(function(e) {
 
@@ -188,12 +134,7 @@
         <button class='IconButtonsDelete' name="action" value="delete">
             <img src='/Resourses/svg/delete.svg' class='ManageIconStyle'>
         </button>
-
-
-
-
           </div>`);
-
 
          $(this).append(block);
 

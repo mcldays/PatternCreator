@@ -199,6 +199,8 @@ $(document).on("click", ".patternBut", function () {
                 blockHtml.attr("position-id", block.getAttribute("position-id"));
                 $(".img-wrap[picture-id='" + block.getAttribute("picture-id") + "']").append(blockHtml);
                 blockHtml.draggable({
+                    snap: "td",
+                    snapTolerance: 10,
                     containment: blockHtml.parent(),
                     handle: "img.block-move-svg"
                 });

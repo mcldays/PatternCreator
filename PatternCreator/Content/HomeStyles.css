@@ -100,7 +100,8 @@ input[type="text"]:disabled {
 .FindButton {
     border: 0;
     background: white;
-    margin-left: 35%;
+    position: absolute;
+    right: 0;
     cursor: pointer;
 }
 
@@ -112,6 +113,7 @@ input[type="text"]:disabled {
     margin-left: 10px;
     border: 0;
     outline: 0;
+    width: 100%;
 }
 
 
@@ -164,6 +166,7 @@ input[type="text"]:disabled {
     border-image: initial;
     display: flex;
     align-items: center;
+    position: relative;
 }
 
 .IconButtonsSaveUserParital {
