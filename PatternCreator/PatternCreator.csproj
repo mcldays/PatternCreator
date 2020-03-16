@@ -244,6 +244,10 @@
     <Compile Include="Migrations\202002251143109_addHeight.designer.cs">
       <DependentUpon>202002251143109_addHeight.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202003161152057_addFieldText.cs" />
+    <Compile Include="Migrations\202003161152057_addFieldText.designer.cs">
+      <DependentUpon>202003161152057_addFieldText.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AutModel.cs" />
     <Compile Include="Models\CompanyModel.cs" />
@@ -550,6 +554,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202002251143109_addHeight.resx">
       <DependentUpon>202002251143109_addHeight.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003161152057_addFieldText.resx">
+      <DependentUpon>202003161152057_addFieldText.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

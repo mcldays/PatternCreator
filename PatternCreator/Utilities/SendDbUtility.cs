@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity.Migrations;
-using System.Diagnostics.Eventing.Reader;
 using System.Linq;
-using System.Web;
 using PatternCreator.Models;
 
 namespace PatternCreator.Utilities
@@ -25,10 +23,6 @@ namespace PatternCreator.Utilities
                         {
                             Login = model.Login,
                             Password = model.Password
-
-
-
-
                         });
                         dbUse.SaveChanges();
                         return false;
@@ -42,14 +36,7 @@ namespace PatternCreator.Utilities
                 {
                     return false;
                 }
-
-
-
             }
-
-
-
-
         }
 
 
@@ -111,15 +98,10 @@ namespace PatternCreator.Utilities
                     join c in dbuse.UserModels on p.Id equals c.CompanyId
                     select new { Name = c.Name, Surname = c.Surname, Company = p.CompanyName };
 
-
-
-
                 var list = new List<object>();
                 foreach (var unknown in Group) list.Add(unknown);
                 return list;
             }
-
-
         }
 
 
@@ -194,7 +176,6 @@ namespace PatternCreator.Utilities
                         where b.CompanyId == id
                         select b;
 
-
                     foreach (var VARIABLE in model2)
                     {
                         dbUse.UserModels.Remove(VARIABLE);
@@ -204,15 +185,10 @@ namespace PatternCreator.Utilities
                     return true;
 
                 }
-
-
-
-
             }
             catch (Exception e)
             {
                 return false;
-
             }
         }
 
@@ -232,9 +208,7 @@ namespace PatternCreator.Utilities
             {
                 return false;
             }
-           
         }
-
 
 
         public static bool UpdateUser(UserModel model)
@@ -246,14 +220,10 @@ namespace PatternCreator.Utilities
                     dbUse.UserModels.AddOrUpdate(model);
                     dbUse.SaveChanges();
                 }
-
                 return true;
-
-
             }
             catch (Exception e)
             {
-
                 return false;
             }
         }
@@ -269,14 +239,10 @@ namespace PatternCreator.Utilities
 
                     return true;
                 }
-
-
             }
             catch (Exception e)
             {
-
                 return false;
-
             }
         }
 

@@ -190,7 +190,6 @@ namespace PatternCreator.Controllers
                     dbUse.SaveChanges();
                 }
 
-
                 return RedirectToAction("EditorPattern");
             }
 
@@ -236,7 +235,8 @@ namespace PatternCreator.Controllers
                             Width = double.Parse(block[2].Replace('.', ',')),
                             Type = block[5],
                             FontSize = int.Parse(block[7]),
-                            Height = double.Parse(block[6].Replace('.', ','))
+                            Height = double.Parse(block[6].Replace('.', ',')),
+                            Text = block[5] == "Статичный текст" ? block[8] : ""
                         };
                     }
                     else
@@ -249,18 +249,17 @@ namespace PatternCreator.Controllers
                             Width = double.Parse(block[2].Replace('.', ',')),
                             Type = block[5],
                             FontSize = int.Parse(block[7]),
-                            Height = double.Parse(block[6].Replace('.', ','))
+                            Height = double.Parse(block[6].Replace('.', ',')),
+                            Text = block[5] == "Статичный текст" ? block[8] : ""
                         };
                     }
 
                     dbUse.PositionModels.AddOrUpdate(model);
-                    
                 }
                 dbUse.SaveChanges();
             }
 
             SendDbUtility.UpdateImage(int.Parse(b.Id), b.Name);
-
             return true;
         }
 

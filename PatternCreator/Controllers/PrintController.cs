@@ -29,8 +29,5 @@ namespace PatternCreator.Controllers
 
             return string.Join("<separator>", photos);
         }
-
-
-      
     }
 }
