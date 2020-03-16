@@ -258,7 +258,7 @@ $(".GridUp").click(function (e) {
 });
 
 
-$(".rectangleWhite").click(function (e) {
+$(".rectangleWhite.Grid").click(function (e) {
 
     var block = $($(this).parents()[1].children[0]);
     if ($(block).is(":visible")) {
@@ -273,6 +273,25 @@ $(".rectangleWhite").click(function (e) {
    
 
     
+
+});
+
+
+
+
+$(".rectangleWhite.Stamp").click(function (e) {
+
+    var imgModal = $(this).parents()[1].children[1];
+    var block = $("<div class='stampWrap' id='resizable'><img src = '/Resourses/Stamps/Stamps1.png'/></div >");
+
+    $($(this).parents()[1].children[1]).append(block);
+
+    
+    $(block).draggable({
+        containment: $(imgModal)
+    });
+
+    $(block).resizable();
 
 });
 

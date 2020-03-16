@@ -265,6 +265,12 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\HomeStyles.css" />
+    <Content Include="Content\jquery-ui.css" />
+    <Content Include="Content\jquery-ui.min.css" />
+    <Content Include="Content\jquery-ui.structure.css" />
+    <Content Include="Content\jquery-ui.structure.min.css" />
+    <Content Include="Content\jquery-ui.theme.css" />
+    <Content Include="Content\jquery-ui.theme.min.css" />
     <Content Include="Content\LayoutStyles.css" />
     <Content Include="Content\print.min.css" />
     <Content Include="Content\PrintPageStyles.css" />
@@ -315,10 +321,12 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Resourses\Stamps\Stamps1.png" />
     <Content Include="Resourses\svg\delete-white.svg" />
     <Content Include="Resourses\svg\grid.svg" />
     <Content Include="Resourses\svg\list-white.svg" />
     <Content Include="Resourses\svg\move-white.svg" />
+    <Content Include="Resourses\svg\stamp %281%29.svg" />
     <Content Include="Resourses\testImg.jpg" />
     <Content Include="Resourses\Eclipse-1s-200px.gif" />
     <Content Include="Resourses\icons8-restore-page-100.png" />

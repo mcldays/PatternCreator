@@ -646,3 +646,13 @@ td {
     opacity: 0.5;
     display: none;
 }
+
+.stampWrap {
+    position: absolute;
+    z-index: 4;
+    left: 0;
+    top: 0;
+    
+}
+
+
