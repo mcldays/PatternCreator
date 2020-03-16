@@ -48,6 +48,7 @@ namespace PatternCreator.Utilities
                             text = user.Patronymic;
                             break;
                         case "Статичный текст":
+                            text = position.Text;
                             break;
                     }
                     //SolidBrush b = new SolidBrush(Color.Red);  //кисть для заливки

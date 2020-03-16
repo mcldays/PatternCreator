@@ -106,7 +106,8 @@ $(".save").on("click", function () {
             elem.getAttribute("position-id") || "null",
             $(elem).find(".hint-data-type").val(),
             (elem.getElementsByClassName('hint-font-size')[0].value.split('px')[0] * kefY).toString(),
-            Math.round(elem.getElementsByClassName('hint-font-size')[0].value.split('px')[0] * kefY).toString()];
+            Math.round(elem.getElementsByClassName('hint-font-size')[0].value.split('px')[0] * kefY).toString(),
+            $(elem).find(".draggable-text").val()];
     }); 
     $.ajax({
         url: "../Pattern/SetBlocks",
@@ -235,13 +236,9 @@ $(document).on("click", "button.findIcon", function () {
 });
 
 $(document).on("click", "button.glo", function () {
-
     $(".ImageName").parent().fadeIn(function() {
         $("button.glo").remove();
     });
-    
-
-
 });
 
 
@@ -269,11 +266,6 @@ $(".rectangleWhite").click(function (e) {
         
         block.css("display", "inline-table");
     }
-   
-   
-
-    
-
 });
 
 
