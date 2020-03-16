@@ -207,7 +207,7 @@
             for (let i = 0; i < images.length; i++) {
                 bufferStr += `<div style='height:99vh;margin:0px;'><img style='margin:auto; width:100%; display:block' src='${$(images[i]).attr('src')}'/></div>`;
             }
-            printJS({ printable: bufferStr, type: 'raw-html' });
+            printJS({ printable: bufferStr, type: 'raw-html', style: '* {margin: 0px; padding: 0px;}'});
         });
 
         $(document).on("click",

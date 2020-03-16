@@ -195,7 +195,7 @@ $(document).on("click", ".patternBut", function () {
                         <img draggable='false' class='hint-svg block-move-svg' src='../Resourses/svg/move-white.svg'/>
                         <img draggable='false' class='hint-svg block-delete-svg' src='../Resourses/svg/delete-white.svg'/>
                     </div>
-                    <textarea class='draggable-text'>Текст</textarea>
+                    <textarea class='draggable-text'>${block.getAttribute('text') != "" ? block.getAttribute('text') : "Текст"}</textarea>
                 </div>`);
                 blockHtml.attr("position-id", block.getAttribute("position-id"));
                 $(".img-wrap[picture-id='" + block.getAttribute("picture-id") + "']").append(blockHtml);

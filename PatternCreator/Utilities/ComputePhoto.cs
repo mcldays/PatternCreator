@@ -33,8 +33,17 @@ namespace PatternCreator.Utilities
 
                 foreach (var position in positions)
                 {
-                    var rectf = new RectangleF((float) position.PosX, (float) position.PosY,
-                        (float) position.Width, (float) position.Height);
+                    RectangleF rectf;
+                    if (substrate)
+                    {
+                        rectf = new RectangleF((float)position.PosX, (float)position.PosY,
+                            (float)position.Width, (float)position.Height);
+                    }
+                    else
+                    {
+                        rectf = new RectangleF((float)position.PosX - 15, (float)position.PosY - 15,
+                            (float)position.Width, (float)position.Height);
+                    }
                     var text = "";
                     switch (position.Type)
                     {
