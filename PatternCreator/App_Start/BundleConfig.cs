@@ -47,8 +47,13 @@ namespace PatternCreator
 
             //EditorPattern
             bundles.Add(new StyleBundle("~/bundles/EditorPattern-css").Include(
-                "~/Content/EditorPatternStyles.css"
-               
+                "~/Content/jquery-ui.css",
+                "~/Content/EditorPatternStyles.css",
+                "~/Content/jquery-ui.structure.css",
+                "~/Content/jquery-ui.theme.css"
+
+
+
             ));
             bundles.Add(new ScriptBundle("~/bundles/EditorPattern-js").Include(
                 
