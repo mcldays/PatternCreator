@@ -5,40 +5,51 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 using Newtonsoft.Json;
 using PatternCreator.Models;
 using PatternCreator.Utilities;
 
 namespace PatternCreator.Controllers
 {
+    [Authorize]
     public class PatternController : Controller
     {
         // GET: Pattern
-        public ActionResult MainPage(AutModel model)
+        [AllowAnonymous]
+        public ActionResult MainPage(string returnUrl)
         {
-            if (SendDbUtility.verifyAutefication(model)) return RedirectToAction("Home", "Pattern");
 
-
+            ViewBag.ReturnUrl = returnUrl;
             return View();
+        }
+        
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public ActionResult MainPage(AutModelViewModel model, string returnUrl)
+        {
+            if (ModelState.IsValid)
+            {
+                if (SendDbUtility.verifyAutefication(model))
+                {
+                    FormsAuthentication.SetAuthCookie(model.Login, true);
+                    return string.IsNullOrEmpty(returnUrl)?RedirectToAction("Home", "Pattern") : (ActionResult)Redirect(returnUrl);
+                }
+                ModelState.AddModelError("","Не верное имя или пароль.");
+            }
+            return View(model);
+        }
+
+        public ActionResult GetTable()
+        {
+            return PartialView();
         }
 
         public ActionResult Home()
         {
-            var models = SendDbUtility.GelAllCompanyList();
-            var items = new List<SelectListItem>();
-
-            foreach (var company in models)
-                items.Add(new SelectListItem {Text = company.CompanyName, Value = company.Id.ToString()});
-
-            ViewBag.CompanyName = items;
-
-            object[] x =
-            {
-                new CompanyModel(),
-                new UserModel()
-            };
-
-            return View(x);
+            var company = SendDbUtility.GelAllCompanyList();
+            return View(company);
         }
 
         public ActionResult PrintPage()
@@ -84,18 +95,27 @@ namespace PatternCreator.Controllers
         }
 
 
-        public ActionResult CompanyToDb(string CompanyName)
+        public ActionResult CompanyToDb(CreateCompanyModel newCompany)
         {
-            SendDbUtility.sendCompanyModel(CompanyName);
+            SendDbUtility.sendCompanyModel(newCompany);
 
 
             return RedirectToAction("Home", "Pattern");
         }
 
 
-        public ActionResult UserToDb(UserModel model, string CompanyName)
+        public ActionResult UserToDb(UserModelViewModel client)
         {
-            model.CompanyId = int.Parse(CompanyName);
+            UserModel model = new UserModel
+            {
+                Name = client.Name,
+                Name_DativeCase = client.Name_DativeCase,
+                Surname = client.Surname,
+                Surname_DativeCase = client.Surname_DativeCase,
+                Patronymic = client.Patronymic,
+                Patronymic_DativeCase = client.Patronymic_DativeCase,
+                CompanyId = client.CompanyId
+            };
             SendDbUtility.SendUserToDb(model);
 
             return RedirectToAction("Home", "Pattern");
@@ -103,25 +123,29 @@ namespace PatternCreator.Controllers
 
         public bool RemoveCompany(int id)
         {
-            SendDbUtility.DeleteAllUsersInCompany(id);
-            SendDbUtility.DeleteCompany(id);
-
-            return true;
+            return SendDbUtility.DeleteCompany(id); 
         }
 
 
         public bool RemoveUser(int id)
         {
-            SendDbUtility.DeleteUserById(id);
-            return true;
+            return SendDbUtility.DeleteUserById(id);
         }
 
-        public ActionResult SaveUser(UserModel model)
+        public bool SaveUser(UserModelViewModel client)
         {
-            SendDbUtility.UpdateUser(model);
-
-
-            return RedirectToAction("Home", "Pattern");
+            UserModel model = new UserModel
+            {
+                Id = client.Id,
+                Name = client.Name,
+                Name_DativeCase = client.Name_DativeCase,
+                Surname = client.Surname,
+                Surname_DativeCase = client.Surname_DativeCase,
+                Patronymic = client.Patronymic,
+                Patronymic_DativeCase = client.Patronymic_DativeCase,
+                CompanyId = client.CompanyId
+            };
+            return SendDbUtility.UpdateUser(model);
         }
 
 
