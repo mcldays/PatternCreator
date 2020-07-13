@@ -2,111 +2,39 @@
 
 
 $(document).ready(function() {
-    $(".CompanyEdit").click(function(e) {
+    function findUsers(t) {
+        var userId = "";
+        var finded = "";
+        var filter = t.val().toLowerCase().replace(/ /g, '');
+        $("td>input[name='user.Name']").each(function () {
+            userId = $(this).closest("td").data("userId");
+            finded = $("td[data-user-id='" + userId + "']>input[name='user.Name']").val();
+            finded += $("td[data-user-id='" + userId + "']>input[name='user.Surname']").val();
+            finded += $("td[data-user-id='" + userId + "']>input[name='user.Patronymic']").val();
+            
+            if (!finded.toLowerCase().includes(filter)) {
+                var tr = $("td[data-user-id='" + userId + "']:visible").closest('tr');
+                tr.hide();
+                if ($("tr[data-company-id='" + tr.data("company-id") + "']:visible").length==0) {
+                    $("tr[data-header-id='" + tr.data("company-id") + "']:visible").hide();
+                } 
 
-        let span = $(e.target).parents()[2].children[0].children[0];
-        let EditorContain = $(e.target).parents()[2].children[0].children[1];
-        let button = $(e.target).parents()[2].children[0].children[2];
-
-        //$(button).css("display", "none");
-        //$(EditorContain).css("display", "flex");
-        //$(span).css("display", "none");
-
-    });
-
-
-    $(".CompanyAdd").click(function() {
-
-        let block = $(`<div id="TableTwo">
-          <table id="TableTwoStyle">
-              <tr>
-                  <div class="CompanyAligment">
-
-                      <div class="SaveAligment" style="width: 230px;">
-                      <input type="text" class="EditCompanyInput">
-
-                    
-                       <!-- <img src="/Главная страница/svg/save-icon-silhouette.svg" class="SaveIconStyle"> -->
-          
-                      </div>
-                      <div class="IconUtilitiesCompany">
-                          <button class="CompanyAdd">
-                              <img src="/Resourses/svg/add.svg" class="ManageIconStyleCompany">
-                          </button>
-
-                          <button class="CompanyEdit">
-                              <img src="/Resourses/svg/pencil-edit-button (2).svg" class="ManageIconStyleCompany">
-                          </button>
-
-                          <button class="CompanyDelete">
-                              <img src="/Resourses/svg/delete.svg" class="ManageIconStyleCompany">
-                          </button>
-                          
-                          <button class='IconButtonsSave'>
-                              <img src='/Resourses/svg/save-file.svg' class='ManageIconStyle'>
-                          </button>
-                          
-                         
-                      </div>
-                     
-                    
-                   </div>
-              </tr>
-              </table>
-              </div>`);
-        console.log($("table:last"))
-        $("table:last").after(block);
-
-
-    });
-
-    $(".FindButton").on("click",
-        function() {
-            $(document).find(".normalTr").show();
-            let filter = $(this).prev().val().toLowerCase();
-            let companies = $(".bufferDiv");
-            companies.show();
-            $(".normalTr").show();
-            for (let i in companies.toArray()) {
-                let company = $(companies[i]);
-                let users = company.find(".normalTr");
-                for (let j in users.toArray()) {
-                    let user = $(users[j]);
-                    if (!user.find(".EditCol[name='Name']").val().toLowerCase().includes(filter) &&
-                        !user.find(".EditCol[name='Surname']").val().toLowerCase().includes(filter) &&
-                        !user.find(".EditCol[name='Patronymic']").val().toLowerCase().includes(filter))
-                        user.hide();
-                }
-                if (users.filter(":visible").length == 0) company.hide();
+            } else {
+                $("td[data-user-id='" + userId + "']:hidden").closest('tr').show();
+                $("tr[data-header-id='" + $("td[data-user-id='" + userId + "']:visible").closest('tr').data("company-id") + "']:hidden").show();
             }
+
         });
+    };
+    $(document).on("input", "#FindUsers", function() {
+    findUsers($(this));
+    });
 
-    //$(".FindButton:button").click(function() {
-    //    let inputText = $(".ControlText:input").val();
-
-    //    let badTd = $("tr>tr");
-
-
-    //    let tables = $("tr > td > span");
-
-
-    //    for (var i = 0; i < tables.length; i++) {
-    //        if (inputText != $(tables[i]).text()) {
-    //            $(tables[i]).css("display", "none");
-
-
-    //        }
-
-
-    //    }
-
-
-    //    console.log(inputText);
-
-
-    //});
-
-
+    $(document).on("click", ".FindButton", function() {
+        findUsers($(this).prev());
+    });
 });
+
+
 
 

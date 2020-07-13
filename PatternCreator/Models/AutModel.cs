@@ -10,9 +10,23 @@ namespace PatternCreator.Models
     {
         [Key]
         public int id { get; set; }
-
+        [Required]
         public string Login { get; set; }
 
+        [Required]
+        public string Password { get; set; }
+
+
+    }
+    public class AutModelViewModel
+    {
+        [Required]
+        [Display(Name = "Имя")]
+        public string Login { get; set; }
+
+        [Required]
+        [DataType(DataType.Password)]
+        [Display(Name = "Пароль")]
         public string Password { get; set; }
 
 

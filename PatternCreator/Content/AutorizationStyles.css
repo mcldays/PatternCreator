@@ -66,7 +66,7 @@ display: flex;
     margin-top: 70px;
 }
 
-#Login{
+input[type='text'], input[type='password']{
     margin: auto;
     width: 302px;
     height: 43px;
@@ -87,13 +87,8 @@ display: flex;
     padding: 6px; 
 
 }
-
-#Password{
-    margin-top: 20px;
-}
-
-#Passed{
-    margin-top: 55px;
+ul {
+	list-style-type: none;
 }
 
 #LoginButton{

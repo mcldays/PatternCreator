@@ -1,6 +1,6 @@
 ﻿@using System.Web.UI.WebControls
 @using PatternCreator.Models
-@model AutModel
+@model AutModelViewModel
 
 
 @{
@@ -16,47 +16,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" type="text/css" href="/Content/AutorizationStyles.css"/>
-    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="/Content/AutorizationStyles.css" />
+    <title>@ViewBag.Title</title>
+    @Scripts.Render("~/bundles/jquery")
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/bootstrap")
+
 </head>
 <body>
 
 
 <div id="MainContain">
-    <div id="Autorize">
+    <div id="Autorize" class="mb-3">
         <span id="TextOne">Авторизация</span>
     </div>
-    @using (Html.BeginForm("MainPage", "Pattern", FormMethod.Post, new {@id = "AutContain"}))
+    @using (Html.BeginForm("MainPage", "Pattern", FormMethod.Post, new { @class= "form-row container justify-content-center" }))
     {
          @*<div id="AutContain">*@
-        <div>
-            @Html.HiddenFor(model => model.id, new {htmlAttributes = new {@class="hiddeninput"}}) 
+        
+    <div class="flex-column">
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary("", new { @class = "text-danger d-flex text-center" })
+        @*@Html.HiddenFor(model => model.id, new { htmlAttributes = new { @class = "hiddeninput" } })*@
 
 
-            @Html.EditorFor(model => model.Login, new {htmlAttributes = new {@class = "NameStyle", PlaceHolder = "Имя*", id = "Login"}})
-            @*<input type="text" id=Login class="NameStyle" placeholder="Имя">*@
-
-        </div>
-        <div id="Password">
-            @*<input type="text" id=Login class="NameStyle" placeholder="Пароль">*@
-            @Html.EditorFor(model => model.Password, new {htmlAttributes = new {@class = "NameStyle", PlaceHolder = "Пароль*", id = "Login"}})
-
-        </div>
-
-
-        <div id="Passed">
-
-            <button id="LoginButton">
-                <span id=Passedstyle>Вход</span>
-            </button>
-
-
-
-        </div>
-
-
-
-         @*</div>*@
+        @Html.EditorFor(model => model.Login, new { htmlAttributes = new { @class = "form-control", PlaceHolder = "Имя*"  } })
+        @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control my-3", PlaceHolder = "Пароль*"} })
+        @*<input type="text" id=Login class="NameStyle" placeholder="Имя">*@
+        <input type="submit" class="btn btn-primary w-50 mt-4" value="Вход"/>
+    </div>
+       
     }
 
 

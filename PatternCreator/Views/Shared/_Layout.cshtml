@@ -6,50 +6,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     @Styles.Render("~/bundles/Layout-css")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/Scripts/umd/popper.js")
+    @Scripts.Render("~/bundles/bootstrap")
+   
     <title>@ViewBag.Title</title>
 </head>
 <body>
-<div class="preloader" id="preloader-id">
-    <div class="container" id="page-preloader">
-        <div class="📦"></div>
-        <div class="📦"></div>
-        <div class="📦"></div>
-        <div class="📦"></div>
-        <div class="📦"></div>
-    </div>
-</div>
-<div id="MainBlock">
-    <div id="Header">
-        <div id="ButtonsAligment">
-            @using (Html.BeginForm("Home", "Pattern", FormMethod.Post))
-            {
-                <button class="UserJob">
-                    <span class="HeaderFonts">Работа с пользователями</span>
-                </button>
-            }
-            @using (Html.BeginForm("EditorPattern", "Pattern", FormMethod.Post))
-            {
-
-                <button class="UserJob">
-                    <span class="HeaderFonts">Работа с шаблонами </span>
-                </button>
-            }
-
-            @using (Html.BeginForm("PrintPage", "Pattern", FormMethod.Post))
-            {
-                <button class="UserJob">
-                    <span class="HeaderFonts">Печать</span>
-                </button>
-            }
+    <div class="preloader" id="preloader-id">
+        <div class="container" id="page-preloader">
+            <div class="📦"></div>
+            <div class="📦"></div>
+            <div class="📦"></div>
+            <div class="📦"></div>
+            <div class="📦"></div>
         </div>
-
     </div>
-    <hr>
-    @RenderBody()
-</div>
+    <div id="MainBlock">
+        <div id="Header">
+            <div id="ButtonsAligment">
+                @using (Html.BeginForm("Home", "Pattern", FormMethod.Post))
+                {
+                    <button class="UserJob">
+                        <span class="HeaderFonts">Работа с пользователями</span>
+                    </button>
+                }
+                @using (Html.BeginForm("EditorPattern", "Pattern", FormMethod.Post))
+                {
 
-@Scripts.Render("~/bundles/Layout-js")
-@RenderSection("Scripts", false)
+                    <button class="UserJob">
+                        <span class="HeaderFonts">Работа с шаблонами </span>
+                    </button>
+                }
+
+                @using (Html.BeginForm("PrintPage", "Pattern", FormMethod.Post))
+                {
+                    <button class="UserJob">
+                        <span class="HeaderFonts">Печать</span>
+                    </button>
+                }
+            </div>
+
+        </div>
+        <hr>
+        @RenderBody()
+    </div>
+@Scripts.Render("~/Scripts/preloader.js")
+
+   
+    @RenderSection("Scripts", false)
 
 </body>
 </html>

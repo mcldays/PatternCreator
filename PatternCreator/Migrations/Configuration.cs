@@ -10,7 +10,6 @@
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
-            ContextKey = "PatternCreator.Utilities.UserContext";
         }
 
         protected override void Seed(PatternCreator.Utilities.UserContext context)
