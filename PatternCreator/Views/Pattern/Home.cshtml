@@ -46,7 +46,7 @@
         </div>
     </div>
     <div>
-        <div id="TableTwo">
+        <form id="TableTwo">
           
             <table class="table" style="width:100%" id="companies">
                 <thead>
@@ -123,7 +123,7 @@
 
                 </tbody>
             </table>
-        </div>
+        </form>
     </div>
 </div>
 
@@ -186,106 +186,139 @@
 
 @section Scripts{
     <script>
-    $(document).ready(function() {
-        $("a.IconButtonsSave").click(function(e) {
-            
-            switch ($(this).data("action")) {
-            case "deleteCompany":
-                var companyId = $(this).data("company-id");
-                var target = $(this);
-                $.ajax({
-                    type: "GET",
-                    url: "@Url.Action("RemoveCompany", "Pattern")",
-                    data: `id=${companyId}`,
-                    success: function(data) {
-                        //$(e.target).parent().parent().parent().remove();
-                        if (data === "True") {
-                            $("tr[data-company-id='" + companyId + "']").fadeOut(400, function () {
-                                $(this).remove();
-                            });
-                            target.closest("tr").fadeOut(400, function () {
-                                $(this).remove();
-                            });
-                        } else {
-                            alert("Произошла ошибка, попробуйте позже");
-                        }
-                    },
-                    error: function() {
-                        alert("Произошла ошибка, попробуйте позже");
-                    }
-                });
-                break;
-            case "saveUser":
-                var companyId = $(this).closest("tr").data("company-id");
-                var target = $(this);
-                var userId = $(this).data("user-id");
-                var client = {
-                    Id: userId,
-                    Name: $("td[data-user-id='" + userId + "']>input[name='user.Name']").val(),
-                    Surname: $("td[data-user-id='" + userId + "']>input[name='user.Surname']").val(),
-                    Patronymic: $("td[data-user-id='" + userId + "']>input[name='user.Patronymic']").val(),
-                    Name_DativeCase: $("td[data-user-id='" + userId + "']>input[name='user.Name_DativeCase']").val(),
-                    Surname_DativeCase: $("td[data-user-id='" + userId + "']>input[name='user.Surname_DativeCase']").val(),
-                    Patronymic_DativeCase: $("td[data-user-id='" + userId + "']>input[name='user.Patronymic_DativeCase']").val(),
-                    CompanyId: companyId
-                }
-                $.ajax({
-                    type: "POST",
-                    url: "@Url.Action("SaveUser", "Pattern")",
-                    data: {
-                        client: client
-                    },
-                    success: function(data) {
-                        //$(e.target).parent().parent().parent().remove();
-                        if (data === "True") {
-                            alert("Изменения сохранены");
-                        } else {
-                            alert("Произошла ошибка, попробуйте позже");
-                        }
-                    },
-                    error: function() {
-                        alert("Произошла ошибка, попробуйте позже");
-                    }
-                });
-                    break;
-            case "deleteUser":
-                    var userId = $(this).data("user-id");
+        function validElement(element) {
+            if (!$(element).valid()) {
+                $(element).addClass("val-error");
+                return false;
+            }
+            $(element).removeClass("val-error");
+            return true;
+        }
+        $(document).on("input",
+            "td>.EditCol",
+            function() {
+                validElement(this);
+            });
+
+        $(document).ready(function() {
+            $("a.IconButtonsSave").click(function(e) {
+
+                switch ($(this).data("action")) {
+                case "deleteCompany":
+                    var companyId = $(this).data("company-id");
                     var target = $(this);
-                $.ajax({
-                    type: "GET",
-                    url: "@Url.Action("RemoveUser", "Pattern")",
-                    data: `id=${userId}`,
-                    success: function(data) {
-                        //$(e.target).parent().parent().parent().remove();
-                        if (data === "True") {
-                            target.closest("tr").fadeOut(400, function() {
-                                $(this).remove();
-                            });
-                        } else {
+                    $.ajax({
+                        type: "GET",
+                        url: "@Url.Action("RemoveCompany", "Pattern")",
+                        data: `id=${companyId}`,
+                        success: function(data) {
+                            //$(e.target).parent().parent().parent().remove();
+                            if (data === "True") {
+                                $("tr[data-company-id='" + companyId + "']").fadeOut(400,
+                                    function() {
+                                        $(this).remove();
+                                    });
+                                target.closest("tr").fadeOut(400,
+                                    function() {
+                                        $(this).remove();
+                                    });
+                            } else {
+                                alert("Произошла ошибка, попробуйте позже");
+                            }
+                        },
+                        error: function() {
                             alert("Произошла ошибка, попробуйте позже");
-                        }
-                    },
-                    error: function() {
-                        alert("Произошла ошибка, попробуйте позже");
-                    }
-                });
-                    break;
-            case "swap":
-                    var userId = $(this).data("user-id");
-                    var hidden = $("td[data-user-id='" + userId + "']>input:hidden");
-                    var i = 0; 
-                    $("td[data-user-id='" + userId + "']>input:visible").fadeToggle(200, function() {
-                        i++;
-                        if (i>2) {
-                        hidden.fadeToggle(200);
                         }
                     });
-                   
                     break;
-            default:
-            }
-            
-        });
+                case "saveUser":
+                    var valid = true;
+                    var userId = $(this).data("user-id");
+                    $("td[data-user-id='" + userId + "']>input").each(function() {
+                        if (!validElement(this)) {
+                            valid = false;
+                        }
+                    });
+                        if (!valid) {
+                            alert("Не валидные значения полей!")
+                        break;
+                    }
+                    var companyId = $(this).closest("tr").data("company-id");
+                    var target = $(this);
+                    var userId = $(this).data("user-id");
+                    var client = {
+                        Id: userId,
+                        Name: $("td[data-user-id='" + userId + "']>input[name='user.Name']").val(),
+                        Surname: $("td[data-user-id='" + userId + "']>input[name='user.Surname']").val(),
+                        Patronymic: $("td[data-user-id='" + userId + "']>input[name='user.Patronymic']").val(),
+                        Name_DativeCase: $("td[data-user-id='" + userId + "']>input[name='user.Name_DativeCase']")
+                            .val(),
+                        Surname_DativeCase: $("td[data-user-id='" + userId + "']>input[name='user.Surname_DativeCase']")
+                            .val(),
+                        Patronymic_DativeCase: $("td[data-user-id='" +
+                            userId +
+                            "']>input[name='user.Patronymic_DativeCase']").val(),
+                        CompanyId: companyId
+                    }
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("SaveUser", "Pattern")",
+                        data: {
+                            client: client
+                        },
+                        success: function(data) {
+                            //$(e.target).parent().parent().parent().remove();
+                            if (data === "True") {
+                                alert("Изменения сохранены");
+                            } else {
+                                alert("Произошла ошибка, попробуйте позже");
+                            }
+                        },
+                        error: function() {
+                            alert("Произошла ошибка, попробуйте позже");
+                        }
+                    });
+                    break;
+                case "deleteUser":
+                    var userId = $(this).data("user-id");
+                    var target = $(this);
+                    $.ajax({
+                        type: "GET",
+                        url: "@Url.Action("RemoveUser", "Pattern")",
+                        data: `id=${userId}`,
+                        success: function(data) {
+                            //$(e.target).parent().parent().parent().remove();
+                            if (data === "True") {
+                                target.closest("tr").fadeOut(400,
+                                    function() {
+                                        $(this).remove();
+                                    });
+                            } else {
+                                alert("Произошла ошибка, попробуйте позже");
+                            }
+                        },
+                        error: function() {
+                            alert("Произошла ошибка, попробуйте позже");
+                        }
+                    });
+                    break;
+                case "swap":
+                    var userId = $(this).data("user-id");
+                    var hidden = $("td[data-user-id='" + userId + "']>input:hidden");
+                    var i = 0;
+                    $("td[data-user-id='" + userId + "']>input:visible").fadeToggle(200,
+                        function() {
+                            i++;
+                            if (i > 2) {
+                                hidden.fadeToggle(200);
+                            }
+                        });
+
+                    break;
+                default:
+                }
+
+            });
         });
 
 
@@ -328,7 +361,7 @@
                     type: "GET",
                     url: "@Url.Action("RemoveUser", "Pattern")",
                     data: `id=${$(this).parent().parent().parent().attr("userId")}`,
-                    success: ()=> {
+                    success: () => {
                         $(this).parent().parent().parent().remove();
                     },
                     error: function(data) {
@@ -346,7 +379,7 @@
             $(this).toggleClass('rotated');
         });
 
-       
+
     </script>
 
     @Scripts.Render("~/bundles/Home-js")

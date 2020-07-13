@@ -450,6 +450,16 @@ td {
     text-align: left; */
     
 }
+.EditCol.val-error {
+	border-radius: 5px;
+	border: 2px solid red;
+	background-color: pink;
+	width: 100%;
+	padding: 3px 15px;
+	/* 
+    text-align: left; */
+    
+}
 
 .EditTextCol {
     margin-left: 5px;
