@@ -1,62 +1,211 @@
 ﻿let image = document.getElementsByClassName('imgModalStyle');
+var imgModal;
+$(document).on("change", "#submitImg", handleFiles);
+$(document).on("change", "#submitStamp", handleFiles);
+$(document).on("click",
+    ".AddStamp",
+    function() {
+        var stamp = $(this).closest("div.card").find("img").prop('src');
+        var stamp_id = $(this).closest("div.card").find("img").attr('stamp-id');
+        $("#stampModal").modal("hide");
+        var block = $(
+            "<div stamp-id='" + stamp_id +"' style='height:60px; width:60px; border-thickness: 2px; border-color: #464646' class='stampWrap'><img width='100%' class='' src = '" +
+            stamp +
+            "'/><div class='deleteStamp'>×<div/></div >");
+        $(imgModal.closest(".img-wrap")).append(block);
 
-//wheelzoom(document.getElementsByClassName('imgModalStyle'), { maxZoom: 2 });
 
-var inputElement = $("#submitImg");
-inputElement[0].addEventListener("change", handleFiles, false);
+        $(block).draggable({
+            containment: $(imgModal),
+            handle: block.find("img")
+        });
+
+
+        $(block).resizable({
+            containment: $(imgModal),
+            handles: 'se',
+            aspectRatio: true,
+            minHeight: 20,
+            minWidth: 20
+        });
+
+
+    });
+
 function handleFiles() {
-    $(inputElement).submit();
+    $(this).submit();
 }
 
+function getColumnCells(elem) {
+    return $(elem)
+        .filter('th, td')
+        .filter(':not([colspan])')
+        .closest('table')
+        .find('tr')
+        .filter(':not(:has([colspan]))')
+        .children(':nth-child(' + ($(elem).index() + 1) + ')');
+}
 
+function setAutocomplete() {
+    $(".draggable-text.autotext").autocomplete({ source: autotexts });
+}
 
-$(document).on("dragstart", "block-delete-svg", function (e) {
-    e.preventDefault();
+var after = 0;
+$(document).ready(function() {
+    $("tr:not(tr:last)>td:not(:last-child)").resizable({
+        containment: "#tableRed",
+        handles: 's, e',
+        minHeight: 10,
+        minWidth: 10
+
+    });
+    setAutocomplete();
+
 });
 
-$(document).on("click", ".block-delete-svg", function () {
-    $(this).parent().parent().remove();
-});
-$(".add-text").on("click", function() {
-    let modelBlockOne = $(this).parent().parent();
-    let tableSelect = $(this).parents()[1].children[2].children[1];
-    let block = $(`
+$(document).on('change',
+    ".hint-data-type",
+    function() {
+        if ($(this).val() === "Статичный текст из бд") {
+            $(this).closest(".draggable-div").find(".draggable-text").addClass("autotext");
+            setAutocomplete();
+        } else {
+            $(this).closest(".draggable-div").find(".draggable-text.autotext").autocomplete("destroy")
+                .removeClass("autotext");
+        }
+    });
+
+$(document).on('resizestart',
+    "td",
+    function() {
+        var direction = $(this).data('ui-resizable').axis;
+        if (direction === 's') {
+            var targ = $(this).closest("tr");
+            targ.children("td").height("auto");
+            var maxh = 0;
+
+            $("tr").each(function() {
+                if (!$(this).is(targ) && !$(this).is($(targ).next()))
+                    maxh += $(this).height();
+            });
+            maxh = $("table#tableRed").height() - maxh - 12;
+            $(targ).children("td:not(:last-child)").resizable("option", "maxHeight", maxh);
+            $("td").each(function() {
+                if (!targ.children("td").is($(this))) {
+                    $(this).height($(this).height());
+                }
+            });
+            var next = $(this).closest('tr').next('tr').children("td");
+            next.height("auto");
+        } else {
+            var cells = getColumnCells(this);
+            $(cells).each(function() {
+                $(this).width("auto");
+            });
+            var maxw = 0;
+
+            $(this).prevAll("td").each(function() {
+                maxw += $(this).width();
+            });
+            $(this).nextAll("td").filter(":not(:first)").each(function() {
+                maxw += $(this).width();
+            });
+
+            maxw = $("table#tableRed").width() - maxw - 24;
+            $(cells).filter(".ui-resizable").resizable("option", "maxWidth", maxw);
+            $(cells).each(function() {
+                $(this).prevAll("td").each(function() {
+                    $(this).width($(this).width());
+                });
+                $(this).nextAll("td").filter(":not(:first)").each(function() {
+                    $(this).width($(this).width());
+
+                });
+            });
+            $(cells).each(function() {
+                $(this).next("td").width("auto");
+            });
+        }
+
+    });
+$(document).on('resizestop',
+    "td",
+    function() {
+        var direction = $(this).data('ui-resizable').axis;
+        if (direction === 's') {
+            var next = $(this).closest('tr').next('tr').children("td");
+            next.height(next.height());
+        } else {
+            var cells = getColumnCells(this);
+            $(cells).each(function() {
+                $(this).next("td").width($(this).next("td").width());
+            });
+        }
+
+    });
+
+
+$(document).on("dragstart",
+    "block-delete-svg",
+    function(e) {
+        e.preventDefault();
+    });
+
+$(document).on("click",
+    ".block-delete-svg",
+    function() {
+        $(this).closest(".draggable-div").remove();
+    });
+$(".add-text").on("click",
+    function() {
+        let modelBlockOne = $(this).parent().parent();
+        let tableSelect = $(this).parents()[1].children[2].children[1];
+        let block = $(`
                 <div class='draggable-div block-visible'>
                     <div class='draggable-hint'>
                         <div class='hint-left'>
                             <select class='hint-data-type'>
                                 <option>Имя</option>
+                                <option>Имя(Д.п)</option>
                                 <option>Фамилия</option>
+                                <option>Фамилия(Д.п)</option>
                                 <option>Отчество</option>
+                                <option>Отчество(Д.п)</option>
                                 <option>Статичный текст</option>
+                                <option>Номер корочки</option>
+                                <option>Статичный текст из бд</option>
                             </select>
                             <input class='hint-font-size' type='number' min='12' max='72' value='16' />
                         </div>
-                        <img draggable='false' class='hint-svg block-move-svg' src='../Resourses/svg/move-white.svg'/>
-                        <img draggable='false' class='hint-svg block-delete-svg' src='../Resourses/svg/delete-white.svg'/>
+                        <div class='hint-right'>
+                           <img draggable='false' class='hint-svg block-move-svg' src='../Resourses/svg/move-white.svg'/>
+                           <img draggable='false' class='hint-svg block-delete-svg' src='../Resourses/svg/delete-white.svg'/>
+                        </div>                        
                     </div>
                     <textarea class='draggable-text'>Текст</textarea>
                 </div>`);
-    modelBlockOne.find(".img-wrap").append(block);
-    block.draggable({
-        snap: "td",
-        snapTolerance: 10,
-        containment: modelBlockOne.find(".img-wrap"),
-        handle: "img.block-move-svg"
+        modelBlockOne.find(".img-wrap").append(block);
+        block.draggable({
+            snap: "td",
+            snapTolerance: 10,
+            containment: modelBlockOne.find(".img-wrap"),
+            handle: "img.block-move-svg"
+        });
     });
-});
 
-$(".imgModalStyle").on("click", function(e) {
-    let elem = $(e.target);
-    if (!elem.hasClass("draggable-div")) {
-        $(".draggable-div").removeClass("block-visible");
-        $(".draggable-text").attr("readonly", "true");
-    }
-});
+$(".imgModalStyle, #BlockTable").on("click",
+    function(e) {
+        let elem = $(e.target);
+        if (!elem.hasClass("draggable-div")) {
+            $(".draggable-div").removeClass("block-visible");
+            $(".draggable-text").attr("readonly", "true");
+        }
+    });
+
 
 $(document).on("click",
     ".deleteButton",
-    function (e) {
+    function(e) {
         $.ajax({
             url: "/Pattern/DeletePicture",
             data: { pictureID: $($(e.target).parents()[1]).find(".patternBut").attr("pictureID") },
@@ -68,22 +217,23 @@ $(document).on("click",
         });
     });
 
-$(document).on("click", ".greyButton", function () {
-    let block = $(`<div style="display:none;" class="deleteContain"><button class="deleteButton"style="width:100%">Удалить</button></div>`);
-    $(".patternRectangle").find("#link").after(block);
-    $(".deleteContain").fadeIn("slow");
-});
-
-
-
+$(document).on("click",
+    ".greyButton",
+    function() {
+        let block = $(
+            `<div style="display:none;" class="deleteContain"><button class="deleteButton"style="width:100%">Удалить</button></div>`);
+        $(".patternRectangle").find("#link").after(block);
+        $(".deleteContain").fadeIn("slow");
+    });
 
 
 $("body").on("click",
-    function (e) {
-        $(".deleteContain").hide("slow", function() {
-            $(".deleteContain").remove();
-        });
-});
+    function(e) {
+        $(".deleteContain").hide("slow",
+            function() {
+                $(".deleteContain").remove();
+            });
+    });
 
 
 $(document).on("click",
@@ -94,36 +244,58 @@ $(document).on("click",
         $(".draggable-text").removeAttr("readonly");
     });
 
-$(".save").on("click", function () {
-    let img = $(this).parent().parent().find(".imgModalStyle")[0];
-    let kefX = img.naturalWidth / img.width;
-    let kefY = img.naturalHeight / img.height;
-    let bounds = $(this).parent().parent().find(".draggable-div").toArray().map(elem => {
-        return [((elem.offsetLeft + 3) * kefX).toString(),
-            ((elem.offsetTop + 25) * kefY).toString(),
-            ((elem.offsetWidth - 4) * kefX).toString(),
-            elem.parentElement.getAttribute("picture-id"),
-            elem.getAttribute("position-id") || "null",
-            $(elem).find(".hint-data-type").val(),
-            (elem.getElementsByClassName('hint-font-size')[0].value.split('px')[0] * kefY).toString(),
-            Math.round(elem.getElementsByClassName('hint-font-size')[0].value.split('px')[0] * kefY).toString(),
-            $(elem).find(".draggable-text").val()];
-    }); 
-    $.ajax({
-        url: "../Pattern/SetBlocks",
-        method: "POST",
-        data: { data: JSON.stringify({ "bounds": bounds, "picId": $(img).parent().attr("picture-id"), "Id": $(img).parent().parent().parent().find("[name='Id']").val(), "Name": $(img).parent().parent().parent().find("[name='Name']").val() }) },
-        success: () => {
-            document.location = "../Pattern/EditorPattern";
-        }
+$(".save").on("click",
+    function() {
+        let img = $(this).parent().parent().find(".imgModalStyle")[0];
+        let kefX = img.naturalWidth / img.width;
+        let kefY = img.naturalHeight / img.height;
+        let bounds = $(this).parent().parent().find(".draggable-div").toArray().map(elem => {
+            return [
+                ((elem.offsetLeft) * kefX).toString(),
+                ((elem.offsetTop) * kefY).toString(),
+                ((elem.offsetWidth) * kefX).toString(),
+                elem.parentElement.getAttribute("picture-id"),
+                elem.getAttribute("position-id") || -1,
+                $(elem).find(".hint-data-type").val(),
+                (elem.getElementsByClassName('hint-font-size')[0].value.split('px')[0] * kefY).toString(),
+                Math.round(elem.getElementsByClassName('hint-font-size')[0].value.split('px')[0] * kefY).toString(),
+                $(elem).find(".draggable-text").val()
+            ];
+        });
+        let stamps = $(this).parent().parent().find(".stampWrap").toArray().map(elem => {
+            return {
+                PosX: ((elem.offsetLeft) * kefX).toString(),
+                PosY: ((elem.offsetTop) * kefY).toString(),
+                Width: ((elem.offsetWidth) * kefX).toString(),
+                Height: ((elem.offsetHeight) * kefY).toString(),
+                StampId: elem.getAttribute("stamp-id") || -1,
+                StampPositionId: elem.getAttribute("stamp-posid") || -1,
+                PicId: 0
+            };
+            
+        });
+        $.ajax({
+            url: "../Pattern/SetBlocks",
+            method: "POST",
+            data: {
+                data: JSON.stringify({
+                    "bounds": bounds,
+                    "stamps": stamps,
+                    "picId": $(img).parent().attr("picture-id"),
+                    "Id": $(img).parent().parent().parent().find("[name='Id']").val(),
+                    "Name": $(img).parent().parent().parent().find("[name='Name']").val()
+                })
+            },
+            success: () => {
+                document.location = "../Pattern/EditorPattern";
+            }
+        });
     });
-});
-
 
 
 $(document).on("click",
     ".findIcon",
-    function () {
+    function() {
         $(".ImageName").toArray().forEach((elem) => {
             if (!elem.innerText.includes($(this).parent().find("input").val())) {
                 $(elem).parent().fadeOut("slow");
@@ -137,154 +309,185 @@ $(document).on("click",
     });
 
 
-//$(".imgModalStyle").ready(() => {
-//    let positions = $("#positions div").toArray();
-//    let dataPositions;
-//    for (var i in positions) {
-//        //dataPositions.push({
-//        //    id: block.getAttribute("position-id"),
-//        //    posX: block.getAttribute("position-x"),
-//        //    posY: block.getAttribute("position-y"),
-//        //    width: block.getAttribute("position-width"),
-//        //    picId: block.getAttribute("picture-id")
-//        //});
-//        let block = positions[i];
-//        let blockHtml = $("<div class='draggable-div block-visible'><div class='draggable-hint'><div class='hint-left'><select class='hint-data-type'><option>Имя</option><option>Фамилия</option><option>Отчество</option><option>Статичный текст</option></select></div><img draggable='false' class='hint-svg block-move-svg' src='../Resourses/svg/move-white.svg'/><img draggable='false' class='hint-svg block-delete-svg' src='../Resourses/svg/delete-white.svg'/></div><textarea class='draggable-text'/></div>");
+$(document).on("focusin",
+    ".draggable-div",
+    function() {
+        $(this).find(".draggable-hint").fadeIn(200);
+    });
+$(document).on("focusout",
+    ".draggable-div",
+    function() {
+        $(this).find(".draggable-hint").fadeOut(200);
+    });
+function check(element, index, array) {
+    var el = $(element);
+    console.log(el.picture_id);
+    return el.picture_id === id;
+};
 
-//        blockHtml.find(".draggable-text").css("width", block.getAttribute("position-width"));
-//        blockHtml.attr("position-id", block.getAttribute("position-id"));
-//        $(".img-wrap[picture-id='" + block.getAttribute("picture-id") + "']").append(blockHtml);
-//        blockHtml.draggable({
-//            containment: blockHtml.parent(),
-//            handle: "img.block-move-svg"
-//        });
-//        let img = $(".img-wrap[picture-id='" + block.getAttribute("picture-id") + "']").find('.imgModalStyle')[0];
-//        if (img) {
-//            let kefX = img.naturalWidth / img.width;
-//            let kefY = img.naturalHeight / img.height;
-//            blockHtml.css("left", Math.round(block.getAttribute("position-x").replace(/,/, '.') / kefX - 2) + "px");
-//            blockHtml.css("top", Math.round(block.getAttribute("position-y").replace(/,/, '.') / kefY - 20) + "px");
-//            blockHtml.css("width", Math.round(block.getAttribute("position-width").replace(/,/, '.') / kefX + 4) + "px");
-//            blockHtml.find(".hint-data-type").val(block.getAttribute("Type"));
-//        }
-
-//    }
-//});
-
-$(document).on("click", ".patternBut", function () {
-    let id = $(this).attr("pictureid");
-
-    if ($(".img-wrap[picture-id='" + id + "']").find("draggable-div").length == 0) {
-        setTimeout(() => {
-            let positions = $(`[position-id][picture-id='${id}']`).toArray();
-            $(".draggable-div").remove();
-            for (let i in positions) {
-                let block = positions[i];
-                let blockHtml = $(`
+$(document).on("click",
+    ".patternBut",
+    function() {
+        var id = $(this).attr("pictureid");
+        $(".img-wrap[picture-id='" + id + "']>.draggable-div").remove();
+        $(".img-wrap[picture-id='" + id + "']>.stampWrap").remove();
+        var target_positions = positions.find(t => t.picture_id==id);
+        
+        $(target_positions.positions).each(function() {
+            var block = this;
+            let blockHtml = $(`
                 <div class='draggable-div block-visible'>
-                    <div class='draggable-hint'>
+                   <div class='draggable-hint'>
                         <div class='hint-left'>
                             <select class='hint-data-type'>
                                 <option>Имя</option>
+                                <option>Имя(Д.п)</option>
                                 <option>Фамилия</option>
+                                <option>Фамилия(Д.п)</option>
                                 <option>Отчество</option>
+                                <option>Отчество(Д.п)</option>
                                 <option>Статичный текст</option>
+                                <option>Номер корочки</option>
+                                <option>Статичный текст из бд</option>
                             </select>
                             <input class='hint-font-size' type='number' min='12' max='72' value='16' />
                         </div>
-                        <img draggable='false' class='hint-svg block-move-svg' src='../Resourses/svg/move-white.svg'/>
-                        <img draggable='false' class='hint-svg block-delete-svg' src='../Resourses/svg/delete-white.svg'/>
+                        <div class='hint-right'>
+                           <img draggable='false' class='hint-svg block-move-svg' src='../Resourses/svg/move-white.svg'/>
+                           <img draggable='false' class='hint-svg block-delete-svg' src='../Resourses/svg/delete-white.svg'/>
+                        </div>                        
                     </div>
-                    <textarea class='draggable-text'>${block.getAttribute('text') != "" ? block.getAttribute('text') : "Текст"}</textarea>
+                    <textarea class='draggable-text'>${block.text != ""
+                    ? block.text
+                    : "Текст"}</textarea>
                 </div>`);
-                blockHtml.attr("position-id", block.getAttribute("position-id"));
-                $(".img-wrap[picture-id='" + block.getAttribute("picture-id") + "']").append(blockHtml);
-                blockHtml.draggable({
-                    snap: "td",
-                    snapTolerance: 10,
-                    containment: blockHtml.parent(),
-                    handle: "img.block-move-svg"
-                });
-                let img = $(".img-wrap[picture-id='" + block.getAttribute("picture-id") + "']").find('.imgModalStyle')[0];
-                if (img) {
-                    let kefX = img.naturalWidth / img.width;
-                    let kefY = img.naturalHeight / img.height;
-                    blockHtml.css("left", Math.round(block.getAttribute("position-x").replace(/,/, '.') / kefX - 3) + "px");
-                    blockHtml.css("top", Math.round(block.getAttribute("position-y").replace(/,/, '.') / kefY - 25) + "px");
-                    blockHtml.find(".draggable-text").css("width", Math.round(block.getAttribute("position-width").replace(/,/, '.') / kefX + 4) + "px");
-                    blockHtml.find(".hint-data-type").val(block.getAttribute("Type"));
-                    blockHtml.find(".hint-font-size").val(Math.round(block.getAttribute("font-size") / kefY));
-                    $(".hint-font-size").trigger("change");
+            blockHtml.attr("position-id", block.position_id);
+            $(".img-wrap[picture-id='" + block.picture_id + "']").append(blockHtml);
+            blockHtml.draggable({
+                snap: "td",
+                snapTolerance: 10,
+                containment: blockHtml.parent(),
+                handle: "img.block-move-svg"
+            });
+            let img = $(".img-wrap[picture-id='" + block.picture_id + "']")
+                .find('.imgModalStyle')[0];
+            if (img) {
+                let kefX = img.naturalWidth / img.width;
+                let kefY = img.naturalHeight / img.height;
+                blockHtml.css("left",
+                    Math.round(block.position_x.replace(/,/, '.') / kefX) + "px");
+                blockHtml.css("top",
+                    Math.round(block.position_y.replace(/,/, '.') / kefY) + "px");
+                blockHtml.find(".draggable-text").css("width",
+                    Math.round(block.position_width.replace(/,/, '.') / kefX) + "px");
+                blockHtml.find(".hint-data-type").val(block.Type);
+                blockHtml.find(".hint-font-size").val(Math.round(block.font_size / kefY));
+                $(".hint-font-size").trigger("change");
+                if (block.Type === "Статичный текст из бд") {
+                    blockHtml.find(".draggable-text").addClass("autotext")
+                        .autocomplete({ source: autotexts });
                 }
+
             }
-        },1000);
-    }
-    
-});
+        });
+        $(target_positions.stamps).each(function() {
+            var block = this;
+            var blockHtml = $(
+                "<div stamp-posid='" + block.StampPositionId+"' stamp-id='" + block.stamp_id +"' style='height:60px; width:60px; border-thickness: 2px; border-color: #464646' class='stampWrap'><img width='100%' class='' src = '" +
+                block.image +
+                "'/><div class='deleteStamp'>×<div/></div >");
+            $(".img-wrap[picture-id='" + block.picture_id + "']").append(blockHtml);
+            let img = $(".img-wrap[picture-id='" + block.picture_id + "']")
+                .find('.imgModalStyle')[0];
+            if (img) {
+                let kefX = img.naturalWidth / img.width;
+                let kefY = img.naturalHeight / img.height;
+                blockHtml.css("left",
+                    Math.round(block.position_x.replace(/,/, '.') / kefX) + "px");
+                blockHtml.css("top",
+                    Math.round(block.position_y.replace(/,/, '.') / kefY) + "px");
+                blockHtml.css("width",
+                    Math.round(block.position_width.replace(/,/, '.') / kefX) + "px");
+                blockHtml.css("height",
+                    Math.round(block.position_height.replace(/,/, '.') / kefY) + "px");
+            }
+            $(blockHtml).draggable({
+                containment: $(img),
+                handle: $(blockHtml).find("img")
+            });
+            $(blockHtml).resizable({
+                containment: $(img),
+                handles: 'se',
+                aspectRatio: true,
+                minHeight: 20,
+                minWidth: 20
+            });
+
+        });
+    });
+
+$(document).on("change",
+    ".hint-font-size",
+    function() {
+        $(this).parent().parent().parent().find(".draggable-text").css("font-size", this.value + "px");
+    });
 
 
-$(document).on("change", ".hint-font-size", function () {
-    $(this).parent().parent().parent().find(".draggable-text").css("font-size", this.value + "px");
-})
-
-
-$(document).on("click", "button.findIcon", function () {
-    let block = `<button class="glo">
+$(document).on("click",
+    "button.findIcon",
+    function() {
+        let block = `<button class="glo">
                 <span>Очистить поиск</span>
             </button>`
-    $("#patternsContain").after(block);
-});
-
-$(document).on("click", "button.glo", function () {
-    $(".ImageName").parent().fadeIn(function() {
-        $("button.glo").remove();
-    });
-});
-
-
-$(".GridDown").click(function (e) {
-
-    $($(this).parents()[1].children[2].children[0]).find("tr").last().remove();
-});
-
-$(".GridUp").click(function (e) {
-
-    $($(this).parents()[1].children[2].children[0]).append("<tr><td></td><td></td><td></td><td></td></tr>");
-
-    
-});
-
-
-$(".rectangleWhite.Grid").click(function (e) {
-
-    var block = $($(this).parents()[1].children[0]);
-    if ($(block).is(":visible")) {
-
-        block.css("display", "none");
-       
-    } else {
-        
-        block.css("display", "inline-table");
-    }
-});
-
-
-
-
-$(".rectangleWhite.Stamp").click(function (e) {
-
-    var imgModal = $(this).parents()[1].children[1];
-    var block = $("<div class='stampWrap' id='resizable'><img src = '/Resourses/Stamps/Stamps1.png'/></div >");
-
-    $($(this).parents()[1].children[1]).append(block);
-
-    
-    $(block).draggable({
-        containment: $(imgModal)
+        $("#patternsContain").after(block);
     });
 
-    $(block).resizable();
+$(document).on("click",
+    "button.glo",
+    function() {
+        $(".ImageName").parent().fadeIn(function() {
+            $("button.glo").remove();
+        });
+    });
+
+
+$(".GridDown").click(function(e) {
+
+    $("table#tableRed>tbody>tr:last").remove();
+    $("table#tableRed>tbody>tr:last>td").resizable("destroy");
+});
+
+$(".GridUp").click(function(e) {
+
+    $("tr:not(tr:last)>td:not(:last-child)").resizable("destroy");
+    $("td").height("auto");
+
+    $("table#tableRed>tbody>tr:last").clone().insertAfter($("table#tableRed>tbody>tr:last"));
+
+    $("tr:not(tr:last)>td:not(:last-child)").resizable({
+        containment: "#tableRed",
+        handles: 's, e',
+        minHeight: 10,
+        minWidth: 10
+    });
+
 
 });
 
 
+$(".rectangleWhite.Grid").click(function(e) {
+
+    $("#BlockTable").toggleClass("d-none");
+
+});
+
+
+$(".rectangleWhite.Stamp").click(function(e) {
+
+    imgModal = $(this).parents()[1].children[1];
+});
+$(document).on('click',
+    ".deleteStamp",
+    function() {
+        $(this).parent().remove();
+    });

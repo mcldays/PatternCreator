@@ -1,36 +1,40 @@
 ﻿@using PatternCreator.Models
 @using PatternCreator.Utilities
-@model List<UserModel>
+@model List<CompanyViewModel>
 
-    <table id="TableTwoStyle" style="display: none">
-
-        <th style="width: 20px;"><span>№</span></th>
-        <th style="width: 250px;"><span>Имя</span></th>
-        <th style="width: 300px;"><span>Фамилия</span></th>
-        <th style="width: 350px;"><span>Отчество</span></th>
-        <th style="width: 250px"><span>Компания</span></th>
-        <th style="width: 20px"></th>
-
-
-        @foreach (var userModel in Model)
+<table class="table w-100" id="searchTable">
+    <thead class="text-center">
+    <th><span>№</span></th>
+    <th><span>Имя</span></th>
+    <th><span>Фамилия</span></th>
+    <th><span>Отчество</span></th>
+    <th><span>Компания</span></th>
+    <th></th>
+    </thead>
+    <tbody>
+        @foreach (var company in Model)
         {
-            var ComModel = SendDbUtility.GetCompanyById(userModel.CompanyId);
-    <tr>
-        <td><span>@userModel.Id</span></td>
-        <td>@userModel.Name</td>
-        <td><span>@userModel.Surname</span></td>
-        <td><span>@userModel.Patronymic</span></td>
-        <td><span>@ComModel?.CompanyName</span></td>
-        <td>
-            <button class="AddButton">
-                <img src="/Resourses/svg/add.svg" style="width: 20px; height: 15px" />
-            </button>
-        </td>
-    </tr>
+            foreach (var user in company.UserViewModels)
+            {
 
 
+                <tr>
+                    <td>@user.Id</td>
+                    <td>@user.Name</td>
+                    <td>@user.Surname</td>
+                    <td>@user.Patronymic</td>
+                    <td>@company.CompanyName</td>
+                    <td>
+                        <button class="AddButton">
+                            <img src="/Resourses/svg/add.svg" style="width: 20px; height: 15px" />
+                        </button>
+                    </td>
+                </tr>
 
+
+            }
         }
-    </table>
+    </tbody>
+</table>
 
 

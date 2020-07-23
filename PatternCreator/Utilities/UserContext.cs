@@ -15,6 +15,7 @@ namespace PatternCreator.Utilities
         {
 
         }
+        public DbSet<AutoTextModel> AutoTexts { get; set; }
 
         public DbSet<AutModel> AutModels { get; set; }
 
@@ -23,7 +24,8 @@ namespace PatternCreator.Utilities
         public  DbSet<UserModel> UserModels { get; set;}
 
         public DbSet<PictureModel> PicturesModels { get; set; }
-
+        public DbSet<StampModel> StampModels { get; set; }
+        public DbSet<StampPositions> StampPositions { get; set; }
         public DbSet<PositionModel> PositionModels { get; set; }
 
 

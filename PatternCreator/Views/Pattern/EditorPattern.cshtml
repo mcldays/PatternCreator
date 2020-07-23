@@ -1,5 +1,5 @@
 ﻿@using PatternCreator.Models
-@model object[]
+@model PictureModelViewModel[]
 
 
 @Styles.Render("~/bundles/EditorPattern-css")
@@ -12,7 +12,7 @@
     <div class="ButtonsContain">
         @using (Html.BeginForm("Create", "Pattern", FormMethod.Post, new { enctype = "multipart/form-data", id = "submitImg" }))
         {
-                @*<span class="blueButtonText">Добавить шаблон</span>*@
+            @*<span class="blueButtonText">Добавить шаблон</span>*@
             <input type="file" name="uploadImage" value="" id="file-input" class="hidden-input" />
             <label for="file-input" class="blueButton">
                 <span class="blueButtonText">Загрузить документ</span>
@@ -34,7 +34,7 @@
 
     <div id="patternsContain">
 
-        @foreach (var item in (Model[0] as List<PictureModel>))
+        @foreach (var item in Model)
         {
             var item1 = "openModal" + item.Id;
             var item2 = "#openModal" + item.Id;
@@ -44,22 +44,22 @@
                     @item.Name
                 </span>
                 <a href=@item2 id="link">
-                    <button class="patternBut" pictureID="@item.Id">
+                    <a class="patternBut" pictureID="@item.Id" data-target="#@item1" data-toggle="modal">
                         @Html.Raw("<img class='imgStyle' src=\"data:image/jpeg;base64,"
                                   + Convert.ToBase64String(item.Image) + "\" />")
-                    </button>
+                    </a>
                 </a>
                 @*@using (Html.BeginForm("UpdatePicture", "Pattern", FormMethod.Post, new { }))*@
-                @*{*@
-                <div>
-                    <div id=@item1 class="update-picture-modal">
-                        <div class="modal-dialog">
+              
+                <div class="modal fade-scale" id=@item1 tabindex="-1" role="dialog" aria-labelledby="@(item1)lLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-lg">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <a href="#close" title="Close" class="close">×</a>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
                                 </div>
                                 <div class="modal-body">
-
                                     <div class="modelContent">
                                         <div class="modelBlockOne">
                                             <div class="manageBlockModel">
@@ -82,21 +82,19 @@
                                                     <span>Уменьшить сетку</span>
                                                 </button>
                                             </div>
-
-
-
+                                           
                                             <div class="mainEditor">
+                                                <div id="BlockTable" class="position-absolute h-100 w-100 d-none" style="z-index: 2">
+                                                    <table id="tableRed" class="h-100 w-100">
 
-                                                <table id="tableRed">
-                                                    <tr><td></td><td></td><td></td><td></td></tr>
-                                                    <tr><td></td><td></td><td></td><td></td></tr>
-                                                    <tr><td></td><td></td><td></td><td></td></tr>
-                                                    <tr><td></td><td></td><td></td><td></td></tr>
-                                                </table>
+                                                        <tr><td></td><td></td><td></td><td></td></tr>
+                                                        <tr><td></td><td></td><td></td><td></td></tr>
+                                                        <tr><td></td><td></td><td></td><td></td></tr>
+                                                        <tr><td></td><td></td><td></td><td></td></tr>
 
-
-                                               
-
+                                                    </table>
+                                                   
+                                                </div>
                                                 <div class="img-wrap" picture-id="@item.Id">
                                                     @Html.Raw("<img class='imgModalStyle' src=\"data:image/jpeg;base64,"
                                                               + Convert.ToBase64String(item.Image) + "\" />")
@@ -105,10 +103,9 @@
                                                     <button type="button" class="rectangleWhite Grid">
                                                         <img src="/Resourses/svg/grid.svg" class="InzoomModal" />
                                                     </button>
-
-                                                    <button type="button" class="rectangleWhite Stamp">
-                                                        <img src="/Resourses/svg/stamp (1).svg" class="InzoomModal" />
-                                                    </button>
+                                                    <a class="rectangleWhite Stamp" data-ajax="true" data-ajax-method="GET" data-ajax-mode="replace" data-ajax-update="#stampscontainer" data-target="#stampModal" data-toggle="modal" href="/Pattern/GetStamps" type="button">
+                                                        <img src='/Resourses/svg/stamp (1).svg' class='InzoomModal' />
+                                                    </a>
                                                 </div>
                                             </div>
                                             <div class="saveButtonModal">
@@ -123,22 +120,76 @@
                             </div>
                         </div>
                     </div>
-                    @*}*@
+                   
                 </div>
-            </div>
+           
         }
+    </div>
+
+</div>
+<div class="modal fade-scale" id="stampModal" tabindex="-1" role="dialog" aria-labelledby="stampModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content" >
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                
+                @using (Ajax.BeginForm("AddStamp", null, new AjaxOptions
+                {
+                    UpdateTargetId = "stampscontainer"
+                }, new {enctype = "multipart/form-data", id = "submitStamp", @class = "form-inline flex-row"}))
+                {
+                    <input type="file" name="uploadImage" value="" id="file-stamp" class="hidden-input"/>
+                    <label for="file-stamp" class="blueButton">
+                        <span class="blueButtonText">Загрузить штамп</span>
+                        <img src="/Resourses/svg/add doc (1) white.svg" class="AddPatternImg">
+                    </label>
+                }
+                
+                <div class="container-fluid" id="stampscontainer"></div>
+                
+            </div>
         </div>
-
+    </div>
 </div>
-<div id="positions" style="display: none;">
-    @foreach (var block in (Model[1] as List<PositionModel>))
-    {
-        <div position-id="@block.Id" position-x="@block.PosX" position-y="@block.PosY" position-width="@block.Width" picture-id="@block.PictureId" Type="@block.Type" font-size="@block.FontSize" text="@block.Text"></div>
-    }
 
-</div>
 
 @section Scripts{
+<script>
+        var autotexts = [
+            @foreach (AutoTextModel text in ViewBag.Autotexts)
+            {
+                <text>"@text.Text",</text>
+            }
+        ];
+
+        var positions = [
+
+            @foreach (var pic in Model)
+            {
+                <text>{
+                picture_id: @(pic.Id),
+                positions: [
+                    @foreach (var block in pic.PositionModels)
+                    {
+                        <text>{position_id:@block.Id, position_x:"@block.PosX", position_y:'@block.PosY', position_width:'@block.Width', Type:"@block.Type", picture_id: @block.PictureId, font_size:@block.FontSize, text:"@block.Text"},</text>
+                    }
+                ],
+                stamps: [
+                    @foreach (var block in pic.StampPositions)
+                    {
+                        <text>{ StampPositionId:@block.StampPositionId, stamp_id:@block.StampId, position_x:'@block.PosX', position_y:'@block.PosY', position_width:'@block.Width', position_height:'@block.Height', picture_id: @block.PicId, image:'@("data:image/jpeg;base64,"
+                            + Convert.ToBase64String(block.Image))'},</text>
+                    }
+                ]
+            },</text>
+            }
+        ];
+</script>
+
     @Scripts.Render("~/bundles/EditorPattern-js")
 }
 

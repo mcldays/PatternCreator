@@ -128,11 +128,11 @@
 </div>
 
 
-    <div class="modal fade" id="UsersModal" tabindex="-1" role="dialog" aria-labelledby="UsersModalLabel" aria-hidden="true">
+    <div class="modal fade-scale" id="UsersModal" tabindex="-1" role="dialog" aria-labelledby="UsersModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Добавить пользователя</h5>
+                    <h5 class="modal-title" id="UsersModalLabel">Добавить пользователя</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -160,7 +160,7 @@
     </div>
 
 
-<div class="modal fade" id="companyModal" tabindex="-1" role="dialog" aria-labelledby="companyModalLabel" aria-hidden="true">
+<div class="modal fade-scale" id="companyModal" tabindex="-1" role="dialog" aria-labelledby="companyModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -322,25 +322,6 @@
         });
 
 
-        //$("tr.normalTr").hover(function() {
-        //    //$(this).addClass("ColoredTr");
-        //    //const block = $(`<div class='IconUtilities'>
-        //    //        <button class='IconButtonsDelete'>
-        //    //        <img src='/Resourses/svg/delete.svg' class='ManageIconStyle'>
-        //    //    </button>
-        //    //</div>`);
-
-        //    //$(this).append(block);
-
-
-        //},
-        //function() {
-
-        //    $(".ColoredTr").removeClass();
-        //    $("div.IconUtilities").remove();
-
-        //    });
-
         $(".IconButtonsEdit").click(function(e) {
             const input = $(".ColoredTr > td > input");
             const span = $(".ColoredTr > td > span");
@@ -373,7 +354,7 @@
 
         $(".closeTableBut").click(function(e) {
             var id = $(this).data("company-id");
-            $("tr[data-company-id='" + id + "']").each(function() {
+            $("tr[data-company-id='" + id + "']:not('.notfounded')").each(function() {
                 $(this).fadeToggle(400);
             });
             $(this).toggleClass('rotated');

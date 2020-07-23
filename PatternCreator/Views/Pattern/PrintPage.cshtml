@@ -51,16 +51,16 @@
                     Добавить компанию
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownOgranization">
-                    @foreach (var company in ViewBag.Companies as List<CompanyModel>)
+                    @foreach (var company in ViewBag.Companies)
                     {
-                        <button class="dropdown-item" type="button" company-id="@company.Id">@company.CompanyName</button>
+                        <button class="dropdown-item" type="button" company-id="@company.CompanyId">@company.CompanyName</button>
                     }
                 </div>
             </div>
 
-            <a href="#openModal" class="AddUserPrint">
-                <span>Добавить пользователя</span>
-            </a>
+            <button data-toggle="modal" data-target="#openModal" class="AddUserPrint">
+                Добавить пользователя
+            </button>
         </div>
         <span class="PrintDescription">Выбранные пользователи, организации:</span>
         <div id="acceptedUsers"></div>
@@ -88,22 +88,24 @@
         </div>
     </div>
 </div>
-<div id="openModal" class="users-modal">
-    <div class="modal-dialog">
+<div id="openModal" tabindex="-1" role="dialog" aria-labelledby="openModalLabel" aria-hidden="true" class="modal fade-scale">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 class="modal-title">Добавить пользователя</h3>
 
-                <a href="#close" title="Close" class="close">×</a>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body">
                 @using (Ajax.BeginForm("PrintParital", new AjaxOptions {UpdateTargetId = "results", OnSuccess = "OnSuccess"}))
                 {
                     <div class="AddUserModal">
                         <div class="FindUsersControl">
-                            <input type="text" name="name" class="ControlText" placeholder="Поиск по пользователям">
+                            <input type="text" name="name" id="FindUsers" class="ControlText" placeholder="Поиск по пользователям">
                             <!-- <span class="ControlText">Поиск по пользователям</span> -->
-                            <button class="FindButton">
+                            <button type="button" class="FindButton">
                                 <img src="/Resourses/svg/magnifying-glass (3).svg" class="AddUserImg">
                             </button>
                         </div>
@@ -118,9 +120,43 @@
 @section Scripts{
     @Scripts.Render("~/bundles/Print-js")
     <script>
+        
+            function findUsers(t) {
+                var userId = "";
+                var finded = "";
+                var filter = t.val().toLowerCase().replace(/ /g, '');
+                $("tbody>tr").each(function () {
+                    var vals = $(this).children("td");
+                    
+                    finded = $(vals[1]).text();
+                    finded += $(vals[2]).text();
+                    finded += $(vals[3]).text();
+                    
+                    if (!finded.toLowerCase().includes(filter)) {
+                        var tr = $(this);
+                        tr.hide();
+
+                    } else {
+                        var tr = $(this);
+                        tr.show();
+                    }
+                });
+            };
+            $(document).on("input", "#FindUsers", function() {
+                findUsers($(this));
+            });
+
+            $(document).on("click", ".FindButton", function() {
+                findUsers($(this).prev());
+            });
+        
         function OnSuccess() {
-            $("#TableTwoStyle").fadeIn();
+            findUsers($("#FindUsers"));
         }
+        
+        $(document).on("click", ".AddUserPrint", function() {
+            $(".modal-body>form").submit();
+        });
 
         $(document).on("click",
             ".DeleteButton",
@@ -191,7 +227,7 @@
                         for (let photo in photos) {
                             $("#photosForPrint")
                                 .append(
-                                    `<div class='photo-wrap'><img class='photo' src="data:image/jpeg;base64,${photos
+                                    `<div class='photo-wrap'><img class='photo' src="data:image/png;base64,${photos
                                     [photo]
                                     }"/><img class='photo-delete' src='../Resourses/svg/delete-white.svg' /></div>`);
                         }
@@ -204,8 +240,15 @@
         $("#PrintBut").click(() => {
             var images = $(document.getElementById("photosForPrint").getElementsByClassName('photo'));
             var bufferStr='';
+
             for (let i = 0; i < images.length; i++) {
-                bufferStr += `<div style='height:99vh;margin:0px;'><img style='margin:auto; width:100%; display:block' src='${$(images[i]).attr('src')}'/></div>`;
+                if ($("#substrate").prop("checked") === true) {
+                    bufferStr += `<div style='margin:0px;'><img style='margin:auto; width:100%; display:block' src='${
+                        $(images[i]).attr('src')}'/></div>`;
+                } else {
+                    bufferStr += `<div style='height:99vh;margin:0px;'><img style='margin:auto; width:100%; display:block' src='${$(images[i]).attr('src')}'/></div>`;
+                }
+               
             }
             printJS({ printable: bufferStr, type: 'raw-html', style: '* {margin: 0px; padding: 0px;}'});
         });

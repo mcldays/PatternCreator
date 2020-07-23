@@ -14,17 +14,18 @@ $(document).ready(function() {
             
             if (!finded.toLowerCase().includes(filter)) {
                 var tr = $("td[data-user-id='" + userId + "']:visible").closest('tr');
-                tr.hide();
+                tr.hide().addClass("notfounded");
                 if ($("tr[data-company-id='" + tr.data("company-id") + "']:visible").length==0) {
                     $("tr[data-header-id='" + tr.data("company-id") + "']:visible").hide();
                 } 
 
             } else {
-                $("td[data-user-id='" + userId + "']:hidden").closest('tr').show();
+                $("td[data-user-id='" + userId + "']:hidden").closest('tr').show().removeClass("notfounded");
                 $("tr[data-header-id='" + $("td[data-user-id='" + userId + "']:visible").closest('tr').data("company-id") + "']:hidden").show();
             }
 
         });
+        $(".closeTableBut").removeClass('rotated');
     };
     $(document).on("input", "#FindUsers", function() {
     findUsers($(this));

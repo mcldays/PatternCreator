@@ -1,0 +1,33 @@
+﻿@model PatternCreator.Models.StampModel[]
+
+
+<div class="row">
+    @foreach (var stamp in Model)
+    {
+        <div class="col-3 mt-3">
+            <div class="card">
+                <img stamp-id="@stamp.Id" src="@("data:image/jpeg;base64,"
+                            + Convert.ToBase64String(stamp.Image))" class="card-img-top mt-2" alt="...">
+                @Ajax.ActionLink("×", "DeleteStamp",new{id=stamp.Id},new AjaxOptions
+           {
+               Confirm="Вы уверены?",
+               HttpMethod="GET",
+               UpdateTargetId = "stampscontainer"
+           }, new{ @class= "close position-absolute", style= "top: 2px; right:2px" })
+                <div class="card-body text-center justify-content-center">
+                    @using (Ajax.BeginForm("UpdateStampName", null, new AjaxOptions {OnSuccess = "alert('Сохранено!')", HttpMethod = "POST"}, new {@class = "form-inline"}))
+                    {
+                        @Html.HiddenFor(model => stamp.Id, new {id = ""})
+                        @Html.TextBoxFor(model => stamp.Name, new {id = "", @class = "inputModelName", style="width:85%"})
+                        <button type="submit" class="btn p-1" style="width: 15%">
+                            <img src='/Resourses/svg/save-file.svg' height="100%" class="img-fluid">
+                        </button>
+                    }
+                    <button class="blueButtonsModal w-75 AddStamp mt-2">Добавить</button>
+                </div>
+            </div>
+           
+        </div>
+    }
+    
+</div>

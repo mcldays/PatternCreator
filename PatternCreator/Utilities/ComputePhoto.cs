@@ -10,16 +10,16 @@ namespace PatternCreator.Utilities
 {
     public static class ComputePhoto
     {
-        public static byte[] Compute(UserModel user, PictureModel template, List<PositionModel> positions, bool substrate)
+        public static byte[] Compute(UserModel user, PictureModel template,  bool substrate)
         {
             Bitmap bmp;
             using (var ms = new MemoryStream(template.Image))
             {
-                bmp = new Bitmap(ms);
+                bmp = (Bitmap)Image.FromStream(ms);
                 Bitmap bmp2;
                 if (substrate)
                 {
-                    bmp2 = bmp.Clone(new Rectangle(0, 0, bmp.Width, bmp.Height), PixelFormat.Format32bppPArgb);
+                    bmp2 = bmp.Clone(new Rectangle(0, 0, bmp.Width, bmp.Height), PixelFormat.Format64bppArgb);
                 }
                 else
                 {
@@ -27,11 +27,12 @@ namespace PatternCreator.Utilities
                 }
 
                 var g = Graphics.FromImage(bmp2);
-                g.SmoothingMode = SmoothingMode.AntiAlias;
+                g.SmoothingMode = SmoothingMode.HighQuality;
                 g.InterpolationMode = InterpolationMode.HighQualityBicubic;
                 g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                g.CompositingQuality = CompositingQuality.HighQuality;
 
-                foreach (var position in positions)
+                foreach (var position in template.PositionModels)
                 {
                     RectangleF rectf;
                     if (substrate)
@@ -41,7 +42,7 @@ namespace PatternCreator.Utilities
                     }
                     else
                     {
-                        rectf = new RectangleF((float)position.PosX - 15, (float)position.PosY - 15,
+                        rectf = new RectangleF((float)position.PosX, (float)position.PosY,
                             (float)position.Width, (float)position.Height);
                     }
                     var text = "";
@@ -50,13 +51,22 @@ namespace PatternCreator.Utilities
                         case "Имя":
                             text = user.Name;
                             break;
+                        case "Имя(Д.п)":
+                            text = user.Name_DativeCase;
+                            break;
                         case "Фамилия":
                             text = user.Surname;
+                            break;
+                        case "Фамилия(Д.п)":
+                            text = user.Surname_DativeCase;
                             break;
                         case "Отчество":
                             text = user.Patronymic;
                             break;
-                        case "Статичный текст":
+                        case "Отчество(Д.п)":
+                            text = user.Patronymic_DativeCase;
+                            break;
+                        default: 
                             text = position.Text;
                             break;
                     }
@@ -68,16 +78,46 @@ namespace PatternCreator.Utilities
                     g.DrawString(text, new Font("Tahoma", position.FontSize, GraphicsUnit.Pixel), Brushes.Black, rectf, format);
                 }
 
+                foreach (var position in template.StampPositions)
+                {
+                    RectangleF rectf;
+                    if (substrate)
+                    {
+                        rectf = new RectangleF((float)position.PosX, (float)position.PosY,
+                            (float)position.Width, (float)position.Height);
+                    }
+                    else
+                    {
+                        rectf = new RectangleF((float)position.PosX, (float)position.PosY,
+                            (float)position.Width, (float)position.Height);
+                    }
+
+                    using (var st = new MemoryStream(position.StampModel.Image))
+                    {
+
+                        Image bmpst = Image.FromStream(st);
+                       
+                            g.DrawImage(bmpst, rectf);
+                    }
+                   
+                }
+
                 g.Flush();
-                
+
                 return ImageToByte(bmp2);
             }
         }
 
         public static byte[] ImageToByte(Image img)
         {
-            var converter = new ImageConverter();
-            return (byte[]) converter.ConvertTo(img, typeof(byte[]));
+            using (MemoryStream st = new MemoryStream())
+            {
+                //img.Save(st, ImageFormat.Jpeg);
+                //return st.ToArray();
+                var converter = new ImageConverter();
+                return (byte[])converter.ConvertTo(img, typeof(byte[]));
+            }
+           
         }
     }
 }

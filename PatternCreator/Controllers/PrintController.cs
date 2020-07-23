@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using Newtonsoft.Json;
+using PatternCreator.Models;
 using PatternCreator.Utilities;
+using WebGrease.Css.Extensions;
 
 namespace PatternCreator.Controllers
 {
@@ -12,22 +14,48 @@ namespace PatternCreator.Controllers
         [HttpPost]
         public string GetComputedPhotos(string data)
         {
-            var photos = new List<string>();
-            var users = SendDbUtility.GetAllUsers();
-            var templates = SendDbUtility.GetAllTemplates();
-            var positions = SendDbUtility.GetAllPositions();
-
             var parsed = JsonConvert.DeserializeObject<Dictionary<string, List<int>>>(data);
-            var usersFromCompanies = users.Where(t => parsed["companies"].Contains(t.CompanyId)).Select(t => t.Id);
-            var substrate = parsed["substrate"][0] == 1;
+            using (UserContext db = new UserContext())
+            {
+                List<UserModel> userModels = new List<UserModel>();
+                foreach (var ids in parsed["companies"])
+                {
+                    var company = db.CompanyModels.Find(ids);
+                    if(company==null)
+                        continue;
+                    company.UserModels.ForEach(t=> userModels.Add(t));
+                }
+                foreach (var ids in parsed["users"])
+                {
+                    if (userModels.Any(t=>t.Id==ids))
+                        continue;
+                    var user = db.UserModels.Find(ids);
+                    if (user == null)
+                        continue;
+                    userModels.Add(user);
+                }
+                var photos = new List<string>();
+                
 
-            var neededUsers = parsed["users"].Concat(usersFromCompanies);
-            foreach (var user in neededUsers)
-            foreach (var template in parsed["templates"])
-                photos.Add(Convert.ToBase64String(ComputePhoto.Compute(users.Find(t => t.Id == user),
-                    templates.Find(t => t.Id == template), positions.Where(t => t.PictureId == template).ToList(), substrate)));
+                List<PictureModel> templates = new List<PictureModel>();
+                foreach (var ids in parsed["templates"])
+                {
+                    var template = db.PicturesModels.Find(ids);
+                    if (template == null)
+                        continue;
+                    templates.Add(template);
+                }
+               
+                var substrate = parsed["substrate"][0] == 1;
 
-            return string.Join("<separator>", photos);
+                foreach (var user in userModels)
+                foreach (var template in templates)
+                    photos.Add(Convert.ToBase64String(ComputePhoto.Compute(user,
+                        template,
+                        substrate)));
+
+                return string.Join("<separator>", photos);
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.IO;
 using System.Linq;
@@ -19,7 +20,8 @@ namespace PatternCreator.Controllers
         [AllowAnonymous]
         public ActionResult MainPage(string returnUrl)
         {
-
+            if (User.Identity.IsAuthenticated)
+                return RedirectToAction("Home");
             ViewBag.ReturnUrl = returnUrl;
             return View();
         }
@@ -72,24 +74,22 @@ namespace PatternCreator.Controllers
             return View(x);
         }
 
+       
         public ActionResult EditorPattern()
         {
             using (var dbUse = new UserContext())
             {
                 try
                 {
-                    var model = dbUse.PicturesModels.ToList();
-                    var positions = dbUse.PositionModels.ToList();
-                    var list = new object[]
-                    {
-                        model,
-                        positions
-                    };
-                    return View(list);
+                    var model = dbUse.PicturesModels.ToArray().Select(t=>new PictureModelViewModel(t)).ToArray();
+                    
+                    
+                    ViewBag.Autotexts = dbUse.AutoTexts.ToArray();
+                    return View(model);
                 }
                 catch (Exception e)
                 {
-                    return View(new object[] {new List<PictureModel>(), new List<PositionModel>()});
+                    return View();
                 }
             }
         }
@@ -187,6 +187,73 @@ namespace PatternCreator.Controllers
 
             return true;
         }
+        
+
+        public ActionResult GetStamps()
+        {
+            using (var dbUse = new UserContext())
+            {
+               StampModel[] stamps = dbUse.StampModels.ToArray();
+               return PartialView(stamps);
+            }
+            
+        }
+
+        public ActionResult DeleteStamp(int id)
+        {
+            using (var dbUse = new UserContext())
+            {
+                StampModel st = dbUse.StampModels.Find(id);
+                if (st == null)
+                    return RedirectToAction("EditorPattern");
+                dbUse.StampModels.Remove(st);
+                dbUse.SaveChanges();
+                return RedirectToAction("GetStamps");
+            }
+
+        }
+        [HttpPost]
+        public bool UpdateStampName(StampModel stamp)
+        {
+            using (var dbUse = new UserContext())
+            {
+                StampModel st = dbUse.StampModels.Find(stamp.Id);
+                if (st == null)
+                    return false;
+                st.Name = stamp.Name;
+                dbUse.Entry(st).State = EntityState.Modified;
+                dbUse.SaveChanges();
+            }
+            return true;
+        }
+        [HttpPost]
+        public ActionResult AddStamp(HttpPostedFileBase uploadImage)
+        {
+            if (ModelState.IsValid && uploadImage != null)
+            {
+                byte[] imageData = null;
+
+                using (var binaryReader = new BinaryReader(uploadImage.InputStream))
+                {
+                    imageData = binaryReader.ReadBytes(uploadImage.ContentLength);
+                }
+
+                string Name = Path.GetFileNameWithoutExtension(uploadImage.FileName);
+                using (var dbUse = new UserContext())
+                {
+                    dbUse.StampModels.Add(new StampModel
+                    {
+                        Image = imageData,
+                        Name = Name
+                    });
+                    dbUse.SaveChanges();
+                }
+
+                return RedirectToAction("GetStamps");
+            }
+
+            return RedirectToAction("EditorPattern");
+        }
 
 
         [HttpPost]
@@ -223,36 +290,38 @@ namespace PatternCreator.Controllers
 
         [HttpPost]
         public bool SetBlocks(string data)
-        {
-            var b = JsonConvert.DeserializeObject<SetBlockModel>(data);
+        {            
+            
+            SetBlockModel b = JsonConvert.DeserializeObject<SetBlockModel>(data);
             var picId = Int32.Parse(b.picId);
             List<List<string>> a;
 
             a = b.bounds;
-            if (a.Count == 0)
-            {
+            
                 using (var dbUse = new UserContext())
                 {
-                    dbUse.PositionModels.RemoveRange(dbUse.PositionModels.Where(t => t.PictureId == picId));
+                    var pic = dbUse.PicturesModels.Find(picId);
+                    if (a.Count == 0)
+                        dbUse.PositionModels.RemoveRange(pic.PositionModels);
+                    if (!b.stamps.Any())
+                        dbUse.StampPositions.RemoveRange(pic.StampPositions);
                     dbUse.SaveChanges();
                 }
-
-                return false;
-            }
-
+                if(a.Count == 0&& !b.stamps.Any())
+                    return false;
 
             using (var dbUse = new UserContext())
             {
-                dbUse.PositionModels.RemoveRange(dbUse.PositionModels.Where(t=>t.PictureId == picId));
-                dbUse.SaveChanges();
+                PictureModel picture = dbUse.PicturesModels.Find(picId);
+                
                 foreach (var block in a)
                 {
-                    PositionModel model;
-                    if (int.TryParse(block[4], out int id))
+                    PositionModel model = picture.PositionModels.FirstOrDefault(t=>t.Id == int.Parse(block[4]));
+                    if (model!=null)
                     {
                         model = new PositionModel()
                         {
-                            Id = id,
+                            Id = int.Parse(block[4]),
                             PictureId = picId,
                             PosX = double.Parse(block[0].Replace('.', ',')),
                             PosY = double.Parse(block[1].Replace('.', ',')),
@@ -260,8 +329,9 @@ namespace PatternCreator.Controllers
                             Type = block[5],
                             FontSize = int.Parse(block[7]),
                             Height = double.Parse(block[6].Replace('.', ',')),
-                            Text = block[5] == "Статичный текст" ? block[8] : ""
+                            Text = block[5].Contains("Статичный текст") ? block[8] : ""
                         };
+                       
                     }
                     else
                     {
@@ -274,12 +344,49 @@ namespace PatternCreator.Controllers
                             Type = block[5],
                             FontSize = int.Parse(block[7]),
                             Height = double.Parse(block[6].Replace('.', ',')),
-                            Text = block[5] == "Статичный текст" ? block[8] : ""
+                            Text = block[5].Contains("Статичный текст") ? block[8] : ""
                         };
                     }
-
+                    if (block[5] == "Статичный текст из бд")
+                    {
+                        dbUse.AutoTexts.AddOrUpdate(new AutoTextModel
+                        {
+                            Text = block[8]
+                        });
+                    }
                     dbUse.PositionModels.AddOrUpdate(model);
                 }
+                
+                foreach (var stamp in b.stamps)
+                {
+                    StampPositions stamps = picture.StampPositions.FirstOrDefault(t => t.StampPositionId == stamp.StampPositionId);
+                    if (stamps!=null)
+                    {
+                        stamps.Height = double.Parse(stamp.Height.Replace('.', ','));
+                        stamps.Width = double.Parse(stamp.Width  .Replace('.', ','));
+                        stamps.PosX = double.Parse(stamp.PosX    .Replace('.', ','));
+                        stamps.PosY = double.Parse(stamp.PosY.Replace('.', ','));
+                        stamps.StampId = stamp.StampId;
+                        dbUse.Entry(stamps).State = EntityState.Modified;
+                    }
+                    else
+                    {
+                        stamps = new StampPositions
+                        {
+                            PicId = picId,
+                            StampId = stamp.StampId,
+                            Height = double.Parse(stamp.Height.Replace('.', ',')),
+                            Width = double.Parse(stamp.Width  .Replace('.', ',')),
+                            PosX = double.Parse(stamp.PosX    .Replace('.', ',')),
+                            PosY = double.Parse(stamp.PosY.Replace('.', ','))    
+                    };
+                        dbUse.StampPositions.AddOrUpdate(stamps);
+                    }
+                }
+                if (a.Count != 0)
+                    dbUse.PositionModels.RemoveRange(picture.PositionModels.Where(t => dbUse.Entry(t).State == EntityState.Unchanged));
+                if (b.stamps.Any())
+                    dbUse.StampPositions.RemoveRange(picture.StampPositions.Where(t => dbUse.Entry(t).State == EntityState.Unchanged));
                 dbUse.SaveChanges();
             }
 
@@ -311,12 +418,16 @@ namespace PatternCreator.Controllers
         }
 
 
-        public ActionResult PrintParital(string name)
+        public ActionResult PrintParital()
         {
-            using (var dbUse = new UserContext())
+            using (var db = new UserContext())
             {
-                var data = dbUse.UserModels.Where(t =>
-                    t.Name.Contains(name) || t.Surname.Contains(name) || t.Patronymic.Contains(name)).ToList();
+                var data = db.CompanyModels.ToArray().Select(t => new CompanyViewModel
+                {
+                    CompanyName = t.CompanyName,
+                    CompanyId = t.CompanyId,
+                    UserViewModels = t.UserModels.Select(u => new UserModelViewModel(u))
+                }).ToList();
                 return PartialView(data);
             }
         }
