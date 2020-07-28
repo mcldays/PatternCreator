@@ -1,4 +1,18 @@
-﻿let image = document.getElementsByClassName('imgModalStyle');
+﻿$(document).ready(function () {
+    $("tr:not(tr:last)>td:not(:last-child)").each(function () {
+        $(this).resizable({
+            containment: $(this).closest("table.tableRed"),
+            handles: 's, e',
+            minHeight: 10,
+            minWidth: 10
+
+        });
+    });
+    setAutocomplete();
+
+
+
+let image = document.getElementsByClassName('imgModalStyle');
 var imgModal;
 $(document).on("change", "#submitImg", handleFiles);
 $(document).on("change", "#submitStamp", handleFiles);
@@ -16,7 +30,7 @@ $(document).on("click",
 
 
         $(block).draggable({
-            containment: $(imgModal),
+            containment: $(imgModal.closest(".img-wrap")),
             handle: block.find("img")
         });
 
@@ -51,17 +65,7 @@ function setAutocomplete() {
 }
 
 var after = 0;
-$(document).ready(function() {
-    $("tr:not(tr:last)>td:not(:last-child)").resizable({
-        containment: "#tableRed",
-        handles: 's, e',
-        minHeight: 10,
-        minWidth: 10
 
-    });
-    setAutocomplete();
-
-});
 
 $(document).on('change',
     ".hint-data-type",
@@ -77,7 +81,9 @@ $(document).on('change',
 
 $(document).on('resizestart',
     "td",
-    function() {
+    function () {
+
+       
         var direction = $(this).data('ui-resizable').axis;
         if (direction === 's') {
             var targ = $(this).closest("tr");
@@ -88,7 +94,7 @@ $(document).on('resizestart',
                 if (!$(this).is(targ) && !$(this).is($(targ).next()))
                     maxh += $(this).height();
             });
-            maxh = $("table#tableRed").height() - maxh - 12;
+            maxh = $(this).closest("table.tableRed").height() - maxh - 12;
             $(targ).children("td:not(:last-child)").resizable("option", "maxHeight", maxh);
             $("td").each(function() {
                 if (!targ.children("td").is($(this))) {
@@ -111,7 +117,7 @@ $(document).on('resizestart',
                 maxw += $(this).width();
             });
 
-            maxw = $("table#tableRed").width() - maxw - 24;
+            maxw = $(this).closest("table.tableRed").width() - maxw - 24;
             $(cells).filter(".ui-resizable").resizable("option", "maxWidth", maxw);
             $(cells).each(function() {
                 $(this).prevAll("td").each(function() {
@@ -193,7 +199,7 @@ $(".add-text").on("click",
         });
     });
 
-$(".imgModalStyle, #BlockTable").on("click",
+$(".imgModalStyle, .BlockTable").on("click",
     function(e) {
         let elem = $(e.target);
         if (!elem.hasClass("draggable-div")) {
@@ -245,7 +251,8 @@ $(document).on("click",
     });
 
 $(".save").on("click",
-    function() {
+    function () {
+        
         let img = $(this).parent().parent().find(".imgModalStyle")[0];
         let kefX = img.naturalWidth / img.width;
         let kefY = img.naturalHeight / img.height;
@@ -274,6 +281,8 @@ $(".save").on("click",
             };
             
         });
+        $(".preloader").toggleClass("done");
+        $(".modal").modal("hide");
         $.ajax({
             url: "../Pattern/SetBlocks",
             method: "POST",
@@ -452,24 +461,30 @@ $(document).on("click",
 
 
 $(".GridDown").click(function(e) {
-
-    $("table#tableRed>tbody>tr:last").remove();
-    $("table#tableRed>tbody>tr:last>td").resizable("destroy");
+    $(this).closest(".modelBlockOne").find("table.tableRed>tbody>tr:last").remove();
+    $(this).closest(".modelBlockOne").find("table.tableRed>tbody>tr:last").children("td:not(td:last)").resizable("destroy");
+    //$("table.tableRed>tbody>tr:last").remove();
+    //$("table.tableRed>tbody>tr:last>td").resizable("destroy");
 });
 
-$(".GridUp").click(function(e) {
-
-    $("tr:not(tr:last)>td:not(:last-child)").resizable("destroy");
-    $("td").height("auto");
-
-    $("table#tableRed>tbody>tr:last").clone().insertAfter($("table#tableRed>tbody>tr:last"));
-
-    $("tr:not(tr:last)>td:not(:last-child)").resizable({
-        containment: "#tableRed",
-        handles: 's, e',
-        minHeight: 10,
-        minWidth: 10
+$(".GridUp").click(function (e) {
+    $(this).closest(".modelBlockOne").find("table.tableRed>tbody").children("tr:not(tr:last)").each(function() {
+        $(this).children("td:not(:last-child)").resizable("destroy");
+        $(this).children("td").height("auto");
     });
+    $(this).closest(".modelBlockOne").find("table.tableRed>tbody>tr:last").clone().insertAfter($(this).closest(".modelBlockOne").find("table.tableRed>tbody>tr:last"));
+    
+    $(this).closest(".modelBlockOne").find("table.tableRed>tbody").children("tr:not(tr:last)").each(function () {
+        $(this).children("td:not(:last-child)").each(function () {
+            $(this).resizable({
+                containment: $(this).closest("table.tableRed"),
+                handles: 's, e',
+                minHeight: 10,
+                minWidth: 10
+            });
+        });
+    });
+   
 
 
 });
@@ -477,7 +492,7 @@ $(".GridUp").click(function(e) {
 
 $(".rectangleWhite.Grid").click(function(e) {
 
-    $("#BlockTable").toggleClass("d-none");
+    $(this).closest(".mainEditor").find('.BlockTable').toggleClass("d-none");
 
 });
 
@@ -490,4 +505,5 @@ $(document).on('click',
     ".deleteStamp",
     function() {
         $(this).parent().remove();
-    });
+        });
+});

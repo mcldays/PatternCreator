@@ -301,10 +301,12 @@ namespace PatternCreator.Controllers
                 using (var dbUse = new UserContext())
                 {
                     var pic = dbUse.PicturesModels.Find(picId);
+                    pic.Name = b.Name;
                     if (a.Count == 0)
                         dbUse.PositionModels.RemoveRange(pic.PositionModels);
                     if (!b.stamps.Any())
                         dbUse.StampPositions.RemoveRange(pic.StampPositions);
+                    dbUse.Entry(pic).State = EntityState.Modified;
                     dbUse.SaveChanges();
                 }
                 if(a.Count == 0&& !b.stamps.Any())
@@ -319,19 +321,25 @@ namespace PatternCreator.Controllers
                     PositionModel model = picture.PositionModels.FirstOrDefault(t=>t.Id == int.Parse(block[4]));
                     if (model!=null)
                     {
-                        model = new PositionModel()
-                        {
-                            Id = int.Parse(block[4]),
-                            PictureId = picId,
-                            PosX = double.Parse(block[0].Replace('.', ',')),
-                            PosY = double.Parse(block[1].Replace('.', ',')),
-                            Width = double.Parse(block[2].Replace('.', ',')),
-                            Type = block[5],
-                            FontSize = int.Parse(block[7]),
-                            Height = double.Parse(block[6].Replace('.', ',')),
-                            Text = block[5].Contains("Статичный текст") ? block[8] : ""
-                        };
                        
+                             model.Id = int.Parse(block[4]);
+                             model.PictureId = picId;
+                             model.PosX = double.Parse(block[0].Replace('.', ','));
+                             model.PosY = double.Parse(block[1].Replace('.', ','));
+                             model.Width = double.Parse(block[2].Replace('.', ','));
+                             model.Type = block[5];
+                             model.FontSize = int.Parse(block[7]);
+                             model.Height = double.Parse(block[6].Replace('.', ','));
+                             model.Text = block[5].Contains("Статичный текст") ? block[8] : "";
+                        
+                        if (block[5] == "Статичный текст из бд")
+                        {
+                            dbUse.AutoTexts.AddOrUpdate(new AutoTextModel
+                            {
+                                Text = block[8]
+                            });
+                        }
+                        dbUse.Entry(model).State = EntityState.Modified;
                     }
                     else
                     {
@@ -346,17 +354,18 @@ namespace PatternCreator.Controllers
                             Height = double.Parse(block[6].Replace('.', ',')),
                             Text = block[5].Contains("Статичный текст") ? block[8] : ""
                         };
-                    }
-                    if (block[5] == "Статичный текст из бд")
-                    {
-                        dbUse.AutoTexts.AddOrUpdate(new AutoTextModel
+                        if (block[5] == "Статичный текст из бд")
                         {
-                            Text = block[8]
-                        });
+                            dbUse.AutoTexts.AddOrUpdate(new AutoTextModel
+                            {
+                                Text = block[8]
+                            });
+                        }
+                        dbUse.PositionModels.AddOrUpdate(model);
                     }
-                    dbUse.PositionModels.AddOrUpdate(model);
+                   
+                    
                 }
-                
                 foreach (var stamp in b.stamps)
                 {
                     StampPositions stamps = picture.StampPositions.FirstOrDefault(t => t.StampPositionId == stamp.StampPositionId);

@@ -61,7 +61,7 @@ namespace PatternCreator
             ));
             bundles.Add(new ScriptBundle("~/bundles/EditorPattern-js").Include(
                 
-                "~/Scripts/wheelzoom.js",
+               
                 "~/Scripts/EditorPatternScripts.js"
                
             ));

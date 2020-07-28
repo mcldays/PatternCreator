@@ -52,7 +52,7 @@
                 @*@using (Html.BeginForm("UpdatePicture", "Pattern", FormMethod.Post, new { }))*@
               
                 <div class="modal fade-scale" id=@item1 tabindex="-1" role="dialog" aria-labelledby="@(item1)lLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-dialog  modal-dialog-scrollable modal-lg">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -84,8 +84,8 @@
                                             </div>
                                            
                                             <div class="mainEditor">
-                                                <div id="BlockTable" class="position-absolute h-100 w-100 d-none" style="z-index: 2">
-                                                    <table id="tableRed" class="h-100 w-100">
+                                                <div class="BlockTable position-absolute h-100 w-100 d-none" style="z-index: 2">
+                                                    <table  class="tableRed h-100 w-100">
 
                                                         <tr><td></td><td></td><td></td><td></td></tr>
                                                         <tr><td></td><td></td><td></td><td></td></tr>
@@ -190,7 +190,7 @@
         ];
 </script>
 
-    @Scripts.Render("~/bundles/EditorPattern-js")
+    @Scripts.Render("~/Scripts/EditorPatternScripts.js")
 }
 
 

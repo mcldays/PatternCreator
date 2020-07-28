@@ -622,7 +622,7 @@ td {
     border: 2px solid black;
 }
 
-#tableRed {
+.tableRed {
 	width: 100%;
 	height: 100%;
 	border-collapse: collapse;

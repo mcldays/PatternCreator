@@ -19,7 +19,7 @@ namespace PatternCreator.Utilities
                 Bitmap bmp2;
                 if (substrate)
                 {
-                    bmp2 = bmp.Clone(new Rectangle(0, 0, bmp.Width, bmp.Height), PixelFormat.Format64bppArgb);
+                    bmp2 = bmp.Clone(new Rectangle(0, 0, bmp.Width, bmp.Height), PixelFormat.Format32bppPArgb);
                 }
                 else
                 {
@@ -27,7 +27,7 @@ namespace PatternCreator.Utilities
                 }
 
                 var g = Graphics.FromImage(bmp2);
-                g.SmoothingMode = SmoothingMode.HighQuality;
+                g.SmoothingMode = SmoothingMode.AntiAlias;
                 g.InterpolationMode = InterpolationMode.HighQualityBicubic;
                 g.PixelOffsetMode = PixelOffsetMode.HighQuality;
                 g.CompositingQuality = CompositingQuality.HighQuality;
@@ -77,8 +77,8 @@ namespace PatternCreator.Utilities
                     format.LineAlignment = StringAlignment.Center;
                     g.DrawString(text, new Font("Tahoma", position.FontSize, GraphicsUnit.Pixel), Brushes.Black, rectf, format);
                 }
-
-                foreach (var position in template.StampPositions)
+                if (substrate)
+                    foreach (var position in template.StampPositions)
                 {
                     RectangleF rectf;
                     if (substrate)
@@ -110,13 +110,12 @@ namespace PatternCreator.Utilities
 
         public static byte[] ImageToByte(Image img)
         {
-            using (MemoryStream st = new MemoryStream())
-            {
+            
                 //img.Save(st, ImageFormat.Jpeg);
                 //return st.ToArray();
                 var converter = new ImageConverter();
                 return (byte[])converter.ConvertTo(img, typeof(byte[]));
-            }
+            
            
         }
     }
