@@ -10,8 +10,10 @@ namespace PatternCreator.Utilities
 {
     public static class ComputePhoto
     {
-        public static byte[] Compute(UserModel user, PictureModel template,  bool substrate)
+        public static byte[] Compute(DocumentModel doc,  bool substrate)
         {
+            var template = doc.PictureModel;
+            var user = doc.UserModel;
             Bitmap bmp;
             using (var ms = new MemoryStream(template.Image))
             {
@@ -65,6 +67,24 @@ namespace PatternCreator.Utilities
                             break;
                         case "Отчество(Д.п)":
                             text = user.Patronymic_DativeCase;
+                            break;
+                        case "Должность":
+                            text = user.Position;
+                            break;
+                        case "Образование":
+                            text = user.Education;
+                            break;
+                        case "Число":
+                            text = doc.Date.Day.ToString();
+                            break;
+                        case "Месяц":
+                            text = doc.Date.Month.ToString();
+                            break;
+                        case "Год":
+                            text = doc.Date.Year.ToString();
+                            break;
+                        case "Номер корочки":
+                            text = doc.DocumentId.ToString();
                             break;
                         default: 
                             text = position.Text;

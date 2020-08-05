@@ -177,6 +177,11 @@ $(".add-text").on("click",
                                 <option>Фамилия(Д.п)</option>
                                 <option>Отчество</option>
                                 <option>Отчество(Д.п)</option>
+                                <option>Должность</option>
+                                <option>Образование</option>
+                                <option>Число</option>
+                                <option>Месяц</option>
+                                <option>Год</option>
                                 <option>Статичный текст</option>
                                 <option>Номер корочки</option>
                                 <option>Статичный текст из бд</option>
@@ -355,6 +360,11 @@ $(document).on("click",
                                 <option>Фамилия(Д.п)</option>
                                 <option>Отчество</option>
                                 <option>Отчество(Д.п)</option>
+                                <option>Должность</option>
+                                <option>Образование</option>
+                                <option>Число</option>
+                                <option>Месяц</option>
+                                <option>Год</option>
                                 <option>Статичный текст</option>
                                 <option>Номер корочки</option>
                                 <option>Статичный текст из бд</option>

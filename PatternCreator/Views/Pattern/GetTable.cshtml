@@ -1,1 +1,67 @@
-﻿
+﻿@using PatternCreator.Models
+@model CompanyViewModel[]
+
+    @{
+        foreach (CompanyViewModel company in Model)
+        {
+            int count = 1;
+            <tr data-header-id="@company.CompanyId">
+                <th colspan="5">
+                    <div class="w-25 text-right text-nowrap">
+                        @company.CompanyName
+                        <button type="button" class="closeTableBut" data-company-id="@company.CompanyId">
+                            <img src="/Resourses/svg/down-arrow (2).svg" style="height: 17px; width: 20px;" />
+                        </button>
+                    </div>
+                </th>
+
+                <td class="d-flex justify-content-around align-middle">
+                    <a class="IconButtonsSave ManageIconStyle invisible" data-company-id="@company.CompanyId" data-action="saveCompany">
+                        <img src='/Resourses/svg/save-file.svg' class="img-fluid">
+                    </a>
+                    <a class="IconButtonsSave ManageIconStyle" data-company-id="@company.CompanyId" data-action="deleteCompany">
+                        <img src="/Resourses/svg/delete.svg" class="img-fluid">
+                    </a>
+                </td>
+            </tr>
+            foreach (UserModelViewModel user in company.UserViewModels)
+            {
+                <tr data-company-id="@company.CompanyId">
+
+                    <td class="align-middle py-1"><span>@(count++)</span></td>
+                    <td class="align-middle py-1" data-user-id="@user.Id">
+                        @Html.EditorFor(model => user.Name, new { htmlAttributes = new { @class = "EditCol", PlaceHolder = "Имя*", id = "" } })
+                        @Html.EditorFor(model => user.Name_DativeCase, new { htmlAttributes = new { @class = "EditCol", style = "display: none", PlaceHolder = "Имя(Д.П.)*", id = "" } })
+                    </td>
+                    <td class="align-middle py-1" data-user-id="@user.Id">
+                        @Html.EditorFor(model => user.Surname, new { htmlAttributes = new { @class = "EditCol", PlaceHolder = "Фамилия*", id = "" } })
+                        @Html.EditorFor(model => user.Surname_DativeCase, new { htmlAttributes = new { @class = "EditCol", style = "display: none", PlaceHolder = "Фамилия(Д.П.)*", id = "" } })
+
+                    </td>
+                    <td class="align-middle py-1" data-user-id="@user.Id">
+                        @Html.EditorFor(model => user.Patronymic, new { htmlAttributes = new { @class = "EditCol", PlaceHolder = "Отчество", id = "" } })
+                        @Html.EditorFor(model => user.Patronymic_DativeCase, new { htmlAttributes = new { @class = "EditCol", style = "display: none", PlaceHolder = "Отчество(Д.П.)", id = "" } })
+                    </td>
+                    <td class="align-middle py-1">
+                        <a class="d-flex IconButtonsSave ManageIconStyle" data-user-id="@user.Id" data-action="swap">
+                            <img src='/Resourses/svg/swap.svg' class="img-fluid">
+                        </a>
+                    </td>
+                    <td class="d-flex justify-content-around align-middle py-1">
+                        <a href="/Pattern/EditUser?UserId=20" class="IconButtonsSave ManageIconStyle" data-ajax="true" data-ajax-mode="replace" data-ajax-success="$('#EditUserModal').modal('show')" data-ajax-update="#userContainer">
+                            <img src="/Resourses/svg/pencil-edit-button (2).svg" alt="Редактирование пользователя" class="img-fluid">
+                        </a>
+                        <a class="IconButtonsSave ManageIconStyle" data-user-id="@user.Id" data-action="saveUser">
+                            <img src='/Resourses/svg/save-file.svg' class="img-fluid">
+                        </a>
+                        <a class="IconButtonsSave ManageIconStyle" data-user-id="@user.Id" data-action="deleteUser">
+                            <img src="/Resourses/svg/delete.svg" class="img-fluid">
+                        </a>
+                    </td>
+
+                </tr>
+            }
+        }
+    }
+
+

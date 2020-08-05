@@ -45,9 +45,44 @@ namespace PatternCreator.Controllers
 
         public ActionResult GetTable()
         {
-            return PartialView();
+            CompanyViewModel[] company;
+            using (UserContext db = new UserContext())
+            {
+                company = SendDbUtility.GelAllCompanyList();
+            }
+            return PartialView(company);
         }
-
+       
+        public ActionResult EditUser(int UserId)
+        {
+            UserModelViewModel user;
+            using (UserContext db = new UserContext())
+            {
+                user = new UserModelViewModel(db.UserModels.Find(UserId));
+            }
+            return PartialView(user);
+        }
+        [HttpPost]
+        public ActionResult EditUser(UserModelViewModel model)
+        {
+            using (UserContext db = new UserContext())
+            {
+               var user = db.UserModels.Find(model.Id);
+                user.CompanyId = model.CompanyId;
+                user.Name = model.Name;
+                user.Name_DativeCase = model.Name_DativeCase;
+                user.Surname = model.Surname;
+                user.Surname_DativeCase = model.Surname_DativeCase;
+                user.Patronymic = model.Patronymic;
+                user.Patronymic_DativeCase = model.Patronymic_DativeCase;
+                user.CompanyId = model.CompanyId;
+                user.Position = model.Position;
+                user.Education = model.Education;
+                db.Entry(user).State = EntityState.Modified;
+                db.SaveChanges();
+            }
+            return RedirectToAction("GetTable");
+        }
         public ActionResult Home()
         {
             var company = SendDbUtility.GelAllCompanyList();
@@ -114,7 +149,9 @@ namespace PatternCreator.Controllers
                 Surname_DativeCase = client.Surname_DativeCase,
                 Patronymic = client.Patronymic,
                 Patronymic_DativeCase = client.Patronymic_DativeCase,
-                CompanyId = client.CompanyId
+                CompanyId = client.CompanyId,
+                Position = client.Position,
+                Education = client.Education
             };
             SendDbUtility.SendUserToDb(model);
 
@@ -143,7 +180,9 @@ namespace PatternCreator.Controllers
                 Surname_DativeCase = client.Surname_DativeCase,
                 Patronymic = client.Patronymic,
                 Patronymic_DativeCase = client.Patronymic_DativeCase,
-                CompanyId = client.CompanyId
+                CompanyId = client.CompanyId,
+                Position = client.Position,
+                Education = client.Education
             };
             return SendDbUtility.UpdateUser(model);
         }

@@ -13,23 +13,25 @@
     });
 }
 @Styles.Render("~/bundles/Home-css")
-
+@Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+@Scripts.Render("~/Scripts/bootstrap-datetimepicker.min.js")
+@Scripts.Render("~/Scripts/bootstrap-datetimepicker.ru.js")
 <div id="BlockOne">
     <div id="UserControl">
         <div id="AligmentAdd">
-            
-                <button class="AddUserControl" data-toggle="modal" data-target="#UsersModal">
-                    <span class="ControlTextChoose">Добавить пользователя</span>
-                    <img src="/Resourses/svg/add-user.svg" class="AddUserImg">
-                </button>
-           
+
+            <button class="AddUserControl" data-toggle="modal" data-target="#UsersModal">
+                <span class="ControlTextChoose">Добавить пользователя</span>
+                <img src="/Resourses/svg/add-user.svg" class="AddUserImg">
+            </button>
+
         </div>
 
         <div id="AligmentDelete">
-                <button class="DeleteUserControl" data-toggle="modal" data-target="#companyModal">
-                    <span class="ControlText">Добавить компанию</span>
-                </button>
-           
+            <button class="DeleteUserControl" data-toggle="modal" data-target="#companyModal">
+                <span class="ControlText">Добавить компанию</span>
+            </button>
+
         </div>
 
         <div id="AligmentFind">
@@ -45,9 +47,18 @@
             @*}*@
         </div>
     </div>
-    <div>
+    
+        
+            @*<div id="datetimepicker1" class="input-group date">
+                <input data-format="dd.MM.yyyy" class="form-control" type="text" aria-describedby="basic-addon2"/>
+                <div class="input-group-append ">
+                    <span class="add-on input-group-text p-1" id="basic-addon2">
+                        <img height="25px"  src="/Resourses/svg/calendar.svg">
+                    </span>
+                </div>
+            </div>*@
         <form id="TableTwo">
-          
+
             <table class="table" style="width:100%" id="companies">
                 <thead>
                     <tr>
@@ -59,7 +70,7 @@
                         <th scope="col" style="width:100px"></th>
                     </tr>
                 </thead>
-                <tbody class="table-hover table-borderless text-center">
+                <tbody id="targetTableBody" class="table-hover table-borderless text-center">
                     @{
                         foreach (CompanyViewModel company in Model)
                         {
@@ -73,9 +84,9 @@
                                         </button>
                                     </div>
                                 </th>
-                                
+
                                 <td class="d-flex justify-content-around align-middle">
-                                    <a class="IconButtonsSave ManageIconStyle" data-company-id="@company.CompanyId" data-action="saveCompany">
+                                    <a class="IconButtonsSave ManageIconStyle invisible" data-company-id="@company.CompanyId" data-action="saveCompany">
                                         <img src='/Resourses/svg/save-file.svg' class="img-fluid">
                                     </a>
                                     <a class="IconButtonsSave ManageIconStyle" data-company-id="@company.CompanyId" data-action="deleteCompany">
@@ -85,15 +96,15 @@
                             </tr>
                             foreach (UserModelViewModel user in company.UserViewModels)
                             {
-                            <tr data-company-id="@company.CompanyId">
-                                    
+                                <tr data-company-id="@company.CompanyId">
+
                                     <td class="align-middle py-1"><span>@(count++)</span></td>
                                     <td class="align-middle py-1" data-user-id="@user.Id">
-                                        @Html.EditorFor(model => user.Name, new { htmlAttributes = new { @class = "EditCol", PlaceHolder = "Имя*" } })
-                                        @Html.EditorFor(model => user.Name_DativeCase, new { htmlAttributes = new { @class = "EditCol", style="display: none", PlaceHolder = "Имя(Д.П.)*", id = "" } })
+                                        @Html.EditorFor(model => user.Name, new { htmlAttributes = new { @class = "EditCol", PlaceHolder = "Имя*", id = "" } })
+                                        @Html.EditorFor(model => user.Name_DativeCase, new { htmlAttributes = new { @class = "EditCol", style = "display: none", PlaceHolder = "Имя(Д.П.)*", id = "" } })
                                     </td>
                                     <td class="align-middle py-1" data-user-id="@user.Id">
-                                        @Html.EditorFor(model => user.Surname, new { htmlAttributes = new { @class = "EditCol", PlaceHolder = "Фамилия*" } })
+                                        @Html.EditorFor(model => user.Surname, new { htmlAttributes = new { @class = "EditCol", PlaceHolder = "Фамилия*", id = "" } })
                                         @Html.EditorFor(model => user.Surname_DativeCase, new { htmlAttributes = new { @class = "EditCol", style = "display: none", PlaceHolder = "Фамилия(Д.П.)*", id = "" } })
 
                                     </td>
@@ -107,6 +118,9 @@
                                         </a>
                                     </td>
                                     <td class="d-flex justify-content-around align-middle py-1">
+                                        <a href="/Pattern/EditUser?UserId=20" class="IconButtonsSave ManageIconStyle" data-ajax="true" data-ajax-mode="replace" data-ajax-success="$('#EditUserModal').modal('show')" data-ajax-update="#userContainer">
+                                            <img src="/Resourses/svg/pencil-edit-button (2).svg" alt="Редактирование пользователя" class="img-fluid">
+                                        </a>
                                         <a class="IconButtonsSave ManageIconStyle" data-user-id="@user.Id" data-action="saveUser">
                                             <img src='/Resourses/svg/save-file.svg' class="img-fluid">
                                         </a>
@@ -114,8 +128,8 @@
                                             <img src="/Resourses/svg/delete.svg" class="img-fluid">
                                         </a>
                                     </td>
-                               
-                            </tr>
+
+                                </tr>
                             }
                         }
                     }
@@ -124,40 +138,58 @@
                 </tbody>
             </table>
         </form>
-    </div>
+    
 </div>
 
 
-    <div class="modal fade-scale" id="UsersModal" tabindex="-1" role="dialog" aria-labelledby="UsersModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="UsersModalLabel">Добавить пользователя</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    @using (Html.BeginForm("UserToDb", "Pattern", FormMethod.Post, new { @class = "form-row justify-content-center" }))
-                    {
+<div class="modal fade-scale" id="UsersModal" tabindex="-1" role="dialog" aria-labelledby="UsersModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="UsersModalLabel">Добавить пользователя</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("UserToDb", "Pattern", FormMethod.Post, new { @class = "form-row justify-content-center" }))
+                {
                     <div class="flex-column d-flex w-75 p-2 align-items-center">
                         @Html.ValidationSummary("", new { @class = "text-danger d-flex text-center" })
-                        @Html.EditorFor(t=>client.Name, new { htmlAttributes = new { @class = "EditCol mt-2", PlaceHolder = "Имя*" } })
-                        @Html.EditorFor(t=>client.Surname, new { htmlAttributes = new { @class = "EditCol my-2", PlaceHolder = "Фамилия*" } })
-                        @Html.EditorFor(t=>client.Patronymic, new { htmlAttributes = new { @class = "EditCol", PlaceHolder = "Отчество" } })
-                        @Html.EditorFor(t=>client.Name_DativeCase, new { htmlAttributes = new { @class = "EditCol my-2", PlaceHolder = "Имя (Д.П.)*" } })
-                        @Html.EditorFor(t=>client.Surname_DativeCase, new { htmlAttributes = new { @class = "EditCol", PlaceHolder = "Фамилия (Д.П.)*" } })
-                        @Html.EditorFor(t=>client.Patronymic_DativeCase, new { htmlAttributes = new { @class = "EditCol my-2", PlaceHolder = "Отчество (Д.П.)" } })
-                        @Html.DropDownListFor(t=>client.CompanyId, CompanyesList, "Выберите компанию" ,  new { @class = "EditCol my-2" })
-                        
+                        @Html.EditorFor(t => client.Name, new { htmlAttributes = new { @class = "EditCol mt-2", PlaceHolder = "Имя*" } })
+                        @Html.EditorFor(t => client.Surname, new { htmlAttributes = new { @class = "EditCol my-2", PlaceHolder = "Фамилия*" } })
+                        @Html.EditorFor(t => client.Patronymic, new { htmlAttributes = new { @class = "EditCol", PlaceHolder = "Отчество" } })
+                        @Html.EditorFor(t => client.Name_DativeCase, new { htmlAttributes = new { @class = "EditCol my-2", PlaceHolder = "Имя (Д.П.)*" } })
+                        @Html.EditorFor(t => client.Surname_DativeCase, new { htmlAttributes = new { @class = "EditCol", PlaceHolder = "Фамилия (Д.П.)*" } })
+                        @Html.EditorFor(t => client.Patronymic_DativeCase, new { htmlAttributes = new { @class = "EditCol my-2", PlaceHolder = "Отчество (Д.П.)" } })
+                        @Html.EditorFor(t => client.Position, new { htmlAttributes = new { @class = "EditCol", PlaceHolder = "Должность" } })
+                        @Html.EditorFor(t => client.Education, new { htmlAttributes = new { @class = "EditCol my-2", PlaceHolder = "Образование" } })
+                        @Html.DropDownListFor(t => client.CompanyId, CompanyesList, "Выберите компанию", new { @class = "EditCol my-2" })
+
                         <input type="submit" class="btn btn-primary w-50 my-3" value="Сохранить" />
                     </div>
-                    }
-                </div>
-
+                }
             </div>
+
         </div>
     </div>
+</div>
+<div class="modal fade-scale" id="EditUserModal" tabindex="-1" role="dialog" aria-labelledby="EditUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="EditUserModalLabel">Редактирование пользователя</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="userContainer">
+
+            </div>
+
+        </div>
+    </div>
+</div>
 
 
 <div class="modal fade-scale" id="companyModal" tabindex="-1" role="dialog" aria-labelledby="companyModalLabel" aria-hidden="true">
@@ -179,7 +211,7 @@
                     </div>
                 }
             </div>
-           
+
         </div>
     </div>
 </div>
@@ -200,9 +232,14 @@
                 validElement(this);
             });
 
-        $(document).ready(function() {
-            $("a.IconButtonsSave").click(function(e) {
+        $(document).ready(function () {
+            $('#datetimepicker1').datetimepicker({
+                language: 'ru',
+                pickTime: false
+            });
 
+
+            $(document).on('click',"a.IconButtonsSave", function(e) {
                 switch ($(this).data("action")) {
                 case "deleteCompany":
                     var companyId = $(this).data("company-id");

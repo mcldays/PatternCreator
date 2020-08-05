@@ -21,8 +21,8 @@ namespace PatternCreator.Utilities
 
         public DbSet<CompanyModel> CompanyModels { get; set; }
 
-        public  DbSet<UserModel> UserModels { get; set;}
-
+        public DbSet<UserModel> UserModels { get; set;}
+        public DbSet<DocumentModel> DocumentModels { get; set; }
         public DbSet<PictureModel> PicturesModels { get; set; }
         public DbSet<StampModel> StampModels { get; set; }
         public DbSet<StampPositions> StampPositions { get; set; }

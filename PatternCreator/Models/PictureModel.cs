@@ -12,11 +12,13 @@ namespace PatternCreator.Models
         public int Id { get; set; }
         public string Name { get; set; } // название картинки
         public byte[] Image { get; set; }
+        public virtual ICollection<DocumentModel> DocumentModels { get; set; }
         public virtual ICollection<StampPositions> StampPositions { get; set; }
         public virtual ICollection<PositionModel> PositionModels { get; set; }
 
         public PictureModel()
         {
+            DocumentModels = new List<DocumentModel>();
             PositionModels = new List<PositionModel>();
             StampPositions = new List<StampPositions>();
         } 
@@ -26,6 +28,7 @@ namespace PatternCreator.Models
         public int Id { get; set; }
         public string Name { get; set; } 
         public byte[] Image { get; set; }
+        public List<DocumentModel> DocumentModels { get; set; }
         public List<StampPositionsViewModel> StampPositions { get; set; }
         public List<PositionModel> PositionModels { get; set; }
 
@@ -34,6 +37,7 @@ namespace PatternCreator.Models
             Id = model.Id;
             Name = model.Name;
             Image = model.Image;
+
             PositionModels = model.PositionModels.ToList();
             StampPositions = model.StampPositions.Select(t=> new StampPositionsViewModel(t)).ToList();
         }

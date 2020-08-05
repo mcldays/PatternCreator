@@ -5,6 +5,9 @@
     ViewBag.Title = "Вывод на печать";
 }
 @Styles.Render("~/bundles/Print-css")
+@Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+@Scripts.Render("~/Scripts/bootstrap-datetimepicker.min.js")
+@Scripts.Render("~/Scripts/bootstrap-datetimepicker.ru.js")
 <div id="BlockOne">
     <div class="TextAligment">
         <span class="PrintDescription">
@@ -27,18 +30,7 @@
                 </div>
             </div>
 
-            @*@Html.ListBox("Name", new List<SelectListItem>(ViewBag.Companyes), new {})*@
 
-
-
-            @*<select class="selectStyle">
-            <option style="margin-left: 10px;" value="" disabled selected>Выберите шаблон</option>
-            <option class="chosePattern">Шаблон 1</option>
-            <option class="chosePattern">Шаблон 2</option>
-            <option class="chosePattern">Шаблон 3</option>
-            <option class="chosePattern">Шаблон 4</option>
-            <option class="chosePattern">Шаблон 5</option>
-        </select>*@
 
         </div>
         <span class="PrintDescription">Выбранные шаблоны:</span>
@@ -64,10 +56,10 @@
         </div>
         <span class="PrintDescription">Выбранные пользователи, организации:</span>
         <div id="acceptedUsers"></div>
-        
+
         <div class="checkbox-wrap">
             <label class="checkbox-label">
-                <input type="checkbox" id="substrate"/>
+                <input type="checkbox" id="substrate" />
                 <span class="checkbox-span">Подложка</span>
             </label>
         </div>
@@ -76,15 +68,16 @@
 
         <div id="manageButtons">
             <button class="BlueButton" id="startProcessPhotos">
-                <span class="butttonTextStyle">Сопоставить</span>
-            </button>
+                @Ajax.ActionLink("Сопоставить", "GetDocuments", "Print", null, new AjaxOptions { UpdateTargetId = "documentresult", OnSuccess = "$('#templateAccept').modal('show');", OnBegin = "onBegin" }, new { @class = "butttonTextStyle" })
+
+                </button>
 
             <button class="BlueButton" id="PrintBut">
                 <span class="butttonTextStyle">Печать</span>
             </button>
             @*<button class="BlueButton">
-                <span class="butttonTextStyle">Сохранить в PDF</span>
-            </button>*@
+                    <span class="butttonTextStyle">Сохранить в PDF</span>
+                </button>*@
         </div>
     </div>
 </div>
@@ -99,7 +92,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                @using (Ajax.BeginForm("PrintParital", new AjaxOptions {UpdateTargetId = "results", OnSuccess = "OnSuccess"}))
+                @using (Ajax.BeginForm("PrintParital", new AjaxOptions { UpdateTargetId = "results", OnSuccess = "OnSuccess" }))
                 {
                     <div class="AddUserModal">
                         <div class="FindUsersControl">
@@ -116,47 +109,78 @@
         </div>
     </div>
 </div>
+<div id="templateAccept" tabindex="-1" role="dialog" aria-labelledby="templateAcceptLabel" aria-hidden="true" class="modal fade-scale">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Данные для заполнения</h3>
+
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    @using (Ajax.BeginForm("SaveDocuments", "Print", null, new AjaxOptions { OnBegin = "$('#preloader-id').removeClass('done'); $('#templateAccept').modal('hide');", OnSuccess = "onSuccessPhoto" }, new { @class = "row", id = "documentresult" }))
+                    {
+
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts{
     @Scripts.Render("~/bundles/Print-js")
     <script>
-        
-            function findUsers(t) {
-                var userId = "";
-                var finded = "";
-                var filter = t.val().toLowerCase().replace(/ /g, '');
-                $("tbody>tr").each(function () {
-                    var vals = $(this).children("td");
-                    
-                    finded = $(vals[1]).text();
-                    finded += $(vals[2]).text();
-                    finded += $(vals[3]).text();
-                    
-                    if (!finded.toLowerCase().includes(filter)) {
-                        var tr = $(this);
-                        tr.hide();
+        function onBegin(xhr, request) {
+            request.url = "@Url.Action("GetDocuments", "Print")?data=" + getData();
+        }
 
-                    } else {
-                        var tr = $(this);
-                        tr.show();
-                    }
-                });
-            };
-            $(document).on("input", "#FindUsers", function() {
+        function findUsers(t) {
+            var userId = "";
+            var finded = "";
+            var filter = t.val().toLowerCase().replace(/ /g, '');
+            $("tbody>tr").each(function() {
+                var vals = $(this).children("td");
+
+                finded = $(vals[1]).text();
+                finded += $(vals[2]).text();
+                finded += $(vals[3]).text();
+
+                if (!finded.toLowerCase().includes(filter)) {
+                    var tr = $(this);
+                    tr.hide();
+
+                } else {
+                    var tr = $(this);
+                    tr.show();
+                }
+            });
+        };
+
+        $(document).on("input",
+            "#FindUsers",
+            function() {
                 findUsers($(this));
             });
 
-            $(document).on("click", ".FindButton", function() {
+        $(document).on("click",
+            ".FindButton",
+            function() {
                 findUsers($(this).prev());
             });
-        
+
         function OnSuccess() {
             findUsers($("#FindUsers"));
         }
-        
-        $(document).on("click", ".AddUserPrint", function() {
-            $(".modal-body>form").submit();
-        });
+
+        $(document).on("click",
+            ".AddUserPrint",
+            function() {
+                $(".modal-body>form").submit();
+            });
 
         $(document).on("click",
             ".DeleteButton",
@@ -209,48 +233,71 @@
                 }
             });
 
-        $("#startProcessPhotos").on("click",
-            () => {
-                $.ajax({
-                    url: "../Print/GetComputedPhotos",
-                    method: "POST",
-                    data: {
-                        data: JSON.stringify({
-                            "users": $(".user").toArray().map(e => e.getAttribute("uId")),
-                            "companies": $(".company").toArray().map(e => e.getAttribute("cId")),
-                            "templates": $(".template").toArray().map(e => e.getAttribute("tId")),
-                            "substrate": [+$("#substrate").prop("checked")]
-                        })
-                    },
-                    success: (result) => {
-                        const photos = result.split("<separator>");
-                        for (let photo in photos) {
-                            $("#photosForPrint")
-                                .append(
-                                    `<div class='photo-wrap'><img class='photo' src="data:image/png;base64,${photos
-                                    [photo]
-                                    }"/><img class='photo-delete' src='../Resourses/svg/delete-white.svg' /></div>`);
-                        }
-                        $("#preloader-id").addClass("done");
-                    }
-                });
-                $("#preloader-id").removeClass("done");
+        function onSuccessPhoto(result) {
+            const photos = result.split("<separator>");
+            for (let photo in photos) {
+                $("#photosForPrint")
+                    .append(
+                        `<div class='photo-wrap'><img class='photo' src="data:image/png;base64,${photos
+                        [photo]
+                        }"/><img class='photo-delete' src='../Resourses/svg/delete-white.svg' /></div>`);
+            }
+            $("#preloader-id").addClass("done");
+        }
+
+        //$("#startProcessPhotos").on("click",
+        //    () => {
+        //        $.ajax({
+        //            url: "../Print/GetDocuments",
+        //            method: "POST",
+        //            data: {
+        //                data: JSON.stringify({
+        //                    "users": $(".user").toArray().map(e => e.getAttribute("uId")),
+        //                    "companies": $(".company").toArray().map(e => e.getAttribute("cId")),
+        //                    "templates": $(".template").toArray().map(e => e.getAttribute("tId")),
+        //                    "substrate": [+$("#substrate").prop("checked")]
+        //                })
+        //            },
+        //            success: (result) => {
+        //                const photos = result.split("<separator>");
+        //                for (let photo in photos) {
+        //                    $("#photosForPrint")
+        //                        .append(
+        //                            `<div class='photo-wrap'><img class='photo' src="data:image/png;base64,${photos
+        //                            [photo]
+        //                            }"/><img class='photo-delete' src='../Resourses/svg/delete-white.svg' /></div>`);
+        //                }
+        //                $("#preloader-id").addClass("done");
+        //            }
+        //        });
+        //        $("#preloader-id").removeClass("done");
+        //    });
+
+        function getData() {
+            return JSON.stringify({
+                "users": $(".user").toArray().map(e => e.getAttribute("uId")),
+                "companies": $(".company").toArray().map(e => e.getAttribute("cId")),
+                "templates": $(".template").toArray().map(e => e.getAttribute("tId")),
+                "substrate": [+$("#substrate").prop("checked")]
             });
+        }
 
         $("#PrintBut").click(() => {
             var images = $(document.getElementById("photosForPrint").getElementsByClassName('photo'));
-            var bufferStr='';
+            var bufferStr = '';
 
             for (let i = 0; i < images.length; i++) {
                 if ($("#substrate").prop("checked") === true) {
                     bufferStr += `<div style='margin:0px;'><img style='margin:auto; width:100%; display:block' src='${
                         $(images[i]).attr('src')}'/></div>`;
                 } else {
-                    bufferStr += `<div style='height:99vh;margin:0px;'><img style='margin:auto; width:100%; display:block' src='${$(images[i]).attr('src')}'/></div>`;
+                    bufferStr +=
+                        `<div style='height:99vh;margin:0px;'><img style='margin:auto; width:100%; display:block' src='${
+                        $(images[i]).attr('src')}'/></div>`;
                 }
-               
+
             }
-            printJS({ printable: bufferStr, type: 'raw-html', style: '* {margin: 0px; padding: 0px;}'});
+            printJS({ printable: bufferStr, type: 'raw-html', style: '* {margin: 0px; padding: 0px;}' });
         });
 
         $(document).on("click",

@@ -1,0 +1,54 @@
+﻿@using PatternCreator.Models
+@model List<PatternCreator.Models.UserNameModel>
+@{
+    DocumentViewModel[] documents;
+    int index = 0;
+}
+
+@foreach (var user in Model)
+{
+    <div class="col-12 text-center font-weight-bold">@user.FIO</div>
+    <div class="col-6"><label>Номер корочки</label>
+                           </div>
+    <div class="col-6"><label>Дата</label>
+        </div>
+    foreach (var document in user.DocumentModels)
+    {
+        <div class="col-6">
+            <div class="form-group">
+                @*@Html.TextBoxFor(t=>document.DocumentId, new{@class="form-control", id=document.DocumentId, @readonly="readonly"})*@
+                <input readonly class="form-control" name="document[@index].DocumentId" type="text" id="@document.DocumentId" value="@document.DocumentId" />
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="form-group">
+                <div id="date@(document.DocumentId)" class="input-group date">
+                    @*@Html.TextBoxFor(t => document.Date, new { @class = "form-control", data_format= "dd.MM.yyyy", aria_describedby = "basic-addon2"})*@
+                    <input data-format="dd.MM.yyyy" class="form-control" type="text" name="document[@index].Date" aria-describedby="basic-addon2" value="@document.Date" />
+                    <div class="input-group-append ">
+                        <span class="add-on input-group-text p-1" id="basic-addon2">
+                            <img height="25px" src="/Resourses/svg/calendar.svg">
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        index++;
+    }
+
+}
+<div class="col-12 text-center">
+    <button class="BlueButton">
+        <span class="blueButtonText">Продолжить</span>
+    </button>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('.date').datetimepicker({
+            language: 'ru',
+            pickTime: false
+        });
+    });
+</script>
+

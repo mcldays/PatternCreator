@@ -1,0 +1,32 @@
+﻿@using PatternCreator.Utilities
+@model PatternCreator.Models.UserModelViewModel
+@{
+    IEnumerable<SelectListItem> CompanyesList;
+    using (UserContext db = new UserContext())
+    {
+        CompanyesList = Enumerable.Select(db.CompanyModels.ToArray(), t => new SelectListItem
+        {
+            Value = t.CompanyId.ToString(),
+            Text = t.CompanyName
+        });
+    } 
+}
+
+@using (Ajax.BeginForm("EditUser", "Pattern", new AjaxOptions{HttpMethod = "Post", UpdateTargetId = "targetTableBody", OnSuccess = "$('#EditUserModal').modal('hide'); alert('Изменения сохранены')" }, new { @class = "form-row justify-content-center" }))
+{
+<div class="flex-column d-flex w-75 p-2 align-items-center">
+    @Html.ValidationSummary("", new { @class = "text-danger d-flex text-center" })
+    @Html.HiddenFor(model => model.Id)
+    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "EditCol mt-2", PlaceHolder = "Имя*" } })
+    @Html.EditorFor(model => model.Surname, new { htmlAttributes = new { @class = "EditCol my-2", PlaceHolder = "Фамилия*" } })
+    @Html.EditorFor(model => model.Patronymic, new { htmlAttributes = new { @class = "EditCol", PlaceHolder = "Отчество" } })
+    @Html.EditorFor(model => model.Name_DativeCase, new { htmlAttributes = new { @class = "EditCol my-2", PlaceHolder = "Имя (Д.П.)*" } })
+    @Html.EditorFor(model => model.Surname_DativeCase, new { htmlAttributes = new { @class = "EditCol", PlaceHolder = "Фамилия (Д.П.)*" } })
+    @Html.EditorFor(model => model.Patronymic_DativeCase, new { htmlAttributes = new { @class = "EditCol my-2", PlaceHolder = "Отчество (Д.П.)" } })
+    @Html.EditorFor(model => model.Position, new { htmlAttributes = new { @class = "EditCol", PlaceHolder = "Должность" } })
+    @Html.EditorFor(model => model.Education, new { htmlAttributes = new { @class = "EditCol my-2", PlaceHolder = "Образование" } })
+    @Html.DropDownListFor(model => model.CompanyId, CompanyesList, "Выберите компанию", new { @class = "EditCol my-2" })
+
+    <input type="submit" class="btn btn-primary w-50 my-3" value="Сохранить" />
+</div>
+}

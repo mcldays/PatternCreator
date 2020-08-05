@@ -24,9 +24,19 @@ namespace PatternCreator.Models
         public string Patronymic { get; set; }
         public string Patronymic_DativeCase { get; set; }
 
+        public string Position { get; set; }
+        public string Education { get; set; }
+
+        public virtual ICollection<DocumentModel> DocumentModels { get; set; }
+
         public int CompanyId { get; set; }
 
         public virtual CompanyModel CompanyModel { get; set; }
+
+        public UserModel()
+        {
+            DocumentModels = new List<DocumentModel>();
+        }
 
     }
 
@@ -44,6 +54,8 @@ namespace PatternCreator.Models
             Patronymic = model.Patronymic;
             Patronymic_DativeCase = model.Patronymic_DativeCase;
             CompanyId = model.CompanyId;
+            Position = model.Position;
+            Education = model.Education;
         }
         public UserModelViewModel() { }
 
@@ -60,6 +72,8 @@ namespace PatternCreator.Models
         public string Patronymic { get; set; }
         public string Patronymic_DativeCase { get; set; }
 
+        public string Position { get; set; }
+        public string Education { get; set; }
         [Required(ErrorMessage = "Выберите компанию.")]
         [Range(0, Int32.MaxValue, ErrorMessage = "Выберите компанию.")]
         public int CompanyId { get; set; }
