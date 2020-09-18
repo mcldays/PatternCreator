@@ -12,5 +12,7 @@ namespace PatternCreator.Models
         public List<StampConvertModel> stamps { get; set; }
         public string Id { get; set; }
         public string Name { get; set; }
+        public string NaturalWidth { get; set; }
+        public string NaturalHeight { get; set; }
     }
 }

@@ -1,54 +1,370 @@
 ﻿@using PatternCreator.Models
-@model List<PatternCreator.Models.UserNameModel>
+@using PatternCreator.Utilities
+@model GetDocumentsViewModel
 @{
-    DocumentViewModel[] documents;
-    int index = 0;
+    UserContext db = new UserContext();
 }
-
-@foreach (var user in Model)
+@using (Ajax.BeginForm("SaveDocuments", "Print", null, new AjaxOptions { OnBegin = "$('#preloader-id').removeClass('done'); $('#templateAccept').modal('hide');", OnSuccess = "onSuccessPhoto" }, new { @class = "row" }))
 {
-    <div class="col-12 text-center font-weight-bold">@user.FIO</div>
-    <div class="col-6"><label>Номер корочки</label>
-                           </div>
-    <div class="col-6"><label>Дата</label>
-        </div>
-    foreach (var document in user.DocumentModels)
+
+}
+<style>
+    th {
+        vertical-align: inherit !important;
+        padding: 0.2rem !important;
+    }
+    td {
+        vertical-align: inherit !important;
+        padding: 0.2rem !important;
+    }
+</style>
+<form id="formvalid">
+
+<table class="table text-center table-borderless" id="tableRedact">
+<thead style="border-bottom: 3px solid #007bff">
+    <tr>
+        <th>Программа</th>
+        <th>Организация</th>
+        <th>Дата начала обуч.</th>
+        <th>Дата окончания обуч.</th>
+        <th>Кол-во учебных часов</th>
+        <th>Номер протокола</th>
+        <th>Поля ручного ввода</th>
+        <th>*</th>
+    </tr>
+</thead>
+<tbody>
+
+@foreach (var temp in Model.Templates)
+{
+    PictureModel pic = db.PicturesModels.Find(temp);
+    SpecialtyModel[] specialtyModels = db.Specialties.Where(t => t.Pictures.Any(r => r.Id == pic.Id)).ToArray();
+    Organization[] organizations = db.Organizations.ToArray();
+    PositionModel[] positions = pic.PositionModels.Where(t => t.Type == "Ручной ввод").ToArray();
+    <tr data-template="@temp">
+        <th class="text-center" colspan="8">@(pic.Name)</th>
+    </tr>
+    foreach (var companyId in Model.Companies)
     {
-        <div class="col-6">
-            <div class="form-group">
-                @*@Html.TextBoxFor(t=>document.DocumentId, new{@class="form-control", id=document.DocumentId, @readonly="readonly"})*@
-                <input readonly class="form-control" name="document[@index].DocumentId" type="text" id="@document.DocumentId" value="@document.DocumentId" />
-            </div>
-        </div>
-        <div class="col-6">
-            <div class="form-group">
-                <div id="date@(document.DocumentId)" class="input-group date">
-                    @*@Html.TextBoxFor(t => document.Date, new { @class = "form-control", data_format= "dd.MM.yyyy", aria_describedby = "basic-addon2"})*@
-                    <input data-format="dd.MM.yyyy" class="form-control" type="text" name="document[@index].Date" aria-describedby="basic-addon2" value="@document.Date" />
-                    <div class="input-group-append ">
-                        <span class="add-on input-group-text p-1" id="basic-addon2">
-                            <img height="25px" src="/Resourses/svg/calendar.svg">
-                        </span>
+        CompanyModel comp = db.CompanyModels.Find(companyId);
+        if (comp == null)
+        {
+            continue;
+        }
+        <tr data-template="@temp" style="border-top: 2px solid #666666; border-bottom: 2px solid #666666" data-company="@companyId">
+            <th class="text-left" colspan="8">@(comp.CompanyName)</th>
+        </tr>
+        foreach (var user in comp.UserModels)
+        {
+            <tr data-template="@temp" data-company="@companyId" data-userid="@user.Id">
+                <td colspan="8">@($"{user.Surname} {user.Name} {user.Patronymic}")</td>
+            </tr>
+            <tr data-template="@temp" data-company="@companyId" data-userid="@user.Id">
+                <td style="max-width: 220px">
+                    <div class="input-group">
+                        <select class="selectSpecialty reqfields form-control p-0" data-company="@companyId" name="SpecialtyName">
+                            <optgroup label="Программы для @pic.Name">
+                                <option data-placeholder="true" value="">Выберите программу</option>
+                                @foreach (var spec in specialtyModels)
+                                {
+                                    <option value="@spec.Id">@(spec.SpecialityName + $" ({spec.Prefix})")</option>
+                                }
+                            </optgroup>
+                        </select>
+                        <div class="input-group-append  allcompany">
+                            <span class="btn btn-primary">&#8661</span>
+                        </div>
+                    </div>
+
+                </td>
+                <td style="max-width: 220px">
+                    <div class="input-group">
+                        <select class="selectOrganization reqfields form-control p-0" data-company="@companyId" name="OrganizationName">
+                            <option data-placeholder="true" value="">Выберите организацию</option>
+                            @foreach (var organization in organizations)
+                            {
+                                <option value="@organization.OrganizationId">@(organization.OrganizationName)</option>
+                            }
+                        </select>
+                        <div class="input-group-append  allcompany">
+                            <span class="btn btn-primary">&#8661</span>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    
+                        <div class="input-group date">
+                            <input data-format="dd.MM.yyyy" class="form-control reqfields" type="text" name="DateStart" aria-describedby="basic-addon2"/>
+                            <div class="input-group-append allcompany">
+                                <span class="btn btn-primary">&#8661</span>
+                            </div>
+                            <div class="input-group-append ">
+                                <span class="add-on input-group-text p-1" id="basic-addon2">
+                                    <img height="25px" src="/Resourses/svg/calendar.svg">
+                                </span>
+                            </div>
+
+                        </div>
+                    
+                </td>
+                <td>
+                    
+                        <div class="input-group date">
+                            <input data-format="dd.MM.yyyy" class="form-control reqfields" type="text" name="Date" aria-describedby="basic-addon3"/>
+                            <div class="input-group-append allcompany">
+                                <span class="btn btn-primary">&#8661</span>
+                            </div>
+                            <div class="input-group-append ">
+                                <span class="add-on input-group-text p-1" id="basic-addon3">
+                                    <img height="25px" src="/Resourses/svg/calendar.svg">
+                                </span>
+                            </div>
+
+                        </div>
+                   
+                </td>
+                <td>
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="EducationTime"/>
+                        <div class="input-group-append  allcompany">
+                            <span class="btn btn-primary">&#8661</span>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="input-group">
+                        <div class="input-group-prepend createProtocol">
+                            <span class="btn btn-primary">&#9999</span>
+                        </div>
+                        <input type="text"  readonly class="form-control reqfields" name="ProtocolName"/>
+                        <div class="input-group-append allcompany">
+                            <span class="btn btn-primary">&#8661</span>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="btn btn-primary show">&#8744</div>
+                </td>
+                <td>
+                    <div data-template="@temp" data-company="@companyId" data-userid="@user.Id" class="btn btn-primary remove">&#128465</div>
+                </td>
+            </tr>
+            <tr style="display: none" data-template="@temp" data-company="@companyId" data-userid="@user.Id">
+                <td colspan="8" class="text-center">
+                    <table class="table table-borderless"  name="WriteFields">
+                        <thead>
+                        <tr>
+                            <th width="30px">№</th>
+                            <th>Текст</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @{
+                            int index = 0;
+                        }
+                        @foreach (var pos in positions)
+                        {
+                            <tr>
+                                <th style="vertical-align: inherit">@(++index)</th>
+                                <td>
+                                    <input type="text" class="form-control" name="HandWriteField"/>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+                                }
+                            }
+    if (Model.Users.Any())
+    {
+        <tr data-template="@temp" style="border-top: 2px solid #666666; border-bottom: 2px solid #666666" data-company="none">
+            <th class="text-left" colspan="8">Физ. лицо</th>
+        </tr>
+    }
+    
+    foreach (var user in db.UserModels.Where(t => Model.Users.Contains(t.Id)))
+    {
+        <tr data-template="@temp" data-company="none" data-userid="@user.Id">
+            <td colspan="8">@($"{user.Surname} {user.Name} {user.Patronymic}")</td>
+        </tr>
+        <tr data-template="@temp" data-company="none" data-userid="@user.Id">
+            <td style="max-width: 220px">
+                <div class="input-group">
+                    <select class="selectSpecialty reqfields form-control p-0" data-company="none" name="SpecialtyName">
+                        <optgroup label="Программы для @pic.Name">
+                            <option data-placeholder="true" value="">Выберите программу</option>
+                            @foreach (var spec in specialtyModels)
+                            {
+                                <option value="@spec.Id">@(spec.SpecialityName + $" ({spec.Prefix})")</option>
+                            }
+                        </optgroup>
+                    </select>
+                    <div class="input-group-append  allcompany">
+                        <span class="btn btn-primary">&#8661</span>
                     </div>
                 </div>
-            </div>
-        </div>
-        index++;
-    }
 
+            </td>
+            <td style="max-width: 220px" >
+                <div class="input-group">
+                    <select class="selectOrganization reqfields form-control p-0" data-company="none" name="OrganizationName">
+                        <option data-placeholder="true" value="">Выберите организацию</option>
+                        @foreach (var organization in organizations)
+                        {
+                            <option value="@organization.OrganizationId">@(organization.OrganizationName)</option>
+                        }
+                    </select>
+                    <div class="input-group-append  allcompany">
+                        <span class="btn btn-primary">&#8661</span>
+                    </div>
+                </div>
+            </td>
+            <td>
+                
+                    <div class="input-group date">
+                        <input data-format="dd.MM.yyyy" class="form-control reqfields" type="text" name="DateStart" aria-describedby="basic-addon2" />
+                        <div class="input-group-append allcompany">
+                            <span class="btn btn-primary">&#8661</span>
+                        </div>
+                        <div class="input-group-append ">
+                            <span class="add-on input-group-text p-1" id="basic-addon2">
+                                <img height="25px" src="/Resourses/svg/calendar.svg">
+                            </span>
+                        </div>
+
+                    </div>
+                
+            </td>
+            <td>
+                
+                    <div class="input-group date">
+                        <input data-format="dd.MM.yyyy" class="form-control reqfields" type="text" name="Date" aria-describedby="basic-addon3" />
+                        <div class="input-group-append allcompany">
+                            <span class="btn btn-primary">&#8661</span>
+                        </div>
+                        <div class="input-group-append ">
+                            <span class="add-on input-group-text p-1" id="basic-addon3">
+                                <img height="25px" src="/Resourses/svg/calendar.svg">
+                            </span>
+                        </div>
+
+                    </div>
+                
+            </td>
+            <td>
+                <div class="input-group">
+                    <input type="text" class="form-control" name="EducationTime" />
+                    <div class="input-group-append  allcompany">
+                        <span class="btn btn-primary">&#8661</span>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <div class="input-group">
+                    <div class="input-group-prepend  createProtocol">
+                        <span class="btn btn-primary">&#9999</span>
+                    </div>
+                    <input type="text" readonly class="form-control reqfields" name="ProtocolName" />
+                    <div class="input-group-append  allcompany">
+                        <span class="btn btn-primary">&#8661</span>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <div class="btn btn-primary show">&#8744</div>
+            </td>
+            <td>
+                <div data-template="@temp" data-company="none" data-userid="@user.Id" class="btn btn-primary remove">&#128465</div>
+            </td>
+        </tr>
+        <tr style="display: none" data-template="@temp" data-company="none" data-userid="@user.Id">
+            <td colspan="8" class="text-center">
+                <table class="table table-borderless" name="WriteFields">
+                    <thead>
+                    <tr>
+                        <th width="30px">№</th>
+                        <th>Текст</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @{
+                        int index1 = 0;
+                    }
+                    @foreach (var pos in positions)
+                    {
+                        <tr>
+                            <th style="vertical-align: inherit">@(++index1)</th>
+                            <td>
+                                <input type="text" class="form-control" name="HandWriteField"/>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    }
 }
+@{
+    db.Dispose();
+}
+</tbody>
+</table>
+</form>
 <div class="col-12 text-center">
-    <button class="BlueButton">
+    <button class="BlueButton" id="getDocs">
         <span class="blueButtonText">Продолжить</span>
     </button>
 </div>
 
 <script>
+    var selectSpecialty = [];
+    var selectOrganization = [];
+
     $(document).ready(function () {
+        $.validator.addMethod("NotEqual",
+            function(value, element, arg) {
+                return arg !== value;
+            });
+        $('#formvalid').validate({
+            rules:
+            {
+                SpecialtyName: { NotEqual: "" },
+                OrganizationName: { NotEqual: "" }
+            }
+        });
+            $.validator.addClassRules({
+                needValid: { required:true }
+        });
+        
+        $('.reqfields').addClass("needValid");
+        
+        //$('datevalid').rules("add",
+        //    {
+        //        required: true
+        //    });
         $('.date').datetimepicker({
             language: 'ru',
             pickTime: false
         });
+        $("select.selectSpecialty").each(function () {
+            var slim = new SlimSelect({
+                select: this,
+                allowDeselectOption: true,
+                hideSelectedOption: true
+            });
+            selectSpecialty = selectSpecialty.concat({ elem: $(this), slim: slim });
+        });
+        $("select.selectOrganization").each(function () {
+            var slim = new SlimSelect({
+                select: this,
+                allowDeselectOption: true,
+                hideSelectedOption: true
+            });
+            selectOrganization = selectOrganization.concat({ elem: $(this), slim: slim });
+        });        
     });
 </script>
 

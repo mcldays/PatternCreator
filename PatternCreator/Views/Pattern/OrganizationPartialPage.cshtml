@@ -1,0 +1,16 @@
+﻿@model PatternCreator.Models.OrganizationViewModel[]
+
+@foreach (var org in Model)
+{
+    <tr>
+        <td>@org.OrganizationId</td>
+        <td>@org.OrganizationName</td>
+        <td>@org.License</td>
+        <td><a href="/Pattern/UpdateOrganization?OrganizationId=@org.OrganizationId" class="text-right w-100" data-ajax="true" data-ajax-mode="replace" data-ajax-success="$('#OrganizationUpdate').modal('show')" data-ajax-update="#OrganizationRedact">
+            <img src="/Resourses/svg/pencil-edit-button (2).svg" alt="Редактирование организации" class="img-fluid">
+        </a></td>
+        <td><a href="/Pattern/RemoveOrganization?OrganizationId=@org.OrganizationId" class="text-left w-100" data-ajax="true" data-ajax-success="$(this).closest('tr').remove()">
+            <img src="/Resourses/svg/delete.svg" alt="Удаление организации" class="img-fluid">
+        </a></td>
+    </tr>
+}

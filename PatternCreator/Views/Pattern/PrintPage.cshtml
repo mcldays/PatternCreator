@@ -5,6 +5,8 @@
     ViewBag.Title = "Вывод на печать";
 }
 @Styles.Render("~/bundles/Print-css")
+@Styles.Render("~/Content/slimselect.min.css")
+@Scripts.Render("~/Scripts/slimselect.min.js")
 @Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
 @Scripts.Render("~/Scripts/bootstrap-datetimepicker.min.js")
 @Scripts.Render("~/Scripts/bootstrap-datetimepicker.ru.js")
@@ -27,6 +29,7 @@
                     {
                         <button class="dropdown-item" type="button" template-id="@template.Id">@template.Name</button>
                     }
+                    
                 </div>
             </div>
 
@@ -68,9 +71,9 @@
 
         <div id="manageButtons">
             <button class="BlueButton" id="startProcessPhotos">
-                @Ajax.ActionLink("Сопоставить", "GetDocuments", "Print", null, new AjaxOptions { UpdateTargetId = "documentresult", OnSuccess = "$('#templateAccept').modal('show');", OnBegin = "onBegin" }, new { @class = "butttonTextStyle" })
+                @Ajax.ActionLink("Сопоставить", "GetDocuments", "Print", null, new AjaxOptions { UpdateTargetId = "documentresult", OnSuccess = "$('#templateAccept').modal('show');", OnBegin = "onBegin" }, new { @class = "butttonTextStyle h-100" })
 
-                </button>
+            </button>
 
             <button class="BlueButton" id="PrintBut">
                 <span class="butttonTextStyle">Печать</span>
@@ -110,7 +113,7 @@
     </div>
 </div>
 <div id="templateAccept" tabindex="-1" role="dialog" aria-labelledby="templateAcceptLabel" aria-hidden="true" class="modal fade-scale">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog mx-auto" style="max-width: 97%;">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 class="modal-title">Данные для заполнения</h3>
@@ -120,11 +123,8 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div class="container-fluid">
-                    @using (Ajax.BeginForm("SaveDocuments", "Print", null, new AjaxOptions { OnBegin = "$('#preloader-id').removeClass('done'); $('#templateAccept').modal('hide');", OnSuccess = "onSuccessPhoto" }, new { @class = "row", id = "documentresult" }))
-                    {
-
-                    }
+                <div class="container-fluid" id="documentresult">
+                    
                 </div>
             </div>
         </div>
@@ -134,6 +134,7 @@
 @section Scripts{
     @Scripts.Render("~/bundles/Print-js")
     <script>
+        
         function onBegin(xhr, request) {
             request.url = "@Url.Action("GetDocuments", "Print")?data=" + getData();
         }
@@ -234,44 +235,17 @@
             });
 
         function onSuccessPhoto(result) {
-            const photos = result.split("<separator>");
-            for (let photo in photos) {
-                $("#photosForPrint")
-                    .append(
-                        `<div class='photo-wrap'><img class='photo' src="data:image/png;base64,${photos
-                        [photo]
-                        }"/><img class='photo-delete' src='../Resourses/svg/delete-white.svg' /></div>`);
-            }
+            //const photos = result.split("<separator>");
+
+            //for (let photo in photos) {
+            $("#photosForPrint")
+                .append(
+                    result);
+            //}
             $("#preloader-id").addClass("done");
         }
 
-        //$("#startProcessPhotos").on("click",
-        //    () => {
-        //        $.ajax({
-        //            url: "../Print/GetDocuments",
-        //            method: "POST",
-        //            data: {
-        //                data: JSON.stringify({
-        //                    "users": $(".user").toArray().map(e => e.getAttribute("uId")),
-        //                    "companies": $(".company").toArray().map(e => e.getAttribute("cId")),
-        //                    "templates": $(".template").toArray().map(e => e.getAttribute("tId")),
-        //                    "substrate": [+$("#substrate").prop("checked")]
-        //                })
-        //            },
-        //            success: (result) => {
-        //                const photos = result.split("<separator>");
-        //                for (let photo in photos) {
-        //                    $("#photosForPrint")
-        //                        .append(
-        //                            `<div class='photo-wrap'><img class='photo' src="data:image/png;base64,${photos
-        //                            [photo]
-        //                            }"/><img class='photo-delete' src='../Resourses/svg/delete-white.svg' /></div>`);
-        //                }
-        //                $("#preloader-id").addClass("done");
-        //            }
-        //        });
-        //        $("#preloader-id").removeClass("done");
-        //    });
+        
 
         function getData() {
             return JSON.stringify({
@@ -286,24 +260,176 @@
             var images = $(document.getElementById("photosForPrint").getElementsByClassName('photo'));
             var bufferStr = '';
 
-            for (let i = 0; i < images.length; i++) {
-                if ($("#substrate").prop("checked") === true) {
-                    bufferStr += `<div style='margin:0px;'><img style='margin:auto; width:100%; display:block' src='${
-                        $(images[i]).attr('src')}'/></div>`;
-                } else {
-                    bufferStr +=
-                        `<div style='height:99vh;margin:0px;'><img style='margin:auto; width:100%; display:block' src='${
-                        $(images[i]).attr('src')}'/></div>`;
-                }
+          
+            $(".photo-wrap>.printdocument").each(function() {
+                bufferStr += this.innerHTML;
+            });
 
-            }
-            printJS({ printable: bufferStr, type: 'raw-html', style: '* {margin: 0px; padding: 0px;}' });
+            printJS({
+                printable: bufferStr,
+                type: 'raw-html',
+                style: '* {margin: 0px; padding: 0px;}'
+            });
         });
 
         $(document).on("click",
             ".photo-delete",
-            function() {
+            function () {
+                if ($(this).data('docs') !== undefined) {
+                    var ids = $(this).data("docs");
+                    $(ids).each(function () {
+                        if (this !== 0) {
+                            $('.photo-delete[data-id="' + this + '"]').parent().remove();
+                        }
+                        
+                    });
+                }
                 $(this).parent().remove();
             });
+        function validElement(element) {
+            
+            if (!$(element).valid()) {
+                $(element).closest('.input-group').addClass("val-error");
+                return false;
+            }
+            $(element).closest('.input-group').removeClass("val-error");
+            return true;
+        }
+        $(document).on('click',
+            "#getDocs",
+            function () {
+                var valid = true;
+                $("#tableRedact").find(".reqfields").each(function () {
+                   
+                    if (!$(this).is('div')&&!validElement(this))
+                        valid = false;
+                });
+                if (!valid) {
+                    alert("Не все поля заполнены");
+                    return;
+                }
+                let data = [];
+                var specialty = $("[name='SpecialtyName']");
+                var organization = $("[name='OrganizationName']");
+                var datestart = $("[name='DateStart']");
+                var date = $("[name='Date']");
+                var educationtime = $("[name='EducationTime']");
+                var protocolname = $("[name='ProtocolName']");
+                var fields = $("[name='WriteFields']");
+                
+                //$('#preloader-id').removeClass('done');
+                //$('#templateAccept').modal('hide');
+                
+                
+                for (let i = 0; i < specialty.length; i++) {
+                    let fieldarray = $(fields[i]).find('[name="HandWriteField"]').toArray().map(t => t.value);
+                    data = data.concat({
+                        template: $(specialty[i]).closest('tr').data('template'),
+                        uid: $(specialty[i]).closest('tr').data('userid'),
+                        specialty: $(specialty[i]).val(),
+                        organization: $(organization[i]).val(),
+                        datestart: $(datestart[i]).val(),
+                        date: $(date[i]).val(),
+                        educationtime: $(educationtime[i]).val(),
+                        protocolname: $(protocolname[i]).val(),
+                        fields: fieldarray
+                    });
+                }
+
+                $.post(
+                    '@Url.Action("SaveDocuments", "Print")',
+                    {
+                        data: JSON.stringify(data),
+                        substrate: $("#substrate").prop("checked")
+                    },
+                    onSuccessPhoto,
+                    "html");
+
+            });
+        $(document).on("change", "#substrate", function() {
+            $('.substrated').fadeToggle(300);
+            $('.onlysubstrate').toggleClass('printdocument');
+            $('.notsubstrate').toggleClass('printdocument');
+
+        });
+        $(document).on("change",
+            ".needValid",
+            function () {
+                validElement(this);
+            });
+        $('.reqfields').addClass("needValid");
+        $(document).on("input",
+            ".needValid",
+            function () {
+                validElement(this);
+            });
+        $(document).on("click", ".createProtocol", function () {
+            var valid = true;
+            $(this).closest('tr').find(".reqfields:not([name='ProtocolName'])").each(function () {
+                   
+                if (!$(this).is('div')&&!validElement(this))
+                    valid = false;
+            });
+            if (!valid) {
+                alert("Заполните даты, выберите программу и организацию, чтобы получить номер протокола!");
+                return;
+            }
+            var parent_tr = $(this).closest('tr');
+            var target = parent_tr.find("[name='ProtocolName']");
+            let model = {
+                date: parent_tr.find("input[name='Date']").val(),
+                specialty: parent_tr.find("select[name='SpecialtyName']").val()
+            }
+            $.get(
+                '@Url.Action("CreateProtocol","Print")',
+                { data: JSON.stringify(model) },
+                function (data, textStatus, jqXHR) {
+                    if (textStatus === "success") {
+                        target.val(data).trigger("change");
+                    }
+                });
+        });
+        
+        $(document).on("click", ".btn.show", function () {
+            
+            if ($(this).text() === "∨")
+                $(this).html("∧");
+            else
+                $(this).html("∨");
+            $(this).closest("tr").next().fadeToggle(300);
+        });
+        $(document).on("click", ".btn.remove", function () {
+            var temp = $(this).data('template');
+            var comp = $(this).data('company');
+            var uid = $(this).data('userid');
+            $("tr[data-template='" + temp + "'][data-company='" + comp + "'][data-userid='" + uid + "']").remove();
+        });
+        $(document).on("click", ".allcompany>.btn", function () {
+            var company = $(this).closest('tr').data('company');
+            var temp = $(this).closest('tr').data('template');
+            var elem = $(this).closest('td').find('input, select');
+            var fieldname = elem.attr('name');
+            var value = elem.val();
+            if (elem.is('select')) {
+                
+                if (fieldname === "SpecialtyName") {
+                    selectSpecialty.filter(t => t.elem.data('company') === elem.data('company')).forEach(function(item,i,arr) {
+                        item.slim.set(value);
+                    });
+                }
+                if (fieldname === "OrganizationName") {
+                    selectOrganization.filter(t => t.elem.data('company') === elem.data('company')).forEach(function (item, i, arr) {
+                        item.slim.set(value);
+                    });
+                }
+            } else {
+                $("tr[data-template='" + temp + "'][data-company='" + company + "']").each(function () {
+                    if ($(this).children().attr("colspan")==8) {
+                        return;
+                    }
+                    $(this).find("[name='" + fieldname + "']").val(value).trigger("change");
+                });
+            }
+        });
     </script>
 }

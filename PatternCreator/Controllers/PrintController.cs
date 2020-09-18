@@ -14,120 +14,102 @@ namespace PatternCreator.Controllers
     public class PrintController : Controller
     {
         
-        public string GetComputedPhotos(string data)
+        public ActionResult GetComputedPhotos(string data)
         {
-            var document = JsonConvert.DeserializeObject<DocumentSaveModel[]>(data);
-            bool substrate = (bool)TempData["Substrate"];
+            var document = JsonConvert.DeserializeObject<int[]>(data);
+            ViewBag.Substrate = (bool)TempData["Substrate"];
             using (UserContext db = new UserContext())
             {
                 
-                var photos = new List<string>();
-                foreach (var model in document)
+                var photos = new List<DocumentPrintViewModel>();
+                foreach (var modelid in document)
                 {
-                    DocumentModel doc = db.DocumentModels.Find(model.DocumentId);
+                    DocumentModel doc;
+                    doc = db.DocumentModels.Find(modelid);
+                    
                     if (doc != null)
                     {
-                        photos.Add(Convert.ToBase64String(ComputePhoto.Compute(doc,
-                            substrate)));
+                        photos.Add(ComputePhoto.GetDocToPrint(doc));
                     }
                         
                 }
-                
-
-               
-                    
-
-                return string.Join("<separator>", photos);
+                return PartialView(photos);
             }
         }
+       
         [HttpPost]
-        public ActionResult SaveDocuments(DocumentSaveModel[] document)
+        public ActionResult SaveDocuments(string data, bool substrate)
         {
-           
+            dynamic arr = JsonConvert.DeserializeObject(data);
+            List<int> document = new List<int>();
             using (UserContext db = new UserContext())
             {
-                foreach (var model in document)
+                foreach (var el in arr)
                 {
-                    DocumentModel document1 = db.DocumentModels.Find(model.DocumentId);
-                    document1.Date = DateTime.Parse(model.Date);
-                    db.Entry(document1).State = EntityState.Modified;
+                    DocumentModel doc = new DocumentModel
+                    {
+                        Date = DateTime.Parse(el.date.ToString()),
+                        StartDate = DateTime.Parse(el.datestart.ToString()),
+                        UserId = int.Parse(el.uid.ToString()),
+                        PatternId = int.Parse(el.template.ToString()),
+                        OrganizationId = int.Parse(el.organization.ToString()),
+                        SpecialtyId = int.Parse(el.specialty.ToString()),
+                        EducationTime = el.educationtime.ToString(),
+                        ProtocolName = el.protocolname.ToString().Split('-')[0],
+                        HandWriteFields = el.fields.ToString()
+                    };
+                    doc = db.DocumentModels.Add(doc);
                     db.SaveChanges();
-                    
+                    document.Add(doc.DocumentId);
                 }
 
             }
 
             string data1 = JsonConvert.SerializeObject(document);
-
+            TempData["Substrate"] = substrate;
 
             return RedirectToAction("GetComputedPhotos", new { data = data1});
+        }
+
+        public JsonResult CreateProtocol(string data)
+        {
+            dynamic model = JsonConvert.DeserializeObject(data);
+            string date = model.date.ToString();
+            int days = DateTime.Parse(date).Subtract(new DateTime(2020,1,1)).Days;
+            int specid = int.Parse(model.specialty.ToString());
+            using (UserContext db = new UserContext())
+            {
+                SpecialtyModel sp = db.Specialties.Find(specid);
+                string protocolname = $"{days:D3}";
+                ProtocolModel pr = db.Protocols.Find(protocolname);
+                if (pr != null)
+                {
+                    int index = 0;
+                    while (pr != null)
+                    {
+                        index++;
+                        protocolname = $"{days:D3}.{index:D2}";
+                        pr = db.Protocols.Find(protocolname);
+                    }
+                }
+                db.Protocols.Add(new ProtocolModel { ProtocolName = protocolname });
+                db.SaveChanges();
+                return Json(protocolname + $"-{sp.Prefix}", JsonRequestBehavior.AllowGet);
+            }
+
+            
         }
         public ActionResult GetDocuments(string data)
         {
             var parsed = JsonConvert.DeserializeObject<Dictionary<string, List<int>>>(data);
-            using (UserContext db = new UserContext())
-            {
-                List<UserModel> userModels = new List<UserModel>();
-                foreach (var ids in parsed["companies"])
-                {
-                    var company = db.CompanyModels.Find(ids);
-                    if (company == null)
-                        continue;
-                    company.UserModels.ForEach(t => userModels.Add(t));
-                }
-                foreach (var ids in parsed["users"])
-                {
-                    if (userModels.Any(t => t.Id == ids))
-                        continue;
-                    var user = db.UserModels.Find(ids);
-                    if (user == null)
-                        continue;
-                    userModels.Add(user);
-                }
-                var photos = new List<string>();
-
-
-                List<PictureModel> templates = new List<PictureModel>();
-                foreach (var ids in parsed["templates"])
-                {
-                    var template = db.PicturesModels.Find(ids);
-                    if (template == null)
-                        continue;
-                    templates.Add(template);
-                }
-
-                var substrate = parsed["substrate"][0] == 1;
-                List<UserNameModel> us = new List<UserNameModel>();
-                foreach (var user in userModels)
-                {
-                    var usermodel =
-                        new UserNameModel
-                        {
-                            FIO = $"{user.Surname} {user.Name} {user.Patronymic}",
-                            DocumentModels = new List<DocumentViewModel>()
-                        };
-                    
-                    if (user.DocumentModels.Any(t=>templates.Any(r=>r.Id==t.PatternId)))
-                        foreach (var document in user.DocumentModels.Where(t => templates.Any(r => r.Id == t.PatternId)))
-                            usermodel.DocumentModels.Add(new DocumentViewModel(document));
-                    else
-                    {
-                        foreach (var template in templates)
-                        {
-                            user.DocumentModels.Add(new DocumentModel { PatternId = template.Id, UserId = user.Id });
-                            db.SaveChanges();
-                            usermodel.DocumentModels.Add(new DocumentViewModel(user.DocumentModels.FirstOrDefault(t => t.PatternId == template.Id)));
-                        }
-                        db.Entry(user).State = EntityState.Modified;
-                        db.SaveChanges();
-                    }
-                    us.Add(usermodel);
-                }
-
-
-                TempData["Substrate"] = substrate;
-                return PartialView(us);
-            }
+            var substrate = parsed["substrate"][0] == 1;
+            TempData["Substrate"] = substrate;
+            GetDocumentsViewModel vm = new GetDocumentsViewModel();
+            vm.Companies = parsed["companies"].ToArray();
+            vm.Templates = parsed["templates"].ToArray();
+            vm.Users = parsed["users"].ToArray();
+            return PartialView(vm);
+            
         }
     }
 }

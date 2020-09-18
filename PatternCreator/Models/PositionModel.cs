@@ -12,13 +12,15 @@ namespace PatternCreator.Models
         [Key]
         public int Id { get; set; }
         public int PictureId { get; set; }
-        public double PosX { get; set; }
-        public double PosY { get; set; }
-        public double Width { get; set; }
+        public float PosX { get; set; }
+        public float PosY { get; set; }
+        public float Width { get; set; }
 
         public string Type { get; set; }
+        public string FontWeight { get; set; }
+        public string Alignment { get; set; }
         public int FontSize { get; set; }
-        public double Height { get; set; }
+        public float Height { get; set; }
         public string Text { get; set; }
         [ForeignKey("PictureId")]
         public virtual PictureModel PictureModel { get; set; }

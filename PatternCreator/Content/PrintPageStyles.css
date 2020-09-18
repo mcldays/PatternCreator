@@ -16,8 +16,30 @@
 * {
     font-family: sans-serif;
 }
+label.error {
+	display: none !important;
+}
+.input-group>select.form-control {
+	display: block !important;
+	max-width: 0 !important;
+	border: none !important;
+	width: 0 !important;
+}
+.input-group {
+	border-radius: 5px;
+	border: 2px solid transparent;
+}
+.input-group.val-error {
+	border-radius: 5px;
+	border: 2px solid red;
+	background-color: pink;
+	/* 
+    text-align: left; */
+}
 
-
+.ss-main .ss-single-selected {
+	height: 100% !important
+}
 #MainBlock{
     width: 65%;
     margin: auto;
@@ -100,12 +122,16 @@ hr{
     margin: 5px;
     position: relative;
 }
-
+.printdocument>table {
+	margin-top: 0px !important
+}
 .PrintDescription{
     padding: 12px 0 0 12px;
 }
-
-.organisationAligment{
+.printdocument * {
+	font-family: Times New Roman !important;
+}
+.organisationAligment {
 }
 
 #orgTextAligment{
@@ -319,8 +345,13 @@ td {
 }
 
 .photo-wrap {
+	height: max-content;
+	border: 2px solid gray;
+	border-radius: 5px;
+	padding: 1px;
     position: relative;
     width: max-content;
+	width: -moz-max-content;
     margin: 10px;
     display: inline-block;
 }

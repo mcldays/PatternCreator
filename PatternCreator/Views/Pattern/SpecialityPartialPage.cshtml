@@ -1,0 +1,16 @@
+﻿@model PatternCreator.Models.SpecialtyViewModel[]
+
+@foreach (var spec in Model)
+{
+<tr>
+    <td>@spec.Id</td>
+    <td>@spec.SpecialityName</td>
+    <td>@spec.Prefix</td>
+    <td><a href="/Pattern/UpdateSpeciality?Id=@spec.Id" class="text-right w-100" data-ajax="true" data-ajax-mode="replace" data-ajax-success="$('#SpecialityUpdate').modal('show')" data-ajax-update="#SpecialRedact">
+        <img src="/Resourses/svg/pencil-edit-button (2).svg" alt="Редактирование программы" class="img-fluid">
+    </a></td>
+    <td><a href="/Pattern/RemoveSpeciality?Id=@spec.Id" class="text-left w-100" data-ajax="true" data-ajax-success="$(this).closest('tr').remove()">
+        <img src="/Resourses/svg/delete.svg" alt="Удаление программы" class="img-fluid">
+    </a></td>
+</tr>
+}

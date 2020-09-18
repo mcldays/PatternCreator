@@ -1,0 +1,189 @@
+﻿@using PatternCreator.Models
+@using PatternCreator.Utilities
+@model PatternCreator.Models.SpecialtyViewModel
+@{
+    ViewBag.Title = "Программы и организации";
+    Dictionary<int, string> templates = new Dictionary<int, string>();
+    using (UserContext db = new UserContext())
+    {
+        db.PicturesModels.ToList().ForEach(t => templates.Add(t.Id, t.Name));
+    }
+    OrganizationViewModel organization = new OrganizationViewModel(null);
+}
+@Styles.Render("~/Content/slimselect.min.css")
+@Scripts.Render("~/Scripts/slimselect.min.js")
+@Ajax.ActionLink("w", "SpecialityPartialPage", null, new AjaxOptions { UpdateTargetId = "results", HttpMethod = "GET" }, new { @class = "d-none", id = "refresh" })
+@Ajax.ActionLink("w", "OrganizationPartialPage", null, new AjaxOptions { UpdateTargetId = "orgresults", HttpMethod = "GET" }, new { @class = "d-none", id = "orgrefresh" })
+
+<div class="container-fluid">
+    <div class="row align-items-center">
+        <a class="btn btn-primary newitem" href="" data-toggle="modal" data-target="#SpecialityModal">Добавить программу</a>
+        <a class="btn btn-primary newitem" href="" style="display: none" href="" data-toggle="modal" data-target="#OrganizationModal">Добавить организацию</a>
+        <span class="ml-auto mr-2">Сменить на:</span>
+        <a class="btn btn-primary text-white" id="changebtn">Организации</a>
+        @*<a class="btn btn-primary mx-2" href="" data-toggle="modal" data-target="#SpecialityModal">&#128269 Фильтр</a>*@
+    </div>
+
+</div>
+<div class="container-fluid mt-3">
+    <table class="table restable text-center w-100">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Наименовение</th>
+                <th>Префикс</th>
+                <th width="42px"></th>
+                <th width="42px"></th>
+            </tr>
+        </thead>
+        <tbody id="results"></tbody>
+    </table>
+    <table class="table restable text-center w-100" style="display: none">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Наименовение</th>
+                <th>Лицензия</th>
+                <th width="42px"></th>
+                <th width="42px"></th>
+            </tr>
+        </thead>
+        <tbody id="orgresults"></tbody>
+    </table>
+</div>
+
+<div class="modal fade-scale" id="SpecialityModal" tabindex="-1" role="dialog" aria-labelledby="SpecialityModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="SpecialityModalLabel">Добавить программу обучения</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @using (Ajax.BeginForm("AddSpeciality", "Pattern", new AjaxOptions { LoadingElementId = "preloader-id", OnBegin = "$('#SpecialityModal').modal('hide')", HttpMethod = "Post", OnSuccess = "OnSuccess" }, new { @class = "form-row justify-content-center" }))
+                {
+                    <div class="flex-column d-flex w-75 p-2 align-items-center">
+                        @Html.ValidationSummary("", new { @class = "text-danger d-flex text-center" })
+                        @Html.HiddenFor(model => model.Id)
+                        @Html.EditorFor(model => model.SpecialityName, new { htmlAttributes = new { @class = "form-control", placeholder = "Наименование специальности" } })
+                        @Html.EditorFor(model => model.Prefix, new { htmlAttributes = new { @class = "form-control  my-2", placeholder = "Префикс" } })
+                        @Html.EditorFor(model => model.Quality, new { htmlAttributes = new { @class = "form-control", placeholder = "Квалификация" } })
+                        @Html.EditorFor(model => model.FieldSpecialty, new { htmlAttributes = new { @class = "form-control my-2", placeholder = "Сфера деятельности" } })
+                        <select id="addselect" name="Templates" multiple>
+                            <optgroup label="Выбрать все">
+                                <option data-placeholder="true">Выберите шаблоны</option>
+                                @foreach (var temp in templates)
+                                {
+                                    <option value="@temp.Key">@temp.Value</option>
+                                }
+                            </optgroup>
+                        </select>
+                        <input type="submit" class="btn btn-primary w-50 my-3" value="Сохранить" />
+                    </div>
+                }
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="modal fade-scale" id="OrganizationModal" tabindex="-1" role="dialog" aria-labelledby="OrganizaionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="OrganizaionModalLabel">Добавить программу обучения</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @using (Ajax.BeginForm("AddOrganization", "Pattern", null,
+                    new AjaxOptions { LoadingElementId = "preloader-id", OnBegin = "$('#OrganizaionModal').modal('hide')", HttpMethod = "Post", OnSuccess = "OnSuccess" }, new { @class = "form-row justify-content-center" }))
+                {
+                <div class="flex-column d-flex w-75 p-2 align-items-center">
+                    @Html.ValidationSummary("", new { @class = "text-danger d-flex text-center" })
+                    @Html.HiddenFor(е => organization.OrganizationId)
+                    @Html.EditorFor(е => organization.OrganizationName, new { htmlAttributes = new { @class = "form-control", placeholder = "Наименование организации" } })
+                    @Html.EditorFor(е => organization.License, new { htmlAttributes = new { @class = "form-control  my-2", placeholder = "Лицензия" } })
+
+                    <input type="submit" class="btn btn-primary w-50 my-3" value="Сохранить" />
+                </div>
+                }
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="modal fade-scale" id="SpecialityUpdate" tabindex="-1" role="dialog" aria-labelledby="SpecialityUpdateLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="SpecialityUpdatelLabel">Изменить программу обучения</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="SpecialRedact">
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="modal fade-scale" id="OrganizationUpdate" tabindex="-1" role="dialog" aria-labelledby="OrganizationUpdateLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="OrganizationUpdateLabel">Изменить программу обучения</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="OrganizationRedact">
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<script>
+    $(document).on("click", "#changebtn", function() {
+        $('.restable').fadeToggle(300);
+        $('.newitem').fadeToggle(300);
+        if ($(this).text() === "Организации") {
+            $(this).text("Программы");
+        }
+        else { $(this).text("Организации");}
+        
+    });
+    function OnSuccess(result) {
+        if (result === "True") {
+            if ($(".restable").first().css("display")!=="none") {
+                $("#refresh").click();
+            } else {
+                $("#orgrefresh").click();
+            }
+           
+        } else {
+            alert("Что-то пошло не так. Попробуйте позже.");
+        }
+    };
+    function OnShowUpdateSuccess() {
+        new SlimSelect({
+            select: '#updateselect',
+            allowDeselectOption: true,
+            hideSelectedOption: true
+        });
+    };
+
+    $(document).ready(function () {
+        new SlimSelect({
+            select: '#addselect',
+            allowDeselectOption: true,
+            hideSelectedOption: true
+        });
+        $("#refresh").click();
+        $("#orgrefresh").click();
+    });
+</script>

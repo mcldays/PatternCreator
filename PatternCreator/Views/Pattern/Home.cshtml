@@ -13,9 +13,7 @@
     });
 }
 @Styles.Render("~/bundles/Home-css")
-@Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
-@Scripts.Render("~/Scripts/bootstrap-datetimepicker.min.js")
-@Scripts.Render("~/Scripts/bootstrap-datetimepicker.ru.js")
+
 <div id="BlockOne">
     <div id="UserControl">
         <div id="AligmentAdd">
@@ -48,15 +46,6 @@
         </div>
     </div>
     
-        
-            @*<div id="datetimepicker1" class="input-group date">
-                <input data-format="dd.MM.yyyy" class="form-control" type="text" aria-describedby="basic-addon2"/>
-                <div class="input-group-append ">
-                    <span class="add-on input-group-text p-1" id="basic-addon2">
-                        <img height="25px"  src="/Resourses/svg/calendar.svg">
-                    </span>
-                </div>
-            </div>*@
         <form id="TableTwo">
 
             <table class="table" style="width:100%" id="companies">
@@ -118,7 +107,7 @@
                                         </a>
                                     </td>
                                     <td class="d-flex justify-content-around align-middle py-1">
-                                        <a href="/Pattern/EditUser?UserId=20" class="IconButtonsSave ManageIconStyle" data-ajax="true" data-ajax-mode="replace" data-ajax-success="$('#EditUserModal').modal('show')" data-ajax-update="#userContainer">
+                                        <a href="/Pattern/EditUser?UserId=@user.Id" class="IconButtonsSave ManageIconStyle" data-ajax="true" data-ajax-mode="replace" data-ajax-success="$('#EditUserModal').modal('show')" data-ajax-update="#userContainer">
                                             <img src="/Resourses/svg/pencil-edit-button (2).svg" alt="Редактирование пользователя" class="img-fluid">
                                         </a>
                                         <a class="IconButtonsSave ManageIconStyle" data-user-id="@user.Id" data-action="saveUser">
@@ -233,10 +222,7 @@
             });
 
         $(document).ready(function () {
-            $('#datetimepicker1').datetimepicker({
-                language: 'ru',
-                pickTime: false
-            });
+           
 
 
             $(document).on('click',"a.IconButtonsSave", function(e) {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Linq;
 using PatternCreator.Models;
@@ -267,11 +268,13 @@ namespace PatternCreator.Utilities
 
             using (UserContext db = new UserContext())
             {
-                var modelPicture = db.PicturesModels.FirstOrDefault(t => t.Id == Id);
+                var modelPicture = db.PicturesModels.Find(Id);
+                if (modelPicture==null)
+                    return false;
 
                 modelPicture.Name = Name;
 
-                db.PicturesModels.AddOrUpdate(modelPicture);
+                db.Entry(modelPicture).State = EntityState.Modified;
                 db.SaveChanges();
 
                 return true;

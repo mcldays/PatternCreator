@@ -1,0 +1,47 @@
+﻿@using PatternCreator.Utilities
+@model PatternCreator.Models.SpecialtyViewModel
+@{
+    Dictionary<int, string> templates = new Dictionary<int, string>();
+    using (UserContext db = new UserContext())
+    {
+        db.PicturesModels.ToList().ForEach(t => templates.Add(t.Id, t.Name));
+    }
+}
+@using (Ajax.BeginForm("UpdateSpeciality", "Pattern", new AjaxOptions { LoadingElementId = "preloader-id", OnBegin = "$('#SpecialityUpdate').modal('hide')", UpdateTargetId = "results", HttpMethod = "Post"}, new { @class = "form-row justify-content-center" }))
+{
+<div class="flex-column d-flex w-75 p-2 align-items-center">
+    @Html.ValidationSummary("", new { @class = "text-danger d-flex text-center" })
+    @Html.HiddenFor(model => model.Id)
+    @Html.EditorFor(model => model.SpecialityName, new { htmlAttributes = new { @class = "form-control", placeholder = "Наименование специальности" } })
+    @Html.EditorFor(model => model.Prefix, new { htmlAttributes = new { @class = "form-control my-2", placeholder = "Префикс" } })
+    @Html.EditorFor(model => model.Quality, new { htmlAttributes = new { @class = "form-control", placeholder = "Квалификация" } })
+    @Html.EditorFor(model => model.FieldSpecialty, new { htmlAttributes = new { @class = "form-control my-2", placeholder = "Сфера деятельности" } })
+
+    <select id="updateselect" name="Templates" multiple>
+        <optgroup label="Выбрать все">
+            <option data-placeholder="true">Выберите шаблоны</option>
+            @foreach (var temp in templates)
+            {
+                if (Model.Templates.Contains(temp.Key))
+                {
+                    <option value="@temp.Key" selected>@temp.Value</option>
+                }
+                else
+                {
+                    <option value="@temp.Key">@temp.Value</option>
+                }
+            }
+        </optgroup>
+    </select>
+    <input type="submit" class="btn btn-primary w-50 my-3" value="Сохранить" />
+</div>
+}
+<script>
+    $(document).ready(function() {
+        new SlimSelect({
+            select: '#updateselect',
+            allowDeselectOption: true,
+            hideSelectedOption: true
+        });
+    });
+</script>

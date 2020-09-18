@@ -12,10 +12,10 @@ namespace PatternCreator.Models
         [Key]
         public int StampPositionId { get; set; }
         
-        public double PosX { get; set; }
-        public double PosY { get; set; }
-        public double Width { get; set; }
-        public double Height { get; set; }
+        public float PosX { get; set; }
+        public float PosY { get; set; }
+        public float Width { get; set; }
+        public float Height { get; set; }
 
         public int StampId { get; set; }
         [ForeignKey("StampId")]
@@ -32,10 +32,10 @@ namespace PatternCreator.Models
         
         public int StampPositionId { get; set; }
 
-        public double PosX   { get; set; }
-        public double PosY   { get; set; }
-        public double Width  { get; set; }
-        public double Height { get; set; }
+        public float PosX   { get; set; }
+        public float PosY   { get; set; }
+        public float Width  { get; set; }
+        public float Height { get; set; }
 
         public int StampId { get; set; }
         

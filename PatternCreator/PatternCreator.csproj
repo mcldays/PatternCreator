@@ -228,20 +228,56 @@
     <Compile Include="Migrations\202008051536389_fix.designer.cs">
       <DependentUpon>202008051536389_fix.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202008061313506_bold-align.cs" />
+    <Compile Include="Migrations\202008061313506_bold-align.designer.cs">
+      <DependentUpon>202008061313506_bold-align.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202008131409082_sizes.cs" />
+    <Compile Include="Migrations\202008131409082_sizes.designer.cs">
+      <DependentUpon>202008131409082_sizes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202008171247091_float.cs" />
+    <Compile Include="Migrations\202008171247091_float.designer.cs">
+      <DependentUpon>202008171247091_float.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202008251419512_specialty.cs" />
+    <Compile Include="Migrations\202008251419512_specialty.designer.cs">
+      <DependentUpon>202008251419512_specialty.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202008301800044_merge.cs" />
+    <Compile Include="Migrations\202008301800044_merge.designer.cs">
+      <DependentUpon>202008301800044_merge.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009021136412_images.cs" />
+    <Compile Include="Migrations\202009021136412_images.designer.cs">
+      <DependentUpon>202009021136412_images.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009061710495_specialtyquality.cs" />
+    <Compile Include="Migrations\202009061710495_specialtyquality.designer.cs">
+      <DependentUpon>202009061710495_specialtyquality.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009071337545_license.cs" />
+    <Compile Include="Migrations\202009071337545_license.designer.cs">
+      <DependentUpon>202009071337545_license.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AutModel.cs" />
     <Compile Include="Models\AutoTextModel.cs" />
     <Compile Include="Models\CompanyModel.cs" />
     <Compile Include="Models\DocumentModel.cs" />
+    <Compile Include="Models\Organization.cs" />
     <Compile Include="Models\PictureModel.cs" />
     <Compile Include="Models\PositionModel.cs" />
+    <Compile Include="Models\ProtocolModel.cs" />
     <Compile Include="Models\SertificateModel.cs" />
     <Compile Include="Models\SetBlockModel.cs" />
+    <Compile Include="Models\SpecialtyModel.cs" />
     <Compile Include="Models\StampModel.cs" />
     <Compile Include="Models\StampPositions.cs" />
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\ComputePhoto.cs" />
+    <Compile Include="Utilities\DateConverter.cs" />
     <Compile Include="Utilities\SendDbUtility.cs" />
     <Compile Include="Utilities\UserContext.cs" />
   </ItemGroup>
@@ -268,6 +304,7 @@
     <Content Include="Content\PrintPageStyles.css" />
     <Content Include="Content\EditorPatternStyles.css" />
     <Content Include="Content\slick-theme.css" />
+    <Content Include="Content\slimselect.min.css" />
     <Content Include="Content\stylePreload.css" />
     <Content Include="Content\themes\base\accordion.css" />
     <Content Include="Content\themes\base\all.css" />
@@ -313,6 +350,7 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Resourses\Eagle.png" />
     <Content Include="Resourses\Stamps\Stamps1.png" />
     <Content Include="Resourses\svg\calendar.svg" />
     <Content Include="Resourses\svg\delete-white.svg" />
@@ -410,6 +448,7 @@
     <Content Include="Scripts\print.min.js" />
     <Content Include="Scripts\slick.js" />
     <Content Include="Scripts\slick.min.js" />
+    <Content Include="Scripts\slimselect.min.js" />
     <Content Include="Scripts\src\index.js" />
     <Content Include="Scripts\src\methods\defaults.js" />
     <Content Include="Scripts\src\methods\destroy.js" />
@@ -513,6 +552,12 @@
     <Content Include="Views\Pattern\GetStamps.cshtml" />
     <Content Include="Views\Pattern\EditUser.cshtml" />
     <Content Include="Views\Print\GetDocuments.cshtml" />
+    <Content Include="Views\Print\GetComputedPhotos.cshtml" />
+    <Content Include="Views\Pattern\SpecialityPage.cshtml" />
+    <Content Include="Views\Pattern\SpecialityPartialPage.cshtml" />
+    <Content Include="Views\Pattern\UpdateSpeciality.cshtml" />
+    <Content Include="Views\Pattern\OrganizationPartialPage.cshtml" />
+    <Content Include="Views\Pattern\UpdateOrganization.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -552,6 +597,30 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202008051536389_fix.resx">
       <DependentUpon>202008051536389_fix.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202008061313506_bold-align.resx">
+      <DependentUpon>202008061313506_bold-align.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202008131409082_sizes.resx">
+      <DependentUpon>202008131409082_sizes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202008171247091_float.resx">
+      <DependentUpon>202008171247091_float.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202008251419512_specialty.resx">
+      <DependentUpon>202008251419512_specialty.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202008301800044_merge.resx">
+      <DependentUpon>202008301800044_merge.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009021136412_images.resx">
+      <DependentUpon>202009021136412_images.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009061710495_specialtyquality.resx">
+      <DependentUpon>202009061710495_specialtyquality.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009071337545_license.resx">
+      <DependentUpon>202009071337545_license.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -3,52 +3,99 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.Drawing.Text;
 using System.IO;
+using System.Linq;
+using Newtonsoft.Json;
 using PatternCreator.Models;
 
 namespace PatternCreator.Utilities
 {
     public static class ComputePhoto
     {
-        public static byte[] Compute(DocumentModel doc,  bool substrate)
+        public static List<string> TrimWrapping(string sourcestring, int part, int wrapcount)
         {
+            if (string.IsNullOrEmpty(sourcestring) || wrapcount >= sourcestring.Length)
+            {
+                List<string> l = new List<string>();
+                l.Add(sourcestring);
+                for (int i = 1; i < part; i++)
+                    l.Add("");
+                return l;
+            }
+            List<string> stringList = new List<string>();
+            int lastwrapindex = 0;
+            int startcount = 0;
+            while (stringList.Count<part)
+            {
+                if (sourcestring.Length==0)
+                {
+                    stringList.Add("");
+                    continue;
+                }
+                int wrap = wrapcount >= sourcestring.Length ? sourcestring.Length - 1 : wrapcount;
+                for (int i = wrap; i >= 0; i--)
+                {
+                    if (sourcestring[i] == ' ')
+                    {
+                        stringList.Add(sourcestring.Substring(0, i).TrimEnd());
+                        sourcestring = sourcestring.Remove(0, i + 1);
+                        break;
+                    }
+                }
+
+                if (sourcestring.Length<=wrap)
+                {
+                    stringList.Add(sourcestring);
+                    sourcestring = "";
+                }
+                if (startcount == stringList.Count)
+                    stringList.Add("");
+                startcount = stringList.Count;
+            }
+                
+            
+            
+            
+            
+            
+            
+            
+            
+            return stringList;
+        }
+
+        public static DocumentPrintViewModel GetDocToPrint(DocumentModel doc)
+        {
+            DocumentPrintViewModel dpvm = new DocumentPrintViewModel();
+            dpvm.DocId = doc.DocumentId;
+            switch (doc.PatternId)
+            {
+                case 45: dpvm.Identity = DocumentPrintViewModel.TypeDoc.WorkHighSecurityWithQuality; break;
+                case 47: dpvm.Identity = DocumentPrintViewModel.TypeDoc.WorkSecurity; break;
+                case 53: dpvm.Identity = DocumentPrintViewModel.TypeDoc.WorkHighSecurity; break;
+                case 54: dpvm.Identity = DocumentPrintViewModel.TypeDoc.Pplam; break;
+                case 51: dpvm.Identity = DocumentPrintViewModel.TypeDoc.Ptm; break;
+                case 52: dpvm.Identity = DocumentPrintViewModel.TypeDoc.WorkIdentity; break;
+                default: dpvm.Identity = DocumentPrintViewModel.TypeDoc.Other; break;
+
+            }
+            if (doc.PatternId == 45 || doc.PatternId == 53|| doc.PatternId==54)
+                return dpvm;
+            
             var template = doc.PictureModel;
             var user = doc.UserModel;
-            Bitmap bmp;
-            using (var ms = new MemoryStream(template.Image))
+            
+            
+            dpvm.NaturalHeight = template.NaturalHeight;
+            dpvm.NaturalWidth = template.NaturalWidth;
+            foreach (var position in template.PositionModels)
             {
-                bmp = (Bitmap)Image.FromStream(ms);
-                Bitmap bmp2;
-                if (substrate)
-                {
-                    bmp2 = bmp.Clone(new Rectangle(0, 0, bmp.Width, bmp.Height), PixelFormat.Format32bppPArgb);
-                }
-                else
-                {
-                    bmp2 = new Bitmap(bmp.Width, bmp.Height);
-                }
-
-                var g = Graphics.FromImage(bmp2);
-                g.SmoothingMode = SmoothingMode.AntiAlias;
-                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                g.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                g.CompositingQuality = CompositingQuality.HighQuality;
-
-                foreach (var position in template.PositionModels)
-                {
-                    RectangleF rectf;
-                    if (substrate)
-                    {
-                        rectf = new RectangleF((float)position.PosX, (float)position.PosY,
-                            (float)position.Width, (float)position.Height);
-                    }
-                    else
-                    {
-                        rectf = new RectangleF((float)position.PosX, (float)position.PosY,
-                            (float)position.Width, (float)position.Height);
-                    }
-                    var text = "";
-                    switch (position.Type)
+                RectangleF rectf = new RectangleF((float) (position.PosX ), (float) (position.PosY ),
+                        (float) (position.Width ), (float) (position.Height ));
+                var text = "";
+                string[] HandWriteFields = JsonConvert.DeserializeObject<string[]>(doc.HandWriteFields);
+                switch (position.Type)
                     {
                         case "Имя":
                             text = user.Name;
@@ -74,60 +121,126 @@ namespace PatternCreator.Utilities
                         case "Образование":
                             text = user.Education;
                             break;
-                        case "Число":
-                            text = doc.Date.Day.ToString();
+                        case "Число *конец":
+                            text = doc.Date.Day.ToString("d2");
                             break;
-                        case "Месяц":
-                            text = doc.Date.Month.ToString();
+                        case "Месяц *конец":
+                            text = doc.Date.Month.ToString("d2");
                             break;
-                        case "Год":
-                            text = doc.Date.Year.ToString();
+                        case "Год *конец":
+                            text = doc.Date.Year.ToString("d4");
                             break;
-                        case "Номер корочки":
+                        case "(дд.мм.гггг) г. *конец":
+                            text = doc.Date.Date.ToString("dd.MM.yyyy")+" г.";
+                            break;
+                        case "(дд.мм.гггг) *конец":
+                            text = doc.Date.Date.ToString("dd.MM.yyyy");
+                            break;
+                        case "Число *начало":
+                            text = doc.StartDate.Day.ToString("d2");
+                            break;
+                        case "Месяц *начало":
+                            text = doc.StartDate.Month.ToString("d2");
+                            break;
+                        case "Год *начало":
+                            text = doc.StartDate.Year.ToString("d4");
+                            break;
+                        case "(дд.мм.гггг) г. *начало":
+                            text = doc.StartDate.Date.ToString("dd.MM.yyyy") + " г.";
+                            break;
+                        case "(дд.мм.гггг) *начало":
+                            text = doc.StartDate.Date.ToString("dd.MM.yyyy");
+                            break;
+                        case "Программа обучения":
+                            text = doc.SpecialtyModel.SpecialityName;
+                            break;
+                        case "Обучающая организация":
+                            text = doc.Organization.OrganizationName;
+                            break;
+                        case "Количество учебных часов":
+                            text = doc.EducationTime;
+                            break;
+                        case "Номер протокола":
+                            text = doc.ProtocolName+"-"+doc.SpecialtyModel.Prefix;
+                            break;
+                        case "Номер бланка":
+                            text = doc.PictureModel.DocumentModels.OrderBy(t=>t.DocumentId).ToList().IndexOf(doc).ToString("D5");
+                            break;
+                    case "Номер корочки":
                             text = doc.DocumentId.ToString();
                             break;
-                        default: 
+                        case "Ручной ввод":
+                            text = HandWriteFields[template.PositionModels.Where(t => t.Type == "Ручной ввод").ToList().IndexOf(position)];
+                            break;
+                        case "Квалификация":
+                            text = doc.SpecialtyModel.Quality;
+                            break;
+                        case "Сфера деятельности":
+                            text = doc.SpecialtyModel.FieldSpecialty;
+                            break;
+                        case "Лицензия":
+                            text = doc.Organization.License;
+                            break;
+
+                    default:
                             text = position.Text;
                             break;
                     }
-                    //SolidBrush b = new SolidBrush(Color.Red);  //кисть для заливки
-                    //g.FillRectangle(b, rectf); //заполняю
-                    //b.Dispose();
-                    var format = new StringFormat();
-                    format.LineAlignment = StringAlignment.Center;
-                    g.DrawString(text, new Font("Tahoma", position.FontSize, GraphicsUnit.Pixel), Brushes.Black, rectf, format);
-                }
-                if (substrate)
-                    foreach (var position in template.StampPositions)
+               
+                         var format = new StringFormat();
+                format.LineAlignment = StringAlignment.Near;
+                switch (position.Alignment)
+                    {
+                        case "Слева":
+                            format.Alignment = StringAlignment.Near;
+                            break;
+                        case "По центру":
+                            format.Alignment = StringAlignment.Center;
+                            break;
+                        case "Справа":
+                            format.Alignment = StringAlignment.Far;
+                            break;
+                    }
+
+                format.Trimming = StringTrimming.None;
+                FontStyle weight;
+                switch (position.FontWeight)
+                    {
+                        case "Regular":
+                            weight = FontStyle.Regular;
+                            break;
+                        case "Bold":
+                            weight = FontStyle.Bold;
+                            break;
+                        default:
+                            weight = FontStyle.Regular;
+                            break;
+                    }
+
+                dpvm.Items.Add(new ItemModel
                 {
-                    RectangleF rectf;
-                    if (substrate)
-                    {
-                        rectf = new RectangleF((float)position.PosX, (float)position.PosY,
-                            (float)position.Width, (float)position.Height);
-                    }
-                    else
-                    {
-                        rectf = new RectangleF((float)position.PosX, (float)position.PosY,
-                            (float)position.Width, (float)position.Height);
-                    }
-
-                    using (var st = new MemoryStream(position.StampModel.Image))
-                    {
-
-                        Image bmpst = Image.FromStream(st);
-                       
-                            g.DrawImage(bmpst, rectf);
-                    }
-                   
-                }
-
-                g.Flush();
-
-                return ImageToByte(bmp2);
+                    FontSize = position.FontSize,
+                    Format = format,
+                    Rectf = rectf,
+                    Weight = weight,
+                    Text = text
+                });
+                
             }
-        }
+            foreach (var position in template.StampPositions)
+            {
+                RectangleF rectf = new RectangleF((float)(position.PosX), (float)(position.PosY),
+                        (float)(position.Width), (float)(position.Height));
+                dpvm.Stamps.Add(new Stamp
+                {
+                    Rectf = rectf,
+                    Image = Convert.ToBase64String(position.StampModel.Image)
+                });
 
+            }
+            dpvm.Image = template.Id;
+            return dpvm;
+        }
         public static byte[] ImageToByte(Image img)
         {
             

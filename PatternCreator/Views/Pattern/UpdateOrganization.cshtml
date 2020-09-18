@@ -1,0 +1,14 @@
+﻿@using PatternCreator.Utilities
+@model PatternCreator.Models.OrganizationViewModel
+
+@using (Ajax.BeginForm("UpdateOrganization", "Pattern",null, new AjaxOptions { LoadingElementId = "preloader-id", OnSuccess = "$('#OrganizationUpdate').modal('hide')", UpdateTargetId = "orgresults", HttpMethod = "Post"}, new { @class = "form-row justify-content-center" }))
+{
+    <div class="flex-column d-flex w-75 p-2 align-items-center">
+        @Html.ValidationSummary("", new { @class = "text-danger d-flex text-center" })
+        @Html.HiddenFor(model => model.OrganizationId)
+        @Html.EditorFor(model => model.OrganizationName, new { htmlAttributes = new { @class = "form-control", placeholder = "Наименование организации" } })
+        @Html.EditorFor(model => model.License, new { htmlAttributes = new { @class = "form-control my-2", placeholder = "Лицензия" } })
+        
+        <input type="submit" class="btn btn-primary w-50 my-3" value="Сохранить" />
+    </div>
+}

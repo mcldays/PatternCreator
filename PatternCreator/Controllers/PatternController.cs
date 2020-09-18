@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Migrations;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Web;
+using System.Web.Hosting;
 using System.Web.Mvc;
 using System.Web.Security;
 using Newtonsoft.Json;
@@ -16,6 +19,7 @@ namespace PatternCreator.Controllers
     [Authorize]
     public class PatternController : Controller
     {
+        string path = Path.Combine(HostingEnvironment.ApplicationPhysicalPath, "TemplateImage");
         // GET: Pattern
         [AllowAnonymous]
         public ActionResult MainPage(string returnUrl)
@@ -89,6 +93,171 @@ namespace PatternCreator.Controllers
             return View(company);
         }
 
+        public ActionResult SpecialityPage()
+        {
+            return View();
+        }
+        public ActionResult SpecialityPartialPage()
+        {
+            using (UserContext db = new UserContext())
+            {
+                SpecialtyViewModel[] spvm = db.Specialties.ToList().Select(t => new SpecialtyViewModel(t)).ToArray();
+                return PartialView(spvm);
+            }
+        }
+        public bool AddSpeciality(SpecialtyViewModel model)
+        {
+            try
+            {
+                using (UserContext db = new UserContext())
+                {
+                    SpecialtyModel sp = new SpecialtyModel
+                    {
+                        Id = model.Id,
+                        Prefix = model.Prefix,
+                        SpecialityName = model.SpecialityName,
+                        FieldSpecialty = model.FieldSpecialty,
+                        Quality = model.Quality,
+                        Pictures = new List<PictureModel>(db.PicturesModels.Where(t => model.Templates.Contains(t.Id)))
+                    };
+                    db.Specialties.AddOrUpdate(sp);
+                    db.SaveChanges();
+                    return true;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+
+
+        }
+        [HttpGet]
+        public ActionResult UpdateSpeciality(int Id)
+        {
+            using (UserContext db = new UserContext())
+            {
+                SpecialtyModel sp = db.Specialties.Find(Id);
+                SpecialtyViewModel vm = new SpecialtyViewModel(sp);
+                return PartialView(vm);
+            }
+
+        }
+        [HttpGet]
+        public bool? RemoveSpeciality(int Id)
+        {
+            using (UserContext db = new UserContext())
+            {
+                SpecialtyModel sp = db.Specialties.Find(Id);
+                if (sp == null)
+                    return null;
+                db.Specialties.Remove(sp);
+                db.SaveChanges();
+                return true;
+            }
+        }
+        [HttpPost]
+        public ActionResult UpdateSpeciality(SpecialtyViewModel model)
+        {
+            using (UserContext db = new UserContext())
+            {
+                SpecialtyModel sp = db.Specialties.Find(model.Id);
+                sp.SpecialityName = model.SpecialityName;
+                sp.Prefix = model.Prefix;
+                sp.FieldSpecialty = model.FieldSpecialty;
+                sp.Quality = model.Quality;
+                sp.Pictures.Clear();
+                model.Templates.ToList().ForEach(tr=>sp.Pictures.Add(db.PicturesModels.Find(tr)));
+                
+                db.Entry(sp).State = EntityState.Modified;
+                db.SaveChanges();
+                
+                return RedirectToAction("SpecialityPartialPage");
+            }
+
+        }
+
+        public ActionResult OrganizationPartialPage()
+        {
+            using (UserContext db = new UserContext())
+            {
+                OrganizationViewModel[] ovm = db.Organizations.ToList().Select(t => new OrganizationViewModel(t)).ToArray();
+                return PartialView(ovm);
+            }
+        }
+        public bool AddOrganization(OrganizationViewModel organization)
+        {
+            try
+            {
+                using (UserContext db = new UserContext())
+                {
+                    Organization sp = new Organization
+                    {
+                        OrganizationId = organization.OrganizationId,
+                        License = organization.License,
+                        OrganizationName = organization.OrganizationName
+                    };
+                    db.Organizations.AddOrUpdate(sp);
+                    db.SaveChanges();
+                    return true;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+            
+                
+        }
+        [HttpGet]
+        public ActionResult UpdateOrganization(int OrganizationId)
+        {
+            using (UserContext db = new UserContext())
+            {
+                Organization sp = db.Organizations.Find(OrganizationId);
+                OrganizationViewModel vm = new OrganizationViewModel(sp);
+                return PartialView(vm);
+            }
+
+        }
+        [HttpGet]
+        public bool? RemoveOrganization(int OrganizationId)
+        {
+            using (UserContext db = new UserContext())
+            {
+                Organization sp = db.Organizations.Find(OrganizationId);
+                if (sp == null)
+                    return null;
+                db.Organizations.Remove(sp);
+                db.SaveChanges();
+                return true;
+            }
+        }
+        [HttpPost]
+        public ActionResult UpdateOrganization(OrganizationViewModel model)
+        {
+            using (UserContext db = new UserContext())
+            {
+                Organization sp = db.Organizations.Find(model.OrganizationId);
+                sp.OrganizationName = model.OrganizationName;
+                sp.License = model.License;
+                db.Entry(sp).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("OrganizationPartialPage");
+            }
+
+        }
+        [HttpGet]
+        public JsonResult CheckSpeciality(string specialityname)
+        {
+            using (UserContext db = new UserContext())
+            {
+                SpecialtyModel sp =
+                    db.Specialties.FirstOrDefault(t => t.SpecialityName.ToLower() == specialityname.ToLower());
+                return Json(sp==null, JsonRequestBehavior.AllowGet);
+            }
+            
+        }
         public ActionResult PrintPage()
         {
             var modelsPic = SendDbUtility.GetAllPictures();
@@ -116,11 +285,12 @@ namespace PatternCreator.Controllers
             {
                 try
                 {
-                    var model = dbUse.PicturesModels.ToArray().Select(t=>new PictureModelViewModel(t)).ToArray();
                     
                     
+                    PictureModelViewModel[] ViewModel = dbUse.PicturesModels.ToArray().Select(t => new PictureModelViewModel(t)).ToArray();
+
                     ViewBag.Autotexts = dbUse.AutoTexts.ToArray();
-                    return View(model);
+                    return View(ViewModel);
                 }
                 catch (Exception e)
                 {
@@ -128,6 +298,7 @@ namespace PatternCreator.Controllers
                 }
             }
         }
+
 
 
         public ActionResult CompanyToDb(CreateCompanyModel newCompany)
@@ -237,6 +408,18 @@ namespace PatternCreator.Controllers
             }
             
         }
+        public FileResult GetPictureTemplate(int id)
+        {
+            using (var dbUse = new UserContext())
+            {
+                var image = dbUse.PicturesModels.Find(id);
+                if (image == null)
+                    return null;
+
+                return File(System.IO.File.ReadAllBytes(Path.Combine(path, image.PathToImg)), "image/jpeg");
+            }
+
+        }
 
         public ActionResult DeleteStamp(int id)
         {
@@ -302,28 +485,28 @@ namespace PatternCreator.Controllers
             {
                 byte[] imageData = null;
 
-                using (var binaryReader = new BinaryReader(uploadImage.InputStream))
-                {
-                    imageData = binaryReader.ReadBytes(uploadImage.ContentLength);
-                }
+                Image image = Image.FromStream(uploadImage.InputStream);
 
-                var Name = uploadImage.FileName.Split('.')[0];
-
+                var Name = Path.GetRandomFileName() + Path.GetExtension(uploadImage.FileName);
+                image.Save(Path.Combine(path, Name));
 
                 using (var dbUse = new UserContext())
                 {
                     dbUse.PicturesModels.Add(new PictureModel
                     {
-                        Image = imageData,
-                        Name = Name
+                        PathToImg = Name,
+                        Name = Path.GetFileNameWithoutExtension(uploadImage.FileName),
+                        NaturalHeight = 297,
+                        NaturalWidth = 210
                     });
                     dbUse.SaveChanges();
                 }
-
-                return RedirectToAction("EditorPattern");
             }
-
-            return View(false);
+            else
+            {
+                ModelState.AddModelError("","Возникла ошибка при загрузке шаблона. Попробуйте ещё раз.");
+            }
+            return RedirectToAction("EditorPattern");
         }
 
 
@@ -341,6 +524,8 @@ namespace PatternCreator.Controllers
                 {
                     var pic = dbUse.PicturesModels.Find(picId);
                     pic.Name = b.Name;
+                    pic.NaturalHeight = int.Parse(b.NaturalHeight);
+                    pic.NaturalWidth = int.Parse(b.NaturalWidth);
                     if (a.Count == 0)
                         dbUse.PositionModels.RemoveRange(pic.PositionModels);
                     if (!b.stamps.Any())
@@ -363,19 +548,22 @@ namespace PatternCreator.Controllers
                        
                              model.Id = int.Parse(block[4]);
                              model.PictureId = picId;
-                             model.PosX = double.Parse(block[0].Replace('.', ','));
-                             model.PosY = double.Parse(block[1].Replace('.', ','));
-                             model.Width = double.Parse(block[2].Replace('.', ','));
+                             model.PosX = float.Parse(block[0].Replace('.', ','));
+                             model.PosY = float.Parse(block[1].Replace('.', ','));
+                             model.Width = float.Parse(block[2].Replace('.', ','));
                              model.Type = block[5];
                              model.FontSize = int.Parse(block[7]);
-                             model.Height = double.Parse(block[6].Replace('.', ','));
-                             model.Text = block[5].Contains("Статичный текст") ? block[8] : "";
-                        
+                             model.Height = float.Parse(block[6].Replace('.', ','));
+                             model.Text = block[5].Contains("Статичный текст") ? block[8].Replace("\n", "*newline*") : "";
+                             model.FontWeight = block[9];
+                             model.Alignment = block[10];
+
+
                         if (block[5] == "Статичный текст из бд")
                         {
                             dbUse.AutoTexts.AddOrUpdate(new AutoTextModel
                             {
-                                Text = block[8]
+                                Text = block[8].Replace("\n","*newline*")
                             });
                         }
                         dbUse.Entry(model).State = EntityState.Modified;
@@ -385,14 +573,16 @@ namespace PatternCreator.Controllers
                         model = new PositionModel()
                         {
                             PictureId = picId,
-                            PosX = double.Parse(block[0].Replace('.', ',')),
-                            PosY = double.Parse(block[1].Replace('.', ',')),
-                            Width = double.Parse(block[2].Replace('.', ',')),
+                            PosX = float.Parse(block[0].Replace('.', ',')),
+                            PosY = float.Parse(block[1].Replace('.', ',')),
+                            Width = float.Parse(block[2].Replace('.', ',')),
                             Type = block[5],
                             FontSize = int.Parse(block[7]),
-                            Height = double.Parse(block[6].Replace('.', ',')),
-                            Text = block[5].Contains("Статичный текст") ? block[8] : ""
-                        };
+                            Height = float.Parse(block[6].Replace('.', ',')),
+                            Text = block[5].Contains("Статичный текст") ? block[8] : "",
+                            FontWeight = block[9],
+                            Alignment = block[10]
+                    };
                         if (block[5] == "Статичный текст из бд")
                         {
                             dbUse.AutoTexts.AddOrUpdate(new AutoTextModel
@@ -410,10 +600,10 @@ namespace PatternCreator.Controllers
                     StampPositions stamps = picture.StampPositions.FirstOrDefault(t => t.StampPositionId == stamp.StampPositionId);
                     if (stamps!=null)
                     {
-                        stamps.Height = double.Parse(stamp.Height.Replace('.', ','));
-                        stamps.Width = double.Parse(stamp.Width  .Replace('.', ','));
-                        stamps.PosX = double.Parse(stamp.PosX    .Replace('.', ','));
-                        stamps.PosY = double.Parse(stamp.PosY.Replace('.', ','));
+                        stamps.Height = float.Parse(stamp.Height.Replace('.', ','));
+                        stamps.Width = float.Parse(stamp.Width  .Replace('.', ','));
+                        stamps.PosX = float.Parse(stamp.PosX    .Replace('.', ','));
+                        stamps.PosY = float.Parse(stamp.PosY.Replace('.', ','));
                         stamps.StampId = stamp.StampId;
                         dbUse.Entry(stamps).State = EntityState.Modified;
                     }
@@ -423,10 +613,10 @@ namespace PatternCreator.Controllers
                         {
                             PicId = picId,
                             StampId = stamp.StampId,
-                            Height = double.Parse(stamp.Height.Replace('.', ',')),
-                            Width = double.Parse(stamp.Width  .Replace('.', ',')),
-                            PosX = double.Parse(stamp.PosX    .Replace('.', ',')),
-                            PosY = double.Parse(stamp.PosY.Replace('.', ','))    
+                            Height = float.Parse(stamp.Height.Replace('.', ',')),
+                            Width = float.Parse(stamp.Width  .Replace('.', ',')),
+                            PosX = float.Parse(stamp.PosX    .Replace('.', ',')),
+                            PosY = float.Parse(stamp.PosY.Replace('.', ','))    
                     };
                         dbUse.StampPositions.AddOrUpdate(stamps);
                     }
@@ -445,16 +635,32 @@ namespace PatternCreator.Controllers
 
         public bool DeletePicture(string pictureID)
         {
-            using (var dbUse = new UserContext())
+            try
             {
-                var intID = int.Parse(pictureID);
+                using (var dbUse = new UserContext())
+                {
+                    var intID = int.Parse(pictureID);
 
-                var model = dbUse.PicturesModels.FirstOrDefault(t => t.Id == intID);
-                dbUse.PicturesModels.Remove(model);
-                dbUse.PositionModels.RemoveRange(dbUse.PositionModels.Where(t => t.PictureId == intID));
-                dbUse.SaveChanges();
+                    var model = dbUse.PicturesModels.Find(intID);
+                    if (model==null)
+                    {
+                        return true;
+                    }
+                    string fullpath = Path.Combine(path, model.PathToImg);
+                    if (System.IO.File.Exists(fullpath))
+                        System.IO.File.Delete(fullpath);
+                    
+                    dbUse.PicturesModels.Remove(model);
+                    dbUse.PositionModels.RemoveRange(dbUse.PositionModels.Where(t => t.PictureId == intID));
+                    dbUse.SaveChanges();
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
                 return true;
             }
+            
         }
 
 

@@ -285,7 +285,8 @@ font-weight: 400;
 .namePatternModel{
     width: 740px;
 height: 40px;
-
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .inputModelName{
@@ -334,7 +335,6 @@ margin-top: 20px;
 
 .mainEditor {
     margin-top: 20px;
-    width: 740px;
     position: relative;
 }
 
@@ -442,13 +442,13 @@ height: 22px;
     border: 1px solid gray;
     border-radius: 0 6px 6px 6px;
 	width: 100%;
-    padding: 4px;
+    /*padding: 4px;*/
     resize: none;
     outline: 0;
     overflow: hidden;
     line-height: 0.8em;
-    padding: 0px;
-    height: 1em;
+    /*padding: 0px;*/
+    /*height: 1em;*/
     
     font-family: "../../Fonts/Times New Roman.ttf";
     opacity: 0.5;
@@ -503,8 +503,8 @@ height: 22px;
 }
 .hint-right {
 	position: absolute;
-	right: 0;
-	top: 0;
+	left: 0;
+	top: -25px;
 	background-color: #00aeef;
 	width: 50%;
 	white-space: nowrap;
@@ -561,7 +561,7 @@ height: 22px;
 	border-bottom: 2px solid #000000;
 	border-right: 2px solid #000000
 }
-.hint-data-type {
+.hint-data {
     border: 0;
     color: white;
     -webkit-appearance: none;
@@ -571,7 +571,8 @@ height: 22px;
     background: url(../Resourses/svg/list-white.svg) 20% / 20% no-repeat transparent;
     width: 70px;
 }
-.hint-data-type option{
+
+.hint-data option{
     background: white;
     color: #000;
 }

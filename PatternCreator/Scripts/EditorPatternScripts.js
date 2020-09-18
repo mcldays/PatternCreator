@@ -1,4 +1,5 @@
-﻿$(document).ready(function () {
+﻿$(document).ready(
+    function () {
     $("tr:not(tr:last)>td:not(:last-child)").each(function () {
         $(this).resizable({
             containment: $(this).closest("table.tableRed"),
@@ -9,9 +10,6 @@
         });
     });
     setAutocomplete();
-
-
-
 let image = document.getElementsByClassName('imgModalStyle');
 var imgModal;
 $(document).on("change", "#submitImg", handleFiles);
@@ -61,7 +59,22 @@ function getColumnCells(elem) {
 }
 
 function setAutocomplete() {
-    $(".draggable-text.autotext").autocomplete({ source: autotexts });
+    $(".draggable-text.autotext").each(function() {
+        var b = $(this);
+        b.autocomplete({
+            source: autotexts,
+            select: function(event, ui) {
+                b.html(ui.item.value);
+                b.val(blockHtml.find(".draggable-text").html());
+                b.html("");
+                return false;
+            }
+        }).data("ui-autocomplete")._renderItem = function(ul, item) {
+            var bl = $(`<li><span></span></li>`);
+            $(bl).find("span").html(item.value);
+            return bl.appendTo(ul);
+        };
+    });
 }
 
 var after = 0;
@@ -165,37 +178,70 @@ $(document).on("click",
 $(".add-text").on("click",
     function() {
         let modelBlockOne = $(this).parent().parent();
-        let tableSelect = $(this).parents()[1].children[2].children[1];
         let block = $(`
                 <div class='draggable-div block-visible'>
                     <div class='draggable-hint'>
                         <div class='hint-left'>
-                            <select class='hint-data-type'>
-                                <option>Имя</option>
-                                <option>Имя(Д.п)</option>
-                                <option>Фамилия</option>
-                                <option>Фамилия(Д.п)</option>
-                                <option>Отчество</option>
-                                <option>Отчество(Д.п)</option>
-                                <option>Должность</option>
-                                <option>Образование</option>
-                                <option>Число</option>
-                                <option>Месяц</option>
-                                <option>Год</option>
-                                <option>Статичный текст</option>
-                                <option>Номер корочки</option>
-                                <option>Статичный текст из бд</option>
+                            <select class='hint-data hint-data-type'>
+                                <optgroup label='Данные пользователя'>
+                                    <option>Имя</option>
+                                    <option>Имя(Д.п)</option>
+                                    <option>Фамилия</option>
+                                    <option>Фамилия(Д.п)</option>
+                                    <option>Отчество</option>
+                                    <option>Отчество(Д.п)</option>
+                                    <option>Должность</option>
+                                    <option>Образование</option>
+                                </optgroup>
+                                <optgroup label='Даты'>
+                                    <option>Число *конец</option>
+                                    <option>Месяц *конец</option>
+                                    <option>Год *конец</option>
+                                    <option>(дд.мм.гггг) г. *конец</option>
+                                    <option>(дд.мм.гггг) *конец</option>
+                                    <option>Число *начало</option>
+                                    <option>Месяц *начало</option>
+                                    <option>Год *начало</option>                                    
+                                    <option>(дд.мм.гггг) г. *начало</option>
+                                    <option>(дд.мм.гггг) *начало</option>                                        
+                                </optgroup>
+                                    <option>Программа обучения</option>
+                                    <option>Квалификация</option>
+                                    <option>Сфера деятельности</option>
+                                    <option>Обучающая организация</option>
+                                    <option>Лицензия</option>
+                                    <option>Количество учебных часов</option>                                    
+                                    <option>Статичный текст</option>
+                                    <option>Статичный текст из бд</option>
+                                    <option>Ручной ввод</option>
+                                <optgroup label='Нумерация'>
+                                    <option>Номер протокола</option>                                    
+                                    <option>Номер корочки</option>                               
+                                    <option>Номер бланка</option> 
+                                </optgroup>                               
                             </select>
-                            <input class='hint-font-size' type='number' min='12' max='72' value='16' />
+                            <select class='hint-data hint-data-weight'>
+                                <option>Regular</option>
+                                <option>Bold</option>                                
+                            </select>
+                            <select class='hint-data hint-data-align'>
+                                <option>Слева</option>
+                                <option>По центру</option>
+                                <option>Справа</option>
+                            </select>
+                            <input class='hint-font-size' type='number' min='8' max='72' value='16' />
                         </div>
                         <div class='hint-right'>
                            <img draggable='false' class='hint-svg block-move-svg' src='../Resourses/svg/move-white.svg'/>
                            <img draggable='false' class='hint-svg block-delete-svg' src='../Resourses/svg/delete-white.svg'/>
+                            <input class='hint-data hint-rows' type='number' min='1' max='6' value='1' />
                         </div>                        
                     </div>
-                    <textarea class='draggable-text'>Текст</textarea>
+                    <textarea class='draggable-text' rows="1">Текст</textarea>
                 </div>`);
+        
         modelBlockOne.find(".img-wrap").append(block);
+        $(".hint-font-size").trigger("change");
         block.draggable({
             snap: "td",
             snapTolerance: 10,
@@ -263,23 +309,25 @@ $(".save").on("click",
         let kefY = img.naturalHeight / img.height;
         let bounds = $(this).parent().parent().find(".draggable-div").toArray().map(elem => {
             return [
-                ((elem.offsetLeft) * kefX).toString(),
-                ((elem.offsetTop) * kefY).toString(),
-                ((elem.offsetWidth) * kefX).toString(),
+                ((elem.offsetLeft)).toString(),
+                ((elem.offsetTop)).toString(),
+                ((elem.offsetWidth)).toString(),
                 elem.parentElement.getAttribute("picture-id"),
                 elem.getAttribute("position-id") || -1,
                 $(elem).find(".hint-data-type").val(),
-                (elem.getElementsByClassName('hint-font-size')[0].value.split('px')[0] * kefY).toString(),
-                Math.round(elem.getElementsByClassName('hint-font-size')[0].value.split('px')[0] * kefY).toString(),
-                $(elem).find(".draggable-text").val()
+                ((elem.offsetHeight)).toString(),
+                Math.round(elem.getElementsByClassName('hint-font-size')[0].value.split('pt')[0]).toString(),
+                $(elem).find(".draggable-text").val(),
+                $(elem).find(".hint-data-weight").val(),
+                $(elem).find(".hint-data-align").val()
             ];
         });
         let stamps = $(this).parent().parent().find(".stampWrap").toArray().map(elem => {
             return {
-                PosX: ((elem.offsetLeft) * kefX).toString(),
-                PosY: ((elem.offsetTop) * kefY).toString(),
-                Width: ((elem.offsetWidth) * kefX).toString(),
-                Height: ((elem.offsetHeight) * kefY).toString(),
+                PosX: ((elem.offsetLeft) ).toString(),
+                PosY: ((elem.offsetTop) ).toString(),
+                Width: ((elem.offsetWidth) ).toString(),
+                Height: ((elem.offsetHeight) ).toString(),
                 StampId: elem.getAttribute("stamp-id") || -1,
                 StampPositionId: elem.getAttribute("stamp-posid") || -1,
                 PicId: 0
@@ -297,7 +345,10 @@ $(".save").on("click",
                     "stamps": stamps,
                     "picId": $(img).parent().attr("picture-id"),
                     "Id": $(img).parent().parent().parent().find("[name='Id']").val(),
-                    "Name": $(img).parent().parent().parent().find("[name='Name']").val()
+                    "Name": $(img).parent().parent().parent().find("[name='Name']").val(),
+                    "NaturalHeight": $(img).parent().parent().parent().find("[name='NaturalHeight']").val(),
+                    "NaturalWidth": $(img).parent().parent().parent().find("[name='NaturalWidth']").val()
+
                 })
             },
             success: () => {
@@ -305,23 +356,6 @@ $(".save").on("click",
             }
         });
     });
-
-
-$(document).on("click",
-    ".findIcon",
-    function() {
-        $(".ImageName").toArray().forEach((elem) => {
-            if (!elem.innerText.includes($(this).parent().find("input").val())) {
-                $(elem).parent().fadeOut("slow");
-
-            } else {
-                $(elem).parent().fadeIn("slow");
-            }
-
-        });
-
-    });
-
 
 $(document).on("focusin",
     ".draggable-div",
@@ -349,35 +383,70 @@ $(document).on("click",
         
         $(target_positions.positions).each(function() {
             var block = this;
+            
+            var textreplace = block.text.replace(/\*newline\*/g,"\n");
+                
             let blockHtml = $(`
                 <div class='draggable-div block-visible'>
                    <div class='draggable-hint'>
                         <div class='hint-left'>
-                            <select class='hint-data-type'>
-                                <option>Имя</option>
-                                <option>Имя(Д.п)</option>
-                                <option>Фамилия</option>
-                                <option>Фамилия(Д.п)</option>
-                                <option>Отчество</option>
-                                <option>Отчество(Д.п)</option>
-                                <option>Должность</option>
-                                <option>Образование</option>
-                                <option>Число</option>
-                                <option>Месяц</option>
-                                <option>Год</option>
-                                <option>Статичный текст</option>
-                                <option>Номер корочки</option>
-                                <option>Статичный текст из бд</option>
+                            <select class='hint-data hint-data-type'>
+                                 <optgroup label='Данные пользователя'>
+                                    <option>Имя</option>
+                                    <option>Имя(Д.п)</option>
+                                    <option>Фамилия</option>
+                                    <option>Фамилия(Д.п)</option>
+                                    <option>Отчество</option>
+                                    <option>Отчество(Д.п)</option>
+                                    <option>Должность</option>
+                                    <option>Образование</option>
+                                </optgroup>
+                                <optgroup label='Даты'>
+                                    <option>Число *конец</option>
+                                    <option>Месяц *конец</option>
+                                    <option>Год *конец</option>
+                                    <option>(дд.мм.гггг) г. *конец</option>
+                                    <option>(дд.мм.гггг) *конец</option>
+                                    <option>Число *начало</option>
+                                    <option>Месяц *начало</option>
+                                    <option>Год *начало</option>                                    
+                                    <option>(дд.мм.гггг) г. *начало</option>
+                                    <option>(дд.мм.гггг) *начало</option>                                        
+                                </optgroup>
+                                    <option>Программа обучения</option>
+                                    <option>Квалификация</option>
+                                    <option>Сфера деятельности</option>
+                                    <option>Обучающая организация</option>
+                                    <option>Лицензия</option>
+                                    <option>Количество учебных часов</option>                                    
+                                    <option>Статичный текст</option>
+                                    <option>Статичный текст из бд</option>
+                                    <option>Ручной ввод</option>
+                                <optgroup label='Нумерация'>
+                                    <option>Номер протокола</option>                                    
+                                    <option>Номер корочки</option>                              
+                                    <option>Номер бланка</option> 
+                                </optgroup>
                             </select>
-                            <input class='hint-font-size' type='number' min='12' max='72' value='16' />
+                            <select class='hint-data hint-data-weight'>
+                                <option>Regular</option>
+                                <option>Bold</option>                                
+                            </select>
+                            <select class='hint-data hint-data-align'>
+                                <option>Слева</option>
+                                <option>По центру</option>
+                                <option>Справа</option>
+                            </select>
+                            <input class='hint-font-size' type='number' min='8' max='72' value='16' />
                         </div>
                         <div class='hint-right'>
                            <img draggable='false' class='hint-svg block-move-svg' src='../Resourses/svg/move-white.svg'/>
                            <img draggable='false' class='hint-svg block-delete-svg' src='../Resourses/svg/delete-white.svg'/>
+                           <input class='hint-data hint-rows' type='number' min='1' max='6' value='1' />
                         </div>                        
                     </div>
-                    <textarea class='draggable-text'>${block.text != ""
-                    ? block.text
+                    <textarea class='draggable-text' rows="1">${textreplace != ""
+                ? textreplace
                     : "Текст"}</textarea>
                 </div>`);
             blockHtml.attr("position-id", block.position_id);
@@ -391,22 +460,36 @@ $(document).on("click",
             let img = $(".img-wrap[picture-id='" + block.picture_id + "']")
                 .find('.imgModalStyle')[0];
             if (img) {
-                let kefX = img.naturalWidth / img.width;
-                let kefY = img.naturalHeight / img.height;
                 blockHtml.css("left",
-                    Math.round(block.position_x.replace(/,/, '.') / kefX) + "px");
+                    block.position_x.replace(/,/, '.') + "px");
                 blockHtml.css("top",
-                    Math.round(block.position_y.replace(/,/, '.') / kefY) + "px");
+                    block.position_y.replace(/,/, '.') + "px");
                 blockHtml.find(".draggable-text").css("width",
-                    Math.round(block.position_width.replace(/,/, '.') / kefX) + "px");
+                    block.position_width.replace(/,/, '.') + "px");
+               
                 blockHtml.find(".hint-data-type").val(block.Type);
-                blockHtml.find(".hint-font-size").val(Math.round(block.font_size / kefY));
+                blockHtml.find(".hint-data-weight").val(block.FontWeight);
+                blockHtml.find(".hint-data-align").val(block.Alignment);
+                blockHtml.find(".hint-font-size").val(block.font_size);
                 $(".hint-font-size").trigger("change");
                 if (block.Type === "Статичный текст из бд") {
                     blockHtml.find(".draggable-text").addClass("autotext")
-                        .autocomplete({ source: autotexts });
+                        .autocomplete({
+                            source: autotexts, select: function (event, ui) {
+                                blockHtml.find(".draggable-text").html(ui.item.value);
+                                blockHtml.find(".draggable-text").val(blockHtml.find(".draggable-text").html());
+                                blockHtml.find(".draggable-text").html("");
+                                return false;
+                            }
+                        }).data("ui-autocomplete")._renderItem = function (ul, item) {
+                            var bl = $(`<li><span></span></li>`);
+                            $(bl).find("span").html(item.value);
+                            return bl.appendTo(ul);
+                        };
                 }
-
+                checkrows(blockHtml.find(".draggable-text")[0]);
+                $(".hint-data-weight").trigger("change");
+                $(".hint-data-align").trigger("change");
             }
         });
         $(target_positions.stamps).each(function() {
@@ -422,13 +505,13 @@ $(document).on("click",
                 let kefX = img.naturalWidth / img.width;
                 let kefY = img.naturalHeight / img.height;
                 blockHtml.css("left",
-                    Math.round(block.position_x.replace(/,/, '.') / kefX) + "px");
+                   block.position_x.replace(/,/, '.') + "px");
                 blockHtml.css("top",
-                    Math.round(block.position_y.replace(/,/, '.') / kefY) + "px");
+                    block.position_y.replace(/,/, '.') + "px");
                 blockHtml.css("width",
-                    Math.round(block.position_width.replace(/,/, '.') / kefX) + "px");
+                    block.position_width.replace(/,/, '.') + "px");
                 blockHtml.css("height",
-                    Math.round(block.position_height.replace(/,/, '.') / kefY) + "px");
+                    block.position_height.replace(/,/, '.') + "px");
             }
             $(blockHtml).draggable({
                 containment: $(img),
@@ -444,23 +527,57 @@ $(document).on("click",
 
         });
     });
-
+        $(document).on("change",
+            ".hint-data-weight",
+            function () {
+                $(this).closest(".draggable-div").find(".draggable-text").css("fontWeight", $(this).val()==="Bold"?"bold":"normal");
+            });
+        $(document).on("change",
+            ".hint-data-align",
+            function () {
+                $(this).closest(".draggable-div").find(".draggable-text").css("text-align", $(this).val() === "Слева" ? "left" : $(this).val() === "Справа" ? "right" : "center");
+            });
 $(document).on("change",
     ".hint-font-size",
     function() {
-        $(this).parent().parent().parent().find(".draggable-text").css("font-size", this.value + "px");
-    });
-
-
+        $(this).parent().parent().parent().find(".draggable-text").css("font-size", this.value + "pt");
+            });
+        $(document).on("change", "input[name='NaturalWidth']", function () {
+            $(this).closest(".modelBlockOne").find(".mainEditor").css("width", $(this).val()+"mm");
+        });
+        $(document).on("change", "input[name='NaturalHeight']", function () {
+            $(this).closest(".modelBlockOne").find(".mainEditor").css("height", $(this).val()+"mm");
+        });
+        $(document).on("change", ".hint-rows", function() {
+            $(this).closest(".draggable-div").find(".draggable-text")[0].rows = $(this).val();
+        });
+        function checkrows(e) {
+            var elem = e;
+            elem.rows = Math.round(elem.scrollHeight / $(elem).css('fontSize').replace('px', ''));
+            $(elem).closest(".draggable-div").find(".hint-rows").val(elem.rows);
+        }
 $(document).on("click",
     "button.findIcon",
-    function() {
-        let block = `<button class="glo">
-                <span>Очистить поиск</span>
-            </button>`
-        $("#patternsContain").after(block);
-    });
+    function () {
+        $(".ImageName").toArray().forEach((elem) => {
+            if (!elem.innerText.includes($(this).parent().find("input").val())) {
+                $(elem).parent().fadeOut("slow");
 
+            } else {
+                $(elem).parent().fadeIn("slow");
+            }
+            if ($(this).parent().find("input").val() === "") {
+                $("#patternsContain").nextAll(".glo").remove();
+            } else {
+                let block = `<button class="glo">
+                <span>Очистить поиск</span>
+            </button>`;
+                if ($("#patternsContain").next(".glo").length < 1)
+                    $("#patternsContain").after(block);
+            }
+        
+    });
+    });
 $(document).on("click",
     "button.glo",
     function() {
@@ -470,11 +587,12 @@ $(document).on("click",
     });
 
 
-$(".GridDown").click(function(e) {
-    $(this).closest(".modelBlockOne").find("table.tableRed>tbody>tr:last").remove();
-    $(this).closest(".modelBlockOne").find("table.tableRed>tbody>tr:last").children("td:not(td:last)").resizable("destroy");
-    //$("table.tableRed>tbody>tr:last").remove();
-    //$("table.tableRed>tbody>tr:last>td").resizable("destroy");
+    $(".GridDown").click(function (e) {
+        if ($(this).closest(".modelBlockOne").find("tbody").children().length > 2) {
+            $(this).closest(".modelBlockOne").find("table.tableRed>tbody>tr:last").remove();
+            $(this).closest(".modelBlockOne").find("table.tableRed>tbody>tr:last").children("td:not(td:last)").resizable("destroy");
+        }
+    
 });
 
 $(".GridUp").click(function (e) {
@@ -501,7 +619,6 @@ $(".GridUp").click(function (e) {
 
 
 $(".rectangleWhite.Grid").click(function(e) {
-
     $(this).closest(".mainEditor").find('.BlockTable').toggleClass("d-none");
 
 });
@@ -510,7 +627,8 @@ $(".rectangleWhite.Grid").click(function(e) {
 $(".rectangleWhite.Stamp").click(function(e) {
 
     imgModal = $(this).parents()[1].children[1];
-});
+        });
+
 $(document).on('click',
     ".deleteStamp",
     function() {
