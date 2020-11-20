@@ -154,7 +154,7 @@
                         @Html.EditorFor(t => client.Position, new { htmlAttributes = new { @class = "EditCol", PlaceHolder = "Должность" } })
                         @Html.EditorFor(t => client.Education, new { htmlAttributes = new { @class = "EditCol my-2", PlaceHolder = "Образование" } })
                         @Html.DropDownListFor(t => client.CompanyId, CompanyesList, "Выберите компанию", new { @class = "EditCol my-2" })
-
+                        
                         <input type="submit" class="btn btn-primary w-50 my-3" value="Сохранить" />
                     </div>
                 }
@@ -220,10 +220,21 @@
             function() {
                 validElement(this);
             });
+        function onSuccessPhoto(result) {
+            if ($("#userimage").attr('src').includes('?')) {
+                $("#userimage").attr('src', "/Pattern/GetUserPhoto/" + $("#targetPhoto").val());
+            } else {
+                $("#userimage").attr('src', "/Pattern/GetUserPhoto?id=" + $("#targetPhoto").val());
 
+            }
+            
+        }
         $(document).ready(function () {
-           
 
+            $(document).on("change", "#customFile", function () {
+                
+                $("#submitPhoto").submit();
+            });
 
             $(document).on('click',"a.IconButtonsSave", function(e) {
                 switch ($(this).data("action")) {

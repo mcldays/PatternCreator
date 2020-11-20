@@ -1,0 +1,199 @@
+﻿@using System.Linq
+@using Newtonsoft.Json
+@using PatternCreator.Models
+@using PatternCreator.Utilities
+@model int[]
+@{
+    UserContext db = new UserContext();
+}
+<style>
+    th {
+        vertical-align: inherit !important;
+        padding: 0.2rem !important;
+    }
+
+    td {
+        vertical-align: inherit !important;
+        padding: 0.2rem !important;
+    }
+</style>
+<form id="formvalid">
+
+    <table class="table text-center table-borderless" id="tableRedact">
+        <thead style="border-bottom: 3px solid #007bff">
+            <tr>
+                <th>Программа</th>
+                <th>Организация</th>
+                <th>Дата начала обуч.</th>
+                <th>Дата окончания обуч.</th>
+                <th>Кол-во учебных часов</th>
+                <th>Номер протокола</th>
+                <th>Поля ручного ввода</th>
+                <th>*</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                DocumentModel dm = db.DocumentModels.Find(Model[0]);
+                int patternId = dm?.PatternId ?? 0;
+
+            }
+            @if (dm != null)
+            {
+                <tr data-template="@(dm.PatternId)">
+                    <th class="text-center" colspan="8">@(dm.PictureModel.Name)</th>
+                </tr>
+            }
+            else
+            {
+                <tr>
+                    <th class="text-center" colspan="8">Шаблон отсутствует!</th>
+                </tr>
+            }
+
+            @foreach (var temp in Model)
+            {
+                //PictureModel pic = db.PicturesModels.Find(temp);
+                //SpecialtyModel[] specialtyModels = db.Specialties.Where(t => t.Pictures.Any(r => r.Id == pic.Id)).ToArray();
+                //Organization[] organizations = db.Organizations.ToArray();
+                //PositionModel[] positions = pic.PositionModels.Where(t => t.Type == "Ручной ввод").ToArray();
+                dm = db.DocumentModels.Find(temp);
+                UserModel user = dm.UserModel;
+
+
+                <tr data-template="@temp" data-userid="@user.Id">
+                    <td colspan="8">@($"{user.Surname} {user.Name} {user.Patronymic}")</td>
+                </tr>
+
+                <tr data-docid="@temp" data-userid="@user.Id">
+                    <td style="width: 320px; max-width: 320px">
+                        <input type="hidden" name="SpecialtyName" value="@dm.SpecialtyId" />
+                        @dm.SpecialtyModel.SpecialityName
+                    </td>
+                    <td style="width: 200px; max-width: 200px">
+                        <input type="hidden" name="OrganizationName" value="@dm.OrganizationId" />
+                        @dm.Organization.OrganizationName
+
+                    </td>
+                    <td style="width: 200px; max-width: 200px">
+
+                        <div class="input-group date">
+                            <input data-format="dd.MM.yyyy" class="form-control reqfields" type="text" name="DateStart" aria-describedby="basic-addon2" value="@(dm.StartDate.ToShortDateString())" />
+                            <div class="input-group-append alldocs">
+                                <span class="btn btn-primary">&#8661</span>
+                            </div>
+                            <div class="input-group-append ">
+                                <span class="add-on input-group-text p-1" id="basic-addon2">
+                                    <img height="25px" src="/Resourses/svg/calendar.svg">
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </td>
+                    <td style="width: 200px; max-width: 200px">
+                        <div class="input-group date">
+                            <input data-format="dd.MM.yyyy" class="form-control reqfields" type="text" name="Date" aria-describedby="basic-addon3" value="@(dm.Date.ToShortDateString())" />
+                            <div class="input-group-append alldocs">
+                                <span class="btn btn-primary">&#8661</span>
+                            </div>
+                            <div class="input-group-append ">
+                                <span class="add-on input-group-text p-1" id="basic-addon3">
+                                    <img height="25px" src="/Resourses/svg/calendar.svg">
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </td>
+                    <td style="width: 120px; max-width: 120px">
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="EducationTime" value="@(dm.EducationTime)" />
+                            <div class="input-group-append alldocs">
+                                <span class="btn btn-primary">&#8661</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="input-group">
+
+                            <input type="text" class="form-control reqfields" name="ProtocolName" value="@(dm.ProtocolName + $"-{dm.SpecialtyModel.Prefix}")" />
+                            <div class="input-group-append alldocs">
+                                <span class="btn btn-primary">&#8661</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="btn btn-primary show">&#8744</div>
+                    </td>
+                    <td>
+                        <div data-template="@temp" data-userid="@user.Id" class="btn btn-primary remove">&#128465</div>
+                    </td>
+                </tr>
+                <tr style="display: none" data-docid="@temp" data-userid="@user.Id">
+                    <td colspan="8" class="text-center">
+                        <table class="table table-borderless" name="WriteFields">
+                            <thead>
+                                <tr>
+                                    <th width="30px">№</th>
+                                    <th>Текст</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int index = 0;
+                                    string[] HandWriteFields = JsonConvert.DeserializeObject<string[]>(dm.HandWriteFields);
+                                }
+
+                                @foreach (var pos in HandWriteFields)
+                                {
+                                    <tr>
+                                        <th style="vertical-align: inherit">@(++index)</th>
+                                        <td>
+                                            <input type="text" class="form-control" name="HandWriteField" value="@(pos)" />
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+
+            }
+
+        </tbody>
+    </table>
+</form>
+<div class="col-12 text-center">
+    <div class="custom-control custom-checkbox">
+        <input type="checkbox" class="custom-control-input" id="substrate" />
+        <label class="custom-control-label" for="substrate">Подложка</label>
+    </div>
+    <button class="BlueButton" id="getDocs">
+        <span class="blueButtonText">Продолжить</span>
+    </button>
+
+
+</div>
+@{
+    db.Dispose();
+}
+<script type="text/javascript">
+    var selectSpecialty = [];
+    var selectOrganization = [];
+     function validElement(element) {
+
+            if (!$(element).valid()) {
+                $(element).closest('.input-group').addClass("val-error");
+                return false;
+            }
+            $(element).closest('.input-group').removeClass("val-error");
+            return true;
+        }
+        
+    $('.date').datetimepicker({
+        language: 'ru',
+        pickTime: false
+    });
+   
+</script>

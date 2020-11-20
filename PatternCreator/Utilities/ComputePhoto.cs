@@ -97,6 +97,15 @@ namespace PatternCreator.Utilities
                 string[] HandWriteFields = JsonConvert.DeserializeObject<string[]>(doc.HandWriteFields);
                 switch (position.Type)
                     {
+                        case "Компания":
+                            text = user.CompanyModel.CompanyName;
+                            break;
+                        case "Ф.И.О":
+                            text = $"{user.Surname} {user.Name} {user.Patronymic}";
+                            break;
+                        case "Ф.И.О(Д.п.)":
+                            text = $"{user.Surname_DativeCase} {user.Name_DativeCase} {user.Patronymic_DativeCase}";
+                            break;
                         case "Имя":
                             text = user.Name;
                             break;
@@ -151,7 +160,22 @@ namespace PatternCreator.Utilities
                         case "(дд.мм.гггг) *начало":
                             text = doc.StartDate.Date.ToString("dd.MM.yyyy");
                             break;
-                        case "Программа обучения":
+                        case "Число *действителено до":
+                            text = doc.Date.AddYears(doc.SpecialtyModel.ValidUntil).Day.ToString("d2");
+                            break;
+                        case "Месяц *действителено до":
+                            text = doc.Date.AddYears(doc.SpecialtyModel.ValidUntil).Month.ToString("d2");
+                            break;
+                        case "Год *действителено до":
+                            text = doc.Date.AddYears(doc.SpecialtyModel.ValidUntil).Year.ToString("d4");
+                            break;
+                        case "(дд.мм.гггг) г. *действителено до":
+                            text = doc.Date.AddYears(doc.SpecialtyModel.ValidUntil).Date.ToString("dd.MM.yyyy") + " г.";
+                            break;
+                        case "(дд.мм.гггг) *действителено до":
+                            text = doc.Date.AddYears(doc.SpecialtyModel.ValidUntil).Date.ToString("dd.MM.yyyy");
+                            break;
+                    case "Программа обучения":
                             text = doc.SpecialtyModel.SpecialityName;
                             break;
                         case "Обучающая организация":
@@ -197,22 +221,35 @@ namespace PatternCreator.Utilities
                         case "По центру":
                             format.Alignment = StringAlignment.Center;
                             break;
-                        case "Справа":
+                        case "По ширине":
+                            format.Alignment = StringAlignment.Near;
+                            format.FormatFlags = StringFormatFlags.MeasureTrailingSpaces;
+                        break;
+                    case "Справа":
                             format.Alignment = StringAlignment.Far;
                             break;
                     }
 
                 format.Trimming = StringTrimming.None;
                 FontStyle weight;
+                bool underline = false;
                 switch (position.FontWeight)
                     {
                         case "Regular":
                             weight = FontStyle.Regular;
                             break;
+                        case "Regular Underline":
+                            weight = FontStyle.Regular;
+                            underline = true;
+                            break;
                         case "Bold":
                             weight = FontStyle.Bold;
                             break;
-                        default:
+                        case "Bold Underline":
+                            weight = FontStyle.Bold;
+                            underline = true;
+                            break;
+                    default:
                             weight = FontStyle.Regular;
                             break;
                     }
@@ -223,7 +260,8 @@ namespace PatternCreator.Utilities
                     Format = format,
                     Rectf = rectf,
                     Weight = weight,
-                    Text = text
+                    Text = text,
+                    Underline = underline
                 });
                 
             }
@@ -235,6 +273,17 @@ namespace PatternCreator.Utilities
                 {
                     Rectf = rectf,
                     Image = Convert.ToBase64String(position.StampModel.Image)
+                });
+
+            }
+            foreach (var position in template.PhotoModels)
+            {
+                RectangleF rectf = new RectangleF((float)(position.PosX), (float)(position.PosY),
+                    (float)(position.Width), (float)(position.Height));
+                dpvm.Photos.Add(new Stamp
+                {
+                    Rectf = rectf,
+                    UserId = user.Id 
                 });
 
             }

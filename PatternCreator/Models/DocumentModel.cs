@@ -41,7 +41,6 @@ namespace PatternCreator.Models
         public string HandWriteFields { get; set; }
         
     }
-
     public class DocumentSaveModel
     {
         public int DocumentId { get; set; }
@@ -74,6 +73,7 @@ namespace PatternCreator.Models
         {
             Items = new List<ItemModel>();
             Stamps = new List<Stamp>();
+            Photos = new List<Stamp>();
         }
         public TypeDoc Identity { get; set; }
 
@@ -82,6 +82,7 @@ namespace PatternCreator.Models
         public int Image { get; set; }
         public List<ItemModel> Items { get; set; }
         public List<Stamp> Stamps { get; set; }
+        public List<Stamp> Photos { get; set; }
         public int DocId { get; set; }
         public static int[] Patterns = {45};
         public enum TypeDoc
@@ -95,8 +96,6 @@ namespace PatternCreator.Models
             Other
         }
 }
-
-   
     public class ItemModel
     {
         public RectangleF Rectf { get; set; }
@@ -104,24 +103,46 @@ namespace PatternCreator.Models
         public FontStyle Weight { get; set; }
         public int FontSize { get; set; }
         public string Text { get; set; }
+        public bool Underline { get; set; }
     }
     public class Stamp
     {
         public RectangleF Rectf { get; set; }
         public string Image { get; set; }
+        public int UserId { get; set; }
     }
-
     public class UserNameModel
     {
         public string FIO { get; set; }
         public List<DocumentViewModel> DocumentModels { get; set; }
     }
-
     public class GetDocumentsViewModel
     {
         public int[] Templates { get; set; }
         public int[] Companies { get; set; }
         public int[] Users { get; set; }
 
+    }
+    public class ArchiveDocumentViewModel
+    {
+        public int DocumentId { get; set; }
+        public string ProtocolName { get; set; }
+        public string UserFIO { get; set; }
+        public string CompanyName { get; set; }
+        public string PictureName { get; set; }
+
+        public DateTime Date { get; set; }
+        public ArchiveDocumentViewModel(DocumentModel model)
+        {
+            DocumentId = model.DocumentId;
+            ProtocolName = model.ProtocolName;
+            PictureName = model.PictureModel.Name;
+            UserFIO = model.UserModel.Surname + " " + model.UserModel.Name[0] + ". " +
+                      (string.IsNullOrEmpty(model.UserModel.Patronymic)
+                          ? ""
+                          : model.UserModel.Patronymic[0] + ".");
+            CompanyName = model.UserModel.CompanyModel.CompanyName;
+            Date = model.Date;
+        }
     }
 }

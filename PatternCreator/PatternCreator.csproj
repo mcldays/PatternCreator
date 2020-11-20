@@ -190,6 +190,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\ArchiveController.cs" />
     <Compile Include="Controllers\NavigateController.cs" />
     <Compile Include="Controllers\PatternController.cs" />
     <Compile Include="Controllers\PrintController.cs" />
@@ -260,12 +261,21 @@
     <Compile Include="Migrations\202009071337545_license.designer.cs">
       <DependentUpon>202009071337545_license.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202009210852120_validuntil.cs" />
+    <Compile Include="Migrations\202009210852120_validuntil.designer.cs">
+      <DependentUpon>202009210852120_validuntil.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009221615056_photosunderline.cs" />
+    <Compile Include="Migrations\202009221615056_photosunderline.designer.cs">
+      <DependentUpon>202009221615056_photosunderline.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AutModel.cs" />
     <Compile Include="Models\AutoTextModel.cs" />
     <Compile Include="Models\CompanyModel.cs" />
     <Compile Include="Models\DocumentModel.cs" />
     <Compile Include="Models\Organization.cs" />
+    <Compile Include="Models\PhotoModel.cs" />
     <Compile Include="Models\PictureModel.cs" />
     <Compile Include="Models\PositionModel.cs" />
     <Compile Include="Models\ProtocolModel.cs" />
@@ -350,6 +360,7 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Resourses\couldnotfound.png" />
     <Content Include="Resourses\Eagle.png" />
     <Content Include="Resourses\Stamps\Stamps1.png" />
     <Content Include="Resourses\svg\calendar.svg" />
@@ -558,6 +569,10 @@
     <Content Include="Views\Pattern\UpdateSpeciality.cshtml" />
     <Content Include="Views\Pattern\OrganizationPartialPage.cshtml" />
     <Content Include="Views\Pattern\UpdateOrganization.cshtml" />
+    <Content Include="Views\Archive\Protocols.cshtml" />
+    <Content Include="Views\Archive\ProtocolsPartial.cshtml" />
+    <Content Include="Views\Archive\GetDocs.cshtml" />
+    <Content Include="Views\Archive\DocsPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -621,6 +636,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202009071337545_license.resx">
       <DependentUpon>202009071337545_license.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009210852120_validuntil.resx">
+      <DependentUpon>202009210852120_validuntil.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009221615056_photosunderline.resx">
+      <DependentUpon>202009221615056_photosunderline.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

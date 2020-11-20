@@ -64,24 +64,26 @@
             <div class="modal-body">
                 @using (Ajax.BeginForm("AddSpeciality", "Pattern", new AjaxOptions { LoadingElementId = "preloader-id", OnBegin = "$('#SpecialityModal').modal('hide')", HttpMethod = "Post", OnSuccess = "OnSuccess" }, new { @class = "form-row justify-content-center" }))
                 {
-                    <div class="flex-column d-flex w-75 p-2 align-items-center">
-                        @Html.ValidationSummary("", new { @class = "text-danger d-flex text-center" })
-                        @Html.HiddenFor(model => model.Id)
-                        @Html.EditorFor(model => model.SpecialityName, new { htmlAttributes = new { @class = "form-control", placeholder = "Наименование специальности" } })
-                        @Html.EditorFor(model => model.Prefix, new { htmlAttributes = new { @class = "form-control  my-2", placeholder = "Префикс" } })
-                        @Html.EditorFor(model => model.Quality, new { htmlAttributes = new { @class = "form-control", placeholder = "Квалификация" } })
-                        @Html.EditorFor(model => model.FieldSpecialty, new { htmlAttributes = new { @class = "form-control my-2", placeholder = "Сфера деятельности" } })
-                        <select id="addselect" name="Templates" multiple>
-                            <optgroup label="Выбрать все">
-                                <option data-placeholder="true">Выберите шаблоны</option>
-                                @foreach (var temp in templates)
-                                {
-                                    <option value="@temp.Key">@temp.Value</option>
-                                }
-                            </optgroup>
-                        </select>
-                        <input type="submit" class="btn btn-primary w-50 my-3" value="Сохранить" />
-                    </div>
+                <div class="flex-column d-flex w-75 p-2 align-items-center">
+                    @Html.ValidationSummary("", new { @class = "text-danger d-flex text-center" })
+                    @Html.HiddenFor(model => model.Id)
+                    @Html.EditorFor(model => model.SpecialityName, new { htmlAttributes = new { @class = "form-control", placeholder = "Наименование специальности" } })
+                    @Html.EditorFor(model => model.Prefix, new { htmlAttributes = new { @class = "form-control  my-2", placeholder = "Префикс" } })
+                    @Html.EditorFor(model => model.Quality, new { htmlAttributes = new { @class = "form-control", placeholder = "Квалификация" } })
+                    @Html.EditorFor(model => model.FieldSpecialty, new { htmlAttributes = new { @class = "form-control my-2", placeholder = "Сфера деятельности" } })
+                    @Html.EditorFor(model => model.ValidUntil, new { htmlAttributes = new { @class = "form-control mb-2", placeholder = "Срок действия" } })
+
+                    <select id="addselect" name="Templates" multiple>
+                        <optgroup label="Выбрать все">
+                            <option data-placeholder="true">Выберите шаблоны</option>
+                            @foreach (var temp in templates)
+                            {
+                                <option value="@temp.Key">@temp.Value</option>
+                            }
+                        </optgroup>
+                    </select>
+                    <input type="submit" class="btn btn-primary w-50 my-3" value="Сохранить" />
+                </div>
                 }
             </div>
 

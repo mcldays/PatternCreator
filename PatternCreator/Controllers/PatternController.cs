@@ -20,6 +20,7 @@ namespace PatternCreator.Controllers
     public class PatternController : Controller
     {
         string path = Path.Combine(HostingEnvironment.ApplicationPhysicalPath, "TemplateImage");
+        string userphotopath = Path.Combine(HostingEnvironment.ApplicationPhysicalPath, "UserPhoto");
         // GET: Pattern
         [AllowAnonymous]
         public ActionResult MainPage(string returnUrl)
@@ -117,6 +118,7 @@ namespace PatternCreator.Controllers
                         Prefix = model.Prefix,
                         SpecialityName = model.SpecialityName,
                         FieldSpecialty = model.FieldSpecialty,
+                        ValidUntil = model.ValidUntil,
                         Quality = model.Quality,
                         Pictures = new List<PictureModel>(db.PicturesModels.Where(t => model.Templates.Contains(t.Id)))
                     };
@@ -165,6 +167,7 @@ namespace PatternCreator.Controllers
                 sp.SpecialityName = model.SpecialityName;
                 sp.Prefix = model.Prefix;
                 sp.FieldSpecialty = model.FieldSpecialty;
+                sp.ValidUntil = model.ValidUntil;
                 sp.Quality = model.Quality;
                 sp.Pictures.Clear();
                 model.Templates.ToList().ForEach(tr=>sp.Pictures.Add(db.PicturesModels.Find(tr)));
@@ -477,7 +480,23 @@ namespace PatternCreator.Controllers
             return RedirectToAction("EditorPattern");
         }
 
+        public bool AddPhoto(HttpPostedFileBase uploadImage, int id)
+        {
+            if (ModelState.IsValid && uploadImage != null)
+            {
 
+                Image image = Image.FromStream(uploadImage.InputStream);
+
+                var Name = id.ToString() + Path.GetExtension(uploadImage.FileName);
+                Directory.CreateDirectory(userphotopath);
+                Directory.GetFiles(userphotopath).Where(t => t.StartsWith(Path.Combine(userphotopath, id.ToString()))).ToList().ForEach(t=> System.IO.File.Delete(t));
+                
+                image.Save(Path.Combine(userphotopath, Name));
+                return true;
+            }
+
+            return false;
+        }
         [HttpPost]
         public ActionResult Create(HttpPostedFileBase uploadImage)
         {
@@ -508,8 +527,26 @@ namespace PatternCreator.Controllers
             }
             return RedirectToAction("EditorPattern");
         }
+        
+        public FileResult GetUserPhoto(string id)
+        {
+            if(string.IsNullOrEmpty(id))
+                return File(Path.Combine(HostingEnvironment.ApplicationPhysicalPath, "Resourses", "couldnotfound.png"), "image/jpeg");
+            try
+            {
+                string p = Path.Combine(userphotopath, id.ToString());
+                var f = Directory.GetFiles(userphotopath).FirstOrDefault(t => t.StartsWith(p));
+                if (f == null)
+                    return File(Path.Combine(HostingEnvironment.ApplicationPhysicalPath, "Resourses", "couldnotfound.png"), "image/jpeg");
+                return File(System.IO.File.ReadAllBytes(f), "image/jpeg");
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+           
 
-
+        }
         [HttpPost]
         public bool SetBlocks(string data)
         {            
@@ -542,7 +579,7 @@ namespace PatternCreator.Controllers
                 
                 foreach (var block in a)
                 {
-                    PositionModel model = picture.PositionModels.FirstOrDefault(t=>t.Id == int.Parse(block[4]));
+                    PositionModel model = picture?.PositionModels.FirstOrDefault(t=>t.Id == int.Parse(block[4]));
                     if (model!=null)
                     {
                        
@@ -619,6 +656,32 @@ namespace PatternCreator.Controllers
                             PosY = float.Parse(stamp.PosY.Replace('.', ','))    
                     };
                         dbUse.StampPositions.AddOrUpdate(stamps);
+                    }
+                }
+                foreach (var photo in b.photos)
+                {
+                    PhotoModel photos = picture.PhotoModels.FirstOrDefault(t => t.PhotoModelId == photo.PhotoModelId);
+                    if (photos != null)
+                    {
+                        photos.Height = float.Parse(photo.Height.Replace('.', ','));
+                        photos.Width = float.Parse(photo.Width.Replace('.', ','));
+                        photos.PosX = float.Parse(photo.PosX.Replace('.', ','));
+                        photos.PosY = float.Parse(photo.PosY.Replace('.', ','));
+                        photos.PhotoModelId = photo.PhotoModelId;
+                        dbUse.Entry(photos).State = EntityState.Modified;
+                    }
+                    else
+                    {
+                        photos = new PhotoModel
+                        {
+                            PicId = picId,
+                            PhotoModelId = photo.PhotoModelId,
+                            Height = float.Parse(photo.Height.Replace('.', ',')),
+                            Width = float.Parse(photo.Width.Replace('.', ',')),
+                            PosX = float.Parse(photo.PosX.Replace('.', ',')),
+                            PosY = float.Parse(photo.PosY.Replace('.', ','))
+                        };
+                        dbUse.PhotoModel.AddOrUpdate(photos);
                     }
                 }
                 if (a.Count != 0)

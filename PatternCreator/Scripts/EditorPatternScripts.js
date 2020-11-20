@@ -42,7 +42,32 @@ $(document).on("click",
         });
 
 
-    });
+            });
+        $(document).on("click",
+            ".AddPhoto",
+            function () {
+                imgModal = $(this).closest('.modal').find(".img-wrap");
+                var block = $(
+                    "<div style='height:80px; width:60px; position:absolute; top:0; border: 2px dotted #464646' class='photoWrap'><div style='height:100%; width:100%; display: flex; justify-content: center; align-items: center; font-weight: bold; cursor:grab;'>Фото 3х4</div><div class='deleteStamp'>×<div/></div >");
+                $(imgModal.closest(".img-wrap")).append(block);
+
+
+                $(block).draggable({
+                    containment: $(imgModal),
+                    handle: block.find("div")
+                });
+
+
+                $(block).resizable({
+                    containment: $(imgModal.find('img')),
+                    handles: 'se',
+                    aspectRatio: true,
+                    minHeight: 40,
+                    minWidth: 30
+                });
+
+
+            });
 
 function handleFiles() {
     $(this).submit();
@@ -184,6 +209,8 @@ $(".add-text").on("click",
                         <div class='hint-left'>
                             <select class='hint-data hint-data-type'>
                                 <optgroup label='Данные пользователя'>
+                                    <option>Ф.И.О</option>
+                                    <option>Ф.И.О(Д.п.)</option>
                                     <option>Имя</option>
                                     <option>Имя(Д.п)</option>
                                     <option>Фамилия</option>
@@ -192,6 +219,7 @@ $(".add-text").on("click",
                                     <option>Отчество(Д.п)</option>
                                     <option>Должность</option>
                                     <option>Образование</option>
+                                    <option>Компания</option>
                                 </optgroup>
                                 <optgroup label='Даты'>
                                     <option>Число *конец</option>
@@ -203,7 +231,12 @@ $(".add-text").on("click",
                                     <option>Месяц *начало</option>
                                     <option>Год *начало</option>                                    
                                     <option>(дд.мм.гггг) г. *начало</option>
-                                    <option>(дд.мм.гггг) *начало</option>                                        
+                                    <option>(дд.мм.гггг) *начало</option> 
+                                    <option>Число *действителено до</option>
+                                    <option>Месяц *действителено до</option>
+                                    <option>Год *действителено до</option>                                    
+                                    <option>(дд.мм.гггг) г. *действителено до</option>
+                                    <option>(дд.мм.гггг) *действителено до</option>    
                                 </optgroup>
                                     <option>Программа обучения</option>
                                     <option>Квалификация</option>
@@ -222,11 +255,14 @@ $(".add-text").on("click",
                             </select>
                             <select class='hint-data hint-data-weight'>
                                 <option>Regular</option>
-                                <option>Bold</option>                                
+                                <option>Bold</option>
+                                <option>Regular Underline</option>
+                                <option>Bold Underline</option>
                             </select>
                             <select class='hint-data hint-data-align'>
                                 <option>Слева</option>
                                 <option>По центру</option>
+                                <option>По ширине</option>
                                 <option>Справа</option>
                             </select>
                             <input class='hint-font-size' type='number' min='8' max='72' value='16' />
@@ -334,6 +370,17 @@ $(".save").on("click",
             };
             
         });
+        let photos = $(this).parent().parent().find(".photoWrap").toArray().map(elem => {
+            return {
+                PhotoModelId: elem.getAttribute("photo-id") || -1,
+                PosX: ((elem.offsetLeft)).toString(),
+                PosY: ((elem.offsetTop)).toString(),
+                Width: ((elem.offsetWidth)).toString(),
+                Height: ((elem.offsetHeight)).toString(),
+                PicId: 0
+            };
+
+        });
         $(".preloader").toggleClass("done");
         $(".modal").modal("hide");
         $.ajax({
@@ -343,6 +390,7 @@ $(".save").on("click",
                 data: JSON.stringify({
                     "bounds": bounds,
                     "stamps": stamps,
+                    "photos": photos,
                     "picId": $(img).parent().attr("picture-id"),
                     "Id": $(img).parent().parent().parent().find("[name='Id']").val(),
                     "Name": $(img).parent().parent().parent().find("[name='Name']").val(),
@@ -392,6 +440,8 @@ $(document).on("click",
                         <div class='hint-left'>
                             <select class='hint-data hint-data-type'>
                                  <optgroup label='Данные пользователя'>
+                                    <option>Ф.И.О</option>
+                                    <option>Ф.И.О(Д.п.)</option>
                                     <option>Имя</option>
                                     <option>Имя(Д.п)</option>
                                     <option>Фамилия</option>
@@ -400,6 +450,7 @@ $(document).on("click",
                                     <option>Отчество(Д.п)</option>
                                     <option>Должность</option>
                                     <option>Образование</option>
+                                    <option>Компания</option>
                                 </optgroup>
                                 <optgroup label='Даты'>
                                     <option>Число *конец</option>
@@ -411,7 +462,12 @@ $(document).on("click",
                                     <option>Месяц *начало</option>
                                     <option>Год *начало</option>                                    
                                     <option>(дд.мм.гггг) г. *начало</option>
-                                    <option>(дд.мм.гггг) *начало</option>                                        
+                                    <option>(дд.мм.гггг) *начало</option> 
+                                    <option>Число *действителено до</option>
+                                    <option>Месяц *действителено до</option>
+                                    <option>Год *действителено до</option>                                    
+                                    <option>(дд.мм.гггг) г. *действителено до</option>
+                                    <option>(дд.мм.гггг) *действителено до</option>                                
                                 </optgroup>
                                     <option>Программа обучения</option>
                                     <option>Квалификация</option>
@@ -430,11 +486,14 @@ $(document).on("click",
                             </select>
                             <select class='hint-data hint-data-weight'>
                                 <option>Regular</option>
-                                <option>Bold</option>                                
+                                <option>Bold</option>
+                                <option>Regular Underline</option>
+                                <option>Bold Underline</option>
                             </select>
                             <select class='hint-data hint-data-align'>
                                 <option>Слева</option>
                                 <option>По центру</option>
+                                <option>По ширине</option>
                                 <option>Справа</option>
                             </select>
                             <input class='hint-font-size' type='number' min='8' max='72' value='16' />
@@ -525,12 +584,43 @@ $(document).on("click",
                 minWidth: 20
             });
 
+            });
+        $(target_positions.photos).each(function () {
+            var block = this;
+            var blockHtml = $(
+                "<div photo-id='" + block.PhotoModelId + "' style='height:80px; width:60px; position:absolute; top:0; border: 2px dotted #464646' class='photoWrap'><div style='height:100%; width:100%; display: flex; justify-content: center; align-items: center; font-weight: bold; cursor:grab;'>Фото 3х4</div><div class='deleteStamp'>×<div/></div >");
+            $(".img-wrap[picture-id='" + block.picture_id + "']").append(blockHtml);
+            let img = $(".img-wrap[picture-id='" + block.picture_id + "']")
+                .find('.imgModalStyle')[0];
+            if (img) {
+                blockHtml.css("left",
+                    block.position_x.replace(/,/, '.') + "px");
+                blockHtml.css("top",
+                    block.position_y.replace(/,/, '.') + "px");
+                blockHtml.css("width",
+                    block.position_width.replace(/,/, '.') + "px");
+                blockHtml.css("height",
+                    block.position_height.replace(/,/, '.') + "px");
+            }
+            $(blockHtml).draggable({
+                containment: $(img),
+                handle: $(blockHtml).find("div")
+            });
+            $(blockHtml).resizable({
+                containment: $(img),
+                handles: 'se',
+                aspectRatio: true,
+                minHeight: 40,
+                minWidth: 30
+            });
+
         });
     });
         $(document).on("change",
             ".hint-data-weight",
             function () {
-                $(this).closest(".draggable-div").find(".draggable-text").css("fontWeight", $(this).val()==="Bold"?"bold":"normal");
+                $(this).closest(".draggable-div").find(".draggable-text").css("fontWeight", $(this).val().includes("Bold") ? "bold" : "normal");
+                $(this).closest(".draggable-div").find(".draggable-text").css("text-decoration", $(this).val().includes("Underline") ? "underline" : "none");
             });
         $(document).on("change",
             ".hint-data-align",

@@ -1,0 +1,224 @@
+﻿@{
+    ViewBag.Title = "Protocols";
+}
+@Styles.Render("~/bundles/Print-css")
+@Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+@Scripts.Render("~/Scripts/bootstrap-datetimepicker.min.js")
+@Scripts.Render("~/Scripts/bootstrap-datetimepicker.ru.js")
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-3">
+            <div class="btn btn-primary change-btn">Поиск по № документа</div>
+        </div>
+    </div>
+    @using (Ajax.BeginForm(new AjaxOptions {HttpMethod = "POST", UpdateTargetId = "Targetbody", OnBegin = "$('#preloader-id').removeClass('done');", OnComplete = "$('#preloader-id').addClass('done');"}))
+    {
+        <div class="row toggle-item">
+            <div class="col-4">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">№ протокола</span>
+                    </div>
+                    <input name="protocolname" type="text" class="form-control"/>
+                    <div class="input-group-append">
+                        <input class="btn btn-primary" type="submit" value="&#8981;"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    @using (Ajax.BeginForm("Docs",new AjaxOptions {HttpMethod = "POST", UpdateTargetId = "Targetbody1", OnBegin = "$('#preloader-id').removeClass('done');", OnComplete = "$('#preloader-id').addClass('done');"}))
+    {
+        <div class="row toggle-item" style="display: none">
+            <div class="col-4">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">№ документа</span>
+                    </div>
+                    <input name="docId" type="number" class="form-control"/>
+                    <div class="input-group-append">
+                        <input class="btn btn-primary" type="submit" value="&#8981;"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <table width="100%" class="table text-center toggle-item">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>№ протокола</th>
+            <th>*</th>
+            @*<th>компания</th>
+                    <th>пользователь</th>
+                    <th>название шаблона</th>*@
+            @*<th>дата выдачи</th>*@
+        </tr>
+        </thead>
+        <tbody id="Targetbody"></tbody>
+    </table>
+    <table width="100%" class="table text-center toggle-item" style="display: none">
+        <thead>
+        <tr>
+            <th>№ документа</th>
+            <th>№ протокола</th>
+            <th>*</th>
+            @*<th>компания</th>
+                    <th>пользователь</th>
+                    <th>название шаблона</th>*@
+            @*<th>дата выдачи</th>*@
+        </tr>
+        </thead>
+        <tbody id="Targetbody1"></tbody>
+    </table>
+</div>
+<div id="templateAccept" tabindex="-1" role="dialog" aria-labelledby="templateAcceptLabel" aria-hidden="true" class="modal fade-scale">
+    <div class="modal-dialog mx-auto" style="max-width: 97%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Данные для заполнения</h3>
+
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid" id="documentresult">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="photosForPrint" style="display: none"></div>
+@section Scripts
+{
+    @Scripts.Render("~/bundles/Print-js")
+    <script>
+        $(document).ready(function () {
+            $(document).on('click', '.change-btn', function () {
+                $('.toggle-item').fadeToggle(200);
+                if ($(this).text() === "Поиск по № документа") {
+                    $(this).html('Поиск по № протокола');
+                } else {
+                    $(this).html('Поиск по № документа');
+                }
+            });
+            $.validator.addMethod("NotEqual",
+                function (value, element, arg) {
+                    return arg !== value;
+                });
+            $('#formvalid').validate({
+                rules:
+                {
+                    SpecialtyName: { NotEqual: "" },
+                    OrganizationName: { NotEqual: "" }
+                }
+            });
+            $.validator.addClassRules({
+                needValid: { required: true }
+            });
+
+            $('.reqfields').addClass("needValid");
+            $(document).on("change",
+                ".needValid",
+                function () {
+                    validElement(this);
+                });
+
+            $('.date').datetimepicker({
+                language: 'ru',
+                pickTime: false
+            });
+            $(document).on("click", ".btn.show", function () {
+
+                if ($(this).text() === "∨")
+                    $(this).html("∧");
+                else
+                    $(this).html("∨");
+                $(this).closest("tr").next().fadeToggle(300);
+            });
+            $(document).on("click", ".btn.remove", function () {
+                var temp = $(this).data('template');
+                var comp = $(this).data('company');
+                var uid = $(this).data('userid');
+                $("tr[data-template='" + temp + "'][data-company='" + comp + "'][data-userid='" + uid + "']").remove();
+            });
+            $(document).on("click", ".alldocs>.btn", function () {
+                var elem = $(this).closest('td').find('input, select');
+                var fieldname = elem.attr('name');
+                var value = elem.val();
+                $("input[name='" + fieldname + "']").each(function () {
+                    $(this).val(value).trigger("change");;
+                });
+            });
+            $(document).on('click',
+            "#getDocs",
+            function () {
+                var valid = true;
+                $("#tableRedact").find(".reqfields").each(function () {
+
+                    if (!$(this).is('div')&&!validElement(this))
+                        valid = false;
+                });
+                if (!valid) {
+                    alert("Не все поля заполнены");
+                    return;
+                }
+                let data = [];
+                var specialty = $("[name='SpecialtyName']");
+                var organization = $("[name='OrganizationName']");
+                var datestart = $("[name='DateStart']");
+                var date = $("[name='Date']");
+                var educationtime = $("[name='EducationTime']");
+                var protocolname = $("[name='ProtocolName']");
+                var fields = $("[name='WriteFields']");
+
+                $('#preloader-id').removeClass('done');
+                $('#templateAccept').modal('hide');
+
+
+                for (let i = 0; i < specialty.length; i++) {
+                    let fieldarray = $(fields[i]).find('[name="HandWriteField"]').toArray().map(t => t.value);
+                    data = data.concat({
+                        docId: $(specialty[i]).closest('tr').data('docid'),
+                        uid: $(specialty[i]).closest('tr').data('userid'),
+                        datestart: $(datestart[i]).val(),
+                        date: $(date[i]).val(),
+                        educationtime: $(educationtime[i]).val(),
+                        protocolname: $(protocolname[i]).val(),
+                        fields: fieldarray
+                    });
+                }
+
+                $.post(
+                    '@Url.Action("UpdateDoc", "Archive")',
+                    {
+                        data: JSON.stringify(data),
+                        substrate: $("#substrate").prop("checked")
+                    },
+                    function(result) {
+                        $('#photosForPrint').html(result);
+                        $("#preloader-id").addClass("done");
+
+                            var images = $(document.getElementById("photosForPrint").getElementsByClassName('photo'));
+                            var bufferStr = '';
+                        $(".printdocument").removeClass('d-none');
+                            $(".photo-wrap>.printdocument").each(function() {
+                                bufferStr += this.innerHTML;
+                                console.log(this.innerHTML);
+                            });
+                            printJS({
+                                printable: bufferStr,
+                                type: 'raw-html',
+                                style: '* {margin: 0px; padding: 0px;}'
+                            });
+                        
+                    },
+                    "html");
+
+        });
+        });
+    </script>
+}

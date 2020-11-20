@@ -1,0 +1,26 @@
+﻿@model PatternCreator.Models.DocumentModel[]
+@if (Model == null || Model.Length == 0)
+{
+    <tr>
+        <th colspan="3">Документы не найдены</th>
+    </tr>
+}
+else
+{
+    int i = 1;
+    foreach (var m in Model)
+    {
+        <tr>
+            <td>
+                @m.DocumentId
+            </td>
+            <td>
+                @m.ProtocolName
+            </td>
+            <td>
+                <a class="btn" data-ajax="true" data-ajax-failure="alert('Что то пошло не так! попробуйте ещё раз')" data-ajax-mode="replace" data-ajax-success="$('#templateAccept').modal('show');" data-ajax-update="#documentresult" href="/Archive/GetDocs?docId=@(m.DocumentId)">&#9998;</a>
+            </td>
+        </tr>
+        i++;
+    }
+}

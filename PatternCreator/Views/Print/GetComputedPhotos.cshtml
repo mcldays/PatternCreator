@@ -84,46 +84,43 @@
                                                             </td>
                                                             <td></td>
                                                         </tr>
+                                                    <tr style="height: 0.36cm">
+                                                        <td colspan="8" rowspan="9" style="font-family: Times New Roman; vertical-align: top !important; padding:2px !important"><div style="width: 3cm; height: 4cm; margin-left: auto; margin-right: auto; text-align: center; vertical-align: middle"><img src="@Url.Action("GetUserPhoto","Pattern",new{id=doc?.UserId})" width="100%" /></div></td>
+                                                        <td style="font-size: 9pt; font-family: Times New Roman; text-align: center; font-weight: bold; vertical-align: top !important;" colspan="9">
+                                                            УДОСТОВЕРЕНИЕ №
+                                                        </td>
+                                                        <td style="font-size: 9pt; font-family: Times New Roman; text-align: center; font-weight: bold; vertical-align: top !important; border-bottom: 1px solid black" colspan="3">
+                                                            @(doc?.DocumentId)
+                                                        </td>
+                                                        <td colspan="3"></td>
+                                                    </tr>
                                                         <tr style="height: 0.36cm">
-                                                            <td style="font-size: 9pt; font-family: Times New Roman; text-align: right; padding-right: 0.5cm; font-weight: bold; vertical-align: top !important;" colspan="16">
-                                                                УДОСТОВЕРЕНИЕ №
-                                                            </td>
-                                                            <td style="font-size: 9pt; font-family: Times New Roman; text-align: left; padding-right: 0.5cm; font-weight: bold; vertical-align: top !important; border-bottom: 1px solid black" colspan="3">
-                                                                @(doc?.DocumentId)
-                                                            </td>
-                                                            <td colspan="4"></td>
+                                                            <td colspan="15"></td>
                                                         </tr>
                                                         <tr style="height: 0.36cm">
-                                                            <td colspan="23"></td>
-                                                        </tr>
-                                                        <tr style="height: 0.36cm">
-                                                            <td colspan="8"></td>
                                                             <td style="font-size: 9pt; font-family: Times New Roman; text-align: center; padding-right: 0.5cm; font-weight: bold;" colspan="14">@(doc?.UserModel.Surname)</td>
                                                             <td></td>
                                                         </tr>
                                                         <tr style="height: 0.36cm">
-                                                            <td colspan="23"></td>
+                                                            <td colspan="15"></td>
                                                         </tr>
                                                         <tr style="height: 0.36cm">
-                                                            <td colspan="8"></td>
                                                             <td style="font-size: 9pt; font-family: Times New Roman; text-align: center; padding-right: 0.5cm; font-weight: bold;" colspan="14">@($"{doc?.UserModel.Name} {doc?.UserModel.Patronymic}")</td>
                                                             <td></td>
                                                         </tr>
                                                         <tr style="height: 0.36cm">
-                                                            <td colspan="23"></td>
+                                                            <td colspan="15"></td>
                                                         </tr>
                                                         <tr style="height: 0.36cm">
-                                                            <td colspan="8"></td>
                                                             <td style="border-bottom: 1px solid black" colspan="14"></td>
                                                             <td></td>
                                                         </tr>
                                                         <tr style="height: 0.36cm">
-                                                            <td colspan="8"></td>
                                                             <td style="font-size: 6pt; font-family: Times New Roman; text-align: center; vertical-align: top !important" colspan="14">(личная подпись)</td>
                                                             <td></td>
                                                         </tr>
                                                         <tr style="height: 0.72cm">
-                                                            <td colspan="23"></td>
+                                                            <td colspan="15"></td>
                                                         </tr>
                                                         <tr style="height: 0.67cm">
                                                             <td></td>
@@ -183,7 +180,7 @@
                                                         <tr style="height: 0.36cm">
                                                             <td></td>
                                                             <td style="font-size: 9pt; font-family: Times New Roman; text-align: center; vertical-align: bottom !important; border-bottom: 1px solid black;" colspan="22">
-                                                                @($"{doc?.UserModel.Surname} {doc?.UserModel.Name} {doc?.UserModel.Patronymic}")
+                                                                @($"{doc?.UserModel.Surname_DativeCase} {doc?.UserModel.Name_DativeCase} {doc?.UserModel.Patronymic_DativeCase}")
                                                             </td>
                                                         </tr>
                                                         <tr style="height: 0.36cm">
@@ -393,7 +390,7 @@
                                                                 Действительно  до
                                                             </td>
                                                             <td colspan="8" style="font-size: 8pt; font-family: Times New Roman; text-align: left; vertical-align: bottom !important; border-bottom: 1px solid black">
-                                                                @($"«{doc?.Date.Day}» {DateConverter.GetMounthName(doc?.Date.Month ?? 0)} {doc?.Date.Year + 3} г.")
+                                                                @($"«{doc?.Date.Day}» {DateConverter.GetMounthName(doc?.Date.Month ?? 0)} {doc?.Date.Year + doc?.SpecialtyModel.ValidUntil} г.")
                                                             </td>
                                                             <td colspan="9"></td>
                                                         </tr>
@@ -633,7 +630,7 @@
                                                             <td colspan="25"></td>
                                                         </tr>
                                                         <tr style="height: 0.35cm">
-                                                            <td colspan="8" rowspan="12" style="font-size: 10pt; font-family: Times New Roman; vertical-align: top"><div style="width: 3cm; height: 4cm; margin-left: auto; margin-right: auto; border: 1px solid #333333; text-align: center; vertical-align: middle"><span>Фото 3х4</span></div></td>
+                                                            <td colspan="8" rowspan="12" style="font-size: 10pt; font-family: Times New Roman; vertical-align: top"><div style="width: 3cm; height: 4cm; margin-left: auto; margin-right: auto; border: 0px solid #333333; text-align: center; vertical-align: middle"><img src="@Url.Action("GetUserPhoto","Pattern",new{id=doc?.UserId})" width="100%" /></div></td>
                                                             <td style="font-size: 9pt; font-family: Times New Roman; text-align: left;" colspan="4">Фамилия</td>
                                                             <td style="font-size: 9pt; font-family: Times New Roman; text-align: left; border-bottom: 1px solid black" colspan="13">@(doc?.UserModel.Surname)</td>
                                                         </tr>
@@ -847,7 +844,7 @@
                                                             <td colspan="25"></td>
                                                         </tr>
                                                         <tr style="height: 0.35cm">
-                                                            <td colspan="8" rowspan="12" style="font-size: 10pt; font-family: Times New Roman; vertical-align: top"><div style="width: 3cm; height: 4cm; margin-left: auto; margin-right: auto; border: 1px solid #333333; text-align: center; vertical-align: middle"><span>Фото 3х4</span></div></td>
+                                                            <td colspan="8" rowspan="12" style="font-size: 10pt; font-family: Times New Roman; vertical-align: top"><div style="width: 3cm; height: 4cm; margin-left: auto; margin-right: auto; border: 0px solid #333333; text-align: center; vertical-align: middle"><img src="@Url.Action("GetUserPhoto","Pattern",new{id=doc?.UserId})" width="100%" /></div></td>
                                                             <td style="font-size: 9pt; font-family: Times New Roman; text-align: left;" colspan="4">Фамилия</td>
                                                             <td style="font-size: 9pt; font-family: Times New Roman; text-align: left; border-bottom: 1px solid black" colspan="13">@(doc?.UserModel.Surname)</td>
                                                         </tr>
@@ -1037,8 +1034,8 @@
                                                             <th style="width: 0.37cm"></th>
                                                             <th style="width: 0.37cm"></th>
                                                             <th style="width: 0.37cm"></th>
-                                                            <th style="width: 0.37cm"></th>
-                                                            <th style="width: 0.37cm"></th>
+                                                            <th style="width: 0.57cm"></th>
+                                                            <th style="width: 0.17cm"></th>
                                                             <th style="width: 0.37cm"></th>
                                                         </tr>
                                                     </thead>
@@ -1054,7 +1051,7 @@
                                                             <td rowspan="18"></td>
                                                             <td rowspan="5"></td>
                                                             <td style="border-bottom: 1px solid black" rowspan="2"></td>
-                                                            <td rowspan="2" colspan="19" style="font-size: 8pt; font-family: Times New Roman; text-align: center; vertical-align: middle !important; border-bottom: 1px solid black">
+                                                            <td rowspan="2" colspan="19" style="font-size: 8pt; font-family: Times New Roman; text-align: center; vertical-align: bottom !important; border-bottom: 1px solid black">
                                                                 @(doc?.Organization.OrganizationName)
                                                             </td>
                                                             <td style="border-bottom: 1px solid black" rowspan="2" colspan="2"></td>
@@ -1103,7 +1100,7 @@
                                                                 Проведена проверка  знаний требований  охраны труда  по программе
                                                             </td>
                                                         </tr>
-                                                        @{ var spec = ComputePhoto.TrimWrapping(doc?.SpecialtyModel.SpecialityName + " в объеме " + doc?.EducationTime + " часов.", 5, 66); }
+                                                        @{ var spec = ComputePhoto.TrimWrapping(doc?.SpecialtyModel.SpecialityName, 5, 73); }
                                                         <tr style="height: 0.4cm">
                                                             <td colspan="24" style="font-size: 8pt; font-family: Times New Roman; text-align: left; vertical-align: bottom !important; border-bottom: 1px solid black">
                                                                 @(spec[0])
@@ -1384,11 +1381,15 @@
 
                             @foreach (var item in model.Items)
                             {
-                                <span style="position: absolute; white-space: pre-line; font-family: Times New Roman; text-align: @(item.Format.Alignment == StringAlignment.Center ? "center" : (item.Format.Alignment == StringAlignment.Near ? "left" : "right")); top: @((item.Rectf.Y / 5).ToString().Replace(",", "."))px; left: @((item.Rectf.X/5).ToString().Replace(",", "."))px; font-size: @(item.FontSize/5)pt; font-weight: @(item.Weight == FontStyle.Regular ? "normal" : "bold"); width: @((item.Rectf.Width/5).ToString().Replace(",", "."))px; height: @((item.Rectf.Height/5).ToString().Replace(",", "."))px">@item.Text.Replace("*newline*", "\n")</span>
+                                <span style="@(item.Underline?"text-decoration:underline;":""); text-underline-position: under; position: absolute; white-space: pre-line; font-family: Times New Roman; text-align: @(item.Format.FormatFlags==StringFormatFlags.MeasureTrailingSpaces?"justify":item.Format.Alignment == StringAlignment.Center ? "center" : (item.Format.Alignment == StringAlignment.Near ? "left" : "right")); top: @((item.Rectf.Y / 5).ToString().Replace(",", "."))px; left: @((item.Rectf.X/5).ToString().Replace(",", "."))px; font-size: @(item.FontSize/5)pt; font-weight: @(item.Weight == FontStyle.Regular ? "normal" : "bold"); width: @((item.Rectf.Width/5).ToString().Replace(",", "."))px; height: @((item.Rectf.Height/5).ToString().Replace(",", "."))px">@item.Text.Replace("*newline*", "\n")</span>
                             }
                             @foreach (var stamp in model.Stamps)
                             {
                                 <img class="substrated" style="@(ViewBag.Substrate!=true?"display: none;":"")position: absolute; width: @((stamp.Rectf.Width/5).ToString().Replace(",", "."))px;height: @((stamp.Rectf.Height/5).ToString().Replace(",", "."))px; top: @((stamp.Rectf.Y / 5).ToString().Replace(",", "."))px; left: @((stamp.Rectf.X/5).ToString().Replace(",", "."))px;" src="data:image/png;base64, @stamp.Image" />
+                            }
+                            @foreach (var stamp in model.Photos)
+                            {
+                                <img style="position: absolute; width: @((stamp.Rectf.Width/5).ToString().Replace(",", "."))px; height: @((stamp.Rectf.Height/5).ToString().Replace(",", "."))px; top: @((stamp.Rectf.Y / 5).ToString().Replace(",", "."))px; left: @((stamp.Rectf.X/5).ToString().Replace(",", "."))px;" src="@Url.Action("GetUserPhoto","Pattern", new{id=stamp.UserId})" />
                             }
                         </div>
                         <div class="printdocument d-none">
@@ -1398,11 +1399,15 @@
 
                                 @foreach (var item in model.Items)
                                 {
-                                    <span style="position: absolute; white-space: pre-line; font-family: Times New Roman; display: block; text-align: @(item.Format.Alignment == StringAlignment.Center ? "center" : (item.Format.Alignment == StringAlignment.Near ? "left" : "right")); margin-top: @(item.Rectf.Y.ToString().Replace(",", "."))px; margin-left: @(item.Rectf.X.ToString().Replace(",", "."))px; font-size: @(item.FontSize)pt; font-weight: @(item.Weight == FontStyle.Regular ? "normal" : "bold"); width: @(item.Rectf.Width.ToString().Replace(",", "."))px; height: @(item.Rectf.Height.ToString().Replace(",", "."))px">@(item.Text.Replace("*newline*", "\n"))</span>
+                                    <span style="@(item.Underline?"text-decoration:underline;":""); text-underline-position: under; position: absolute; white-space: pre-line; font-family: Times New Roman; display: block; text-align: @(item.Format.FormatFlags==StringFormatFlags.MeasureTrailingSpaces?"justify":item.Format.Alignment == StringAlignment.Center ? "center" : (item.Format.Alignment == StringAlignment.Near ? "left" : "right")); margin-top: @(item.Rectf.Y.ToString().Replace(",", "."))px; margin-left: @(item.Rectf.X.ToString().Replace(",", "."))px; font-size: @(item.FontSize)pt; font-weight: @(item.Weight == FontStyle.Regular ? "normal" : "bold"); width: @(item.Rectf.Width.ToString().Replace(",", "."))px; height: @(item.Rectf.Height.ToString().Replace(",", "."))px">@(item.Text.Replace("*newline*", "\n"))</span>
                                 }
                                 @foreach (var stamp in model.Stamps)
                                 {
                                     <img class="substrated" style="@(ViewBag.Substrate!=true?"display: none;":"")position: absolute; width: @((stamp.Rectf.Width).ToString().Replace(",", "."))px; height: @((stamp.Rectf.Height).ToString().Replace(",", "."))px; margin-top: @((stamp.Rectf.Y).ToString().Replace(",", "."))px;  margin-left: @((stamp.Rectf.X).ToString().Replace(",", "."))px;" src="data:image/png;base64, @stamp.Image" />
+                                }
+                                @foreach (var stamp in model.Photos)
+                                {
+                                    <img style="position: absolute; width: @((stamp.Rectf.Width).ToString().Replace(",", "."))px;height: @((stamp.Rectf.Height).ToString().Replace(",", "."))px; margin-top: @((stamp.Rectf.Y ).ToString().Replace(",", "."))px; margin-left: @((stamp.Rectf.X).ToString().Replace(",", "."))px;" src="@Url.Action("GetUserPhoto","Pattern", new{id=stamp.UserId})" />
                                 }
                             </div>
 
@@ -1423,11 +1428,15 @@
 
                         @foreach (var item in model.Items)
                         {
-                            <span style="position: absolute; white-space: pre-line; font-family: Times New Roman; text-align: @(item.Format.Alignment == StringAlignment.Center ? "center" : (item.Format.Alignment == StringAlignment.Near ? "left" : "right")); top: @((item.Rectf.Y / 5).ToString().Replace(",", "."))px; left: @((item.Rectf.X/5).ToString().Replace(",", "."))px; font-size: @(item.FontSize/5)pt; font-weight: @(item.Weight == FontStyle.Regular ? "normal" : "bold"); width: @((item.Rectf.Width/5).ToString().Replace(",", "."))px; height: @((item.Rectf.Height/5).ToString().Replace(",", "."))px">@item.Text.Replace("*newline*", "\n")</span>
+                            <span style="@(item.Underline?"text-decoration:underline;":"");text-underline-position: under; position: absolute; white-space: pre-line; font-family: Times New Roman; text-align: @(item.Format.FormatFlags==StringFormatFlags.MeasureTrailingSpaces?"justify":item.Format.Alignment == StringAlignment.Center ? "center" : (item.Format.Alignment == StringAlignment.Near ? "left" : "right")); top: @((item.Rectf.Y / 5).ToString().Replace(",", "."))px; left: @((item.Rectf.X/5).ToString().Replace(",", "."))px; font-size: @(item.FontSize/5)pt; font-weight: @(item.Weight == FontStyle.Regular ? "normal" : "bold"); width: @((item.Rectf.Width/5).ToString().Replace(",", "."))px; height: @((item.Rectf.Height/5).ToString().Replace(",", "."))px">@item.Text.Replace("*newline*", "\n")</span>
                         }
                         @foreach (var stamp in model.Stamps)
                         {
                             <img style="position: absolute; width: @((stamp.Rectf.Width/5).ToString().Replace(",", "."))px;height: @((stamp.Rectf.Height/5).ToString().Replace(",", "."))px; top: @((stamp.Rectf.Y / 5).ToString().Replace(",", "."))px; left: @((stamp.Rectf.X/5).ToString().Replace(",", "."))px;" src="data:image/png;base64, @stamp.Image" />
+                        }
+                        @foreach (var stamp in model.Photos)
+                        {
+                            <img style="position: absolute; width: @((stamp.Rectf.Width/5).ToString().Replace(",", "."))px; height: @((stamp.Rectf.Height/5).ToString().Replace(",", "."))px; top: @((stamp.Rectf.Y / 5).ToString().Replace(",", "."))px; left: @((stamp.Rectf.X/5).ToString().Replace(",", "."))px;" src="@Url.Action("GetUserPhoto","Pattern", new{id=stamp.UserId})" />
                         }
                     </div>
                     <div class="d-none @(ViewBag.Substrate!=true?"":"printdocument") onlysubstrate">
@@ -1437,11 +1446,15 @@
 
                             @foreach (var item in model.Items)
                             {
-                                <span style="position: absolute; white-space: pre-line; font-family: Times New Roman; display: block; text-align: @(item.Format.Alignment == StringAlignment.Center ? "center" : (item.Format.Alignment == StringAlignment.Near ? "left" : "right")); margin-top: @(item.Rectf.Y.ToString().Replace(",", "."))px; margin-left: @(item.Rectf.X.ToString().Replace(",", "."))px; font-size: @(item.FontSize)pt; font-weight: @(item.Weight == FontStyle.Regular ? "normal" : "bold"); width: @(item.Rectf.Width.ToString().Replace(",", "."))px; height: @(item.Rectf.Height.ToString().Replace(",", "."))px">@(item.Text.Replace("*newline*", "\n"))</span>
+                                <span style="@(item.Underline?"text-decoration:underline;":"");text-underline-position: under; position: absolute; white-space: pre-line; font-family: Times New Roman; display: block; text-align: @(item.Format.FormatFlags==StringFormatFlags.MeasureTrailingSpaces?"justify":item.Format.Alignment == StringAlignment.Center ? "center" : (item.Format.Alignment == StringAlignment.Near ? "left" : "right")); margin-top: @(item.Rectf.Y.ToString().Replace(",", "."))px; margin-left: @(item.Rectf.X.ToString().Replace(",", "."))px; font-size: @(item.FontSize)pt; font-weight: @(item.Weight == FontStyle.Regular ? "normal" : "bold"); width: @(item.Rectf.Width.ToString().Replace(",", "."))px; height: @(item.Rectf.Height.ToString().Replace(",", "."))px">@(item.Text.Replace("*newline*", "\n"))</span>
                             }
                             @foreach (var stamp in model.Stamps)
                             {
                                 <img style="position: absolute; width: @((stamp.Rectf.Width).ToString().Replace(",", "."))px; height: @((stamp.Rectf.Height).ToString().Replace(",", "."))px; margin-top: @((stamp.Rectf.Y).ToString().Replace(",", "."))px;  margin-left: @((stamp.Rectf.X).ToString().Replace(",", "."))px;" src="data:image/png;base64, @stamp.Image" />
+                            }
+                            @foreach (var stamp in model.Photos)
+                            {
+                                <img style="position: absolute; width: @((stamp.Rectf.Width).ToString().Replace(",", "."))px;height: @((stamp.Rectf.Height).ToString().Replace(",", "."))px; margin-top: @((stamp.Rectf.Y ).ToString().Replace(",", "."))px; margin-left: @((stamp.Rectf.X).ToString().Replace(",", "."))px;" src="@Url.Action("GetUserPhoto","Pattern", new{id=stamp.UserId})" />
                             }
                         </div>
 

@@ -16,6 +16,7 @@ namespace PatternCreator.Models
         public string SpecialityName { get; set; }
         public string FieldSpecialty { get; set; }
         public string Quality { get; set; }
+        public int ValidUntil { get; set; }
 
         public string Prefix { get; set; }
         public virtual ICollection<PictureModel> Pictures { get; set; }
@@ -37,12 +38,15 @@ namespace PatternCreator.Models
         [Remote(action:"CheckSpeciality",controller:"Pattern", ErrorMessage = "Данная специальность уже существует")]
         public string SpecialityName { get; set; }
         public string Prefix { get; set; }
+        public int ValidUntil { get; set; }
+
         public string FieldSpecialty { get; set; }
         public string Quality { get; set; }
         public List<int> Templates { get; set; }
         public SpecialtyViewModel(SpecialtyModel model)
         {
             Id = model.Id;
+            ValidUntil = model.ValidUntil;
             SpecialityName = model.SpecialityName;
             Prefix = model.Prefix;
             Quality = model.Quality;

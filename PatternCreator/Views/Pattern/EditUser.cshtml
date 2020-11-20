@@ -16,7 +16,7 @@
 {
 <div class="flex-column d-flex w-75 p-2 align-items-center">
     @Html.ValidationSummary("", new { @class = "text-danger d-flex text-center" })
-    @Html.HiddenFor(model => model.Id)
+    @Html.HiddenFor(model => model.Id, new { id = "targetPhoto" })
     @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "EditCol mt-2", PlaceHolder = "Имя*" } })
     @Html.EditorFor(model => model.Surname, new { htmlAttributes = new { @class = "EditCol my-2", PlaceHolder = "Фамилия*" } })
     @Html.EditorFor(model => model.Patronymic, new { htmlAttributes = new { @class = "EditCol", PlaceHolder = "Отчество" } })
@@ -27,6 +27,20 @@
     @Html.EditorFor(model => model.Education, new { htmlAttributes = new { @class = "EditCol my-2", PlaceHolder = "Образование" } })
     @Html.DropDownListFor(model => model.CompanyId, CompanyesList, "Выберите компанию", new { @class = "EditCol my-2" })
 
+    <div class="card">
+        <div class="card-body">
+            <div class = "btn btn-primary w-100" onclick="$('#customFile').click();">
+                Загрузить фото
+            </div>
+        </div>
+        <img id="userimage" src="@Url.Action("GetUserPhoto", new{id=Model.Id})" width="300px" height="400px" />
+    </div>
     <input type="submit" class="btn btn-primary w-50 my-3" value="Сохранить" />
 </div>
+}
+@using (Ajax.BeginForm("AddPhoto", null, new AjaxOptions {OnSuccess = "onSuccessPhoto"}, new {enctype = "multipart/form-data", id = "submitPhoto", @class = "d-none"}))
+{
+    @Html.HiddenFor(model => model.Id, new {id = "id", name = "id"})
+    <input type="file" class="custom-file-input" name="uploadImage" id="customFile">
+    
 }

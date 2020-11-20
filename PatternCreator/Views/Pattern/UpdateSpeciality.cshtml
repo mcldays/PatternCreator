@@ -16,7 +16,7 @@
     @Html.EditorFor(model => model.Prefix, new { htmlAttributes = new { @class = "form-control my-2", placeholder = "Префикс" } })
     @Html.EditorFor(model => model.Quality, new { htmlAttributes = new { @class = "form-control", placeholder = "Квалификация" } })
     @Html.EditorFor(model => model.FieldSpecialty, new { htmlAttributes = new { @class = "form-control my-2", placeholder = "Сфера деятельности" } })
-
+    @Html.EditorFor(model => model.ValidUntil, new { htmlAttributes = new { @class = "form-control mb-2", placeholder = "Срок действия" } })
     <select id="updateselect" name="Templates" multiple>
         <optgroup label="Выбрать все">
             <option data-placeholder="true">Выберите шаблоны</option>

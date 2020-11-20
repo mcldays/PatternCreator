@@ -23,11 +23,11 @@
 <table class="table text-center table-borderless" id="tableRedact">
 <thead style="border-bottom: 3px solid #007bff">
     <tr>
-        <th>Программа</th>
-        <th>Организация</th>
-        <th>Дата начала обуч.</th>
-        <th>Дата окончания обуч.</th>
-        <th>Кол-во учебных часов</th>
+        <th >Программа</th>
+        <th >Организация</th>
+        <th >Дата начала обуч.</th>
+        <th >Дата окончания обуч.</th>
+        <th >Кол-во учебных часов</th>
         <th>Номер протокола</th>
         <th>Поля ручного ввода</th>
         <th>*</th>
@@ -59,8 +59,9 @@
             <tr data-template="@temp" data-company="@companyId" data-userid="@user.Id">
                 <td colspan="8">@($"{user.Surname} {user.Name} {user.Patronymic}")</td>
             </tr>
+
             <tr data-template="@temp" data-company="@companyId" data-userid="@user.Id">
-                <td style="max-width: 220px">
+                <td style="width: 320px; max-width: 320px">
                     <div class="input-group">
                         <select class="selectSpecialty reqfields form-control p-0" data-company="@companyId" name="SpecialtyName">
                             <optgroup label="Программы для @pic.Name">
@@ -77,7 +78,7 @@
                     </div>
 
                 </td>
-                <td style="max-width: 220px">
+                <td style="width: 200px; max-width: 200px">
                     <div class="input-group">
                         <select class="selectOrganization reqfields form-control p-0" data-company="@companyId" name="OrganizationName">
                             <option data-placeholder="true" value="">Выберите организацию</option>
@@ -91,7 +92,7 @@
                         </div>
                     </div>
                 </td>
-                <td>
+                <td style="width: 200px; max-width: 200px">
                     
                         <div class="input-group date">
                             <input data-format="dd.MM.yyyy" class="form-control reqfields" type="text" name="DateStart" aria-describedby="basic-addon2"/>
@@ -107,7 +108,7 @@
                         </div>
                     
                 </td>
-                <td>
+                <td style="width: 200px; max-width: 200px">
                     
                         <div class="input-group date">
                             <input data-format="dd.MM.yyyy" class="form-control reqfields" type="text" name="Date" aria-describedby="basic-addon3"/>
@@ -123,7 +124,7 @@
                         </div>
                    
                 </td>
-                <td>
+                <td style="width: 120px; max-width: 120px">
                     <div class="input-group">
                         <input type="text" class="form-control" name="EducationTime"/>
                         <div class="input-group-append  allcompany">

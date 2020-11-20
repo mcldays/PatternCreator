@@ -14,10 +14,10 @@ namespace PatternCreator.Controllers
     public class PrintController : Controller
     {
         
-        public ActionResult GetComputedPhotos(string data)
+        public ActionResult GetComputedPhotos(string data, bool substrate)
         {
             var document = JsonConvert.DeserializeObject<int[]>(data);
-            ViewBag.Substrate = (bool)TempData["Substrate"];
+            ViewBag.Substrate = substrate;
             using (UserContext db = new UserContext())
             {
                 
@@ -68,7 +68,7 @@ namespace PatternCreator.Controllers
             string data1 = JsonConvert.SerializeObject(document);
             TempData["Substrate"] = substrate;
 
-            return RedirectToAction("GetComputedPhotos", new { data = data1});
+            return RedirectToAction("GetComputedPhotos", new { data = data1, substrate});
         }
 
         public JsonResult CreateProtocol(string data)

@@ -84,7 +84,9 @@
                                             <button type="button" class="blueButtonsModal add-text">
                                                 <span>Добавить текст</span>
                                             </button>
-
+                                            <button type="button" class="blueButtonsModal AddPhoto">
+                                                <span>Добавить фото</span>
+                                            </button>
                                             <button type="button" class="blueButtonsModal GridUp">
                                                 <span>Увеличить сетку</span>
                                             </button>
@@ -196,6 +198,12 @@
                     {
                         <text>{ StampPositionId:@block.StampPositionId, stamp_id:@block.StampId, position_x:'@block.PosX', position_y:'@block.PosY', position_width:'@block.Width', position_height:'@block.Height', picture_id: @block.PicId, image:'@("data:image/jpeg;base64,"
                             + Convert.ToBase64String(block.Image))'},</text>
+                    }
+                ],
+                photos: [
+                    @foreach (var block in pic.PhotoModels)
+                    {
+                        <text>{ PhotoModelId:@block.PhotoModelId, position_x:'@block.PosX', position_y:'@block.PosY', position_width:'@block.Width', position_height:'@block.Height', picture_id: @block.PicId},</text>
                     }
                 ]
             },</text>

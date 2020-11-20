@@ -17,6 +17,8 @@ namespace PatternCreator.Models
         public int NaturalHeight { get; set; }
         public virtual ICollection<DocumentModel> DocumentModels { get; set; }
         public virtual ICollection<StampPositions> StampPositions { get; set; }
+        public virtual ICollection<PhotoModel> PhotoModels { get; set; }
+
         public virtual ICollection<PositionModel> PositionModels { get; set; }
         public virtual ICollection<SpecialtyModel> Specialties { get; set; }
         public PictureModel()
@@ -24,6 +26,7 @@ namespace PatternCreator.Models
             DocumentModels = new List<DocumentModel>();
             PositionModels = new List<PositionModel>();
             StampPositions = new List<StampPositions>();
+            PhotoModels = new List<PhotoModel>();
             Specialties = new List<SpecialtyModel>();
         } 
     }
@@ -35,6 +38,8 @@ namespace PatternCreator.Models
 
         public List<DocumentModel> DocumentModels { get; set; }
         public List<StampPositionsViewModel> StampPositions { get; set; }
+        public List<PhotoViewModel> PhotoModels { get; set; }
+
         public List<PositionModel> PositionModels { get; set; }
         public int NaturalWidth { get; set; }
         public int NaturalHeight { get; set; }
@@ -46,6 +51,7 @@ namespace PatternCreator.Models
             NaturalWidth = model.NaturalWidth;
             NaturalHeight = model.NaturalHeight;
             PositionModels = model.PositionModels.ToList();
+            PhotoModels = model.PhotoModels.Select(t => new PhotoViewModel(t)).ToList();
             StampPositions = model.StampPositions.Select(t=> new StampPositionsViewModel(t)).ToList();
         }
     }
