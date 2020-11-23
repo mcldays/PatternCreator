@@ -71,16 +71,16 @@ namespace PatternCreator.Utilities
             dpvm.DocId = doc.DocumentId;
             switch (doc.PatternId)
             {
-                case 45: dpvm.Identity = DocumentPrintViewModel.TypeDoc.WorkHighSecurityWithQuality; break;
-                case 47: dpvm.Identity = DocumentPrintViewModel.TypeDoc.WorkSecurity; break;
-                case 53: dpvm.Identity = DocumentPrintViewModel.TypeDoc.WorkHighSecurity; break;
-                case 54: dpvm.Identity = DocumentPrintViewModel.TypeDoc.Pplam; break;
-                case 51: dpvm.Identity = DocumentPrintViewModel.TypeDoc.Ptm; break;
-                case 52: dpvm.Identity = DocumentPrintViewModel.TypeDoc.WorkIdentity; break;
+                case 7: dpvm.Identity = DocumentPrintViewModel.TypeDoc.WorkHighSecurityWithQuality; break;
+                case 4: dpvm.Identity = DocumentPrintViewModel.TypeDoc.WorkSecurity; break;
+                case 3: dpvm.Identity = DocumentPrintViewModel.TypeDoc.WorkHighSecurity; break;
+                case 5: dpvm.Identity = DocumentPrintViewModel.TypeDoc.Pplam; break;
+                case 6: dpvm.Identity = DocumentPrintViewModel.TypeDoc.Ptm; break;
+                case 2: dpvm.Identity = DocumentPrintViewModel.TypeDoc.WorkIdentity; break;
                 default: dpvm.Identity = DocumentPrintViewModel.TypeDoc.Other; break;
 
             }
-            if (doc.PatternId == 45 || doc.PatternId == 53|| doc.PatternId==54)
+            if (doc.PatternId == 7 || doc.PatternId == 3|| doc.PatternId==5)
                 return dpvm;
             
             var template = doc.PictureModel;

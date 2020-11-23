@@ -10,12 +10,13 @@ using PatternCreator.Utilities;
 
 namespace PatternCreator.Controllers
 {
+    [Authorize]
     public class ArchiveController : Controller
     {
         // GET: Archive
         public ActionResult Index()
         {
-            return View();
+            return RedirectToAction("Protocols");
         }
         [HttpGet]
         public ActionResult Protocols()

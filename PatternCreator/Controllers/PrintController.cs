@@ -11,6 +11,7 @@ using WebGrease.Css.Extensions;
 
 namespace PatternCreator.Controllers
 {
+    [Authorize]
     public class PrintController : Controller
     {
         

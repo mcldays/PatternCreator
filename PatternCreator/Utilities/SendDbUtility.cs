@@ -12,8 +12,8 @@ namespace PatternCreator.Utilities
         
         public static bool verifyAutefication(AutModelViewModel model)
         {
-                try
-                {
+                //try
+                //{
                     using (UserContext db = new UserContext())
                     {
                         AutModel user =
@@ -34,11 +34,11 @@ namespace PatternCreator.Utilities
                             return true;
                         }
                     }
-                }
-                catch (Exception e)
-                {
-                    return false;
-                }
+                //}
+                //catch (Exception e)
+                //{
+                //    return false;
+                //}
            
         }
 
