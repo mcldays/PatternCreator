@@ -1,14 +1,118 @@
 ﻿@using PatternCreator.Utilities
 @model PatternCreator.Models.OrganizationViewModel
 
-@using (Ajax.BeginForm("UpdateOrganization", "Pattern",null, new AjaxOptions { LoadingElementId = "preloader-id", OnSuccess = "$('#OrganizationUpdate').modal('hide')", UpdateTargetId = "orgresults", HttpMethod = "Post"}, new { @class = "form-row justify-content-center" }))
+@using (Ajax.BeginForm("UpdateOrganization", "Pattern", null, new AjaxOptions { LoadingElementId = "preloader-id", OnSuccess = "$('#OrganizationUpdate').modal('hide')", UpdateTargetId = "orgresults", HttpMethod = "Post" }, new { @class = "form-row justify-content-center" }))
 {
-    <div class="flex-column d-flex w-75 p-2 align-items-center">
-        @Html.ValidationSummary("", new { @class = "text-danger d-flex text-center" })
-        @Html.HiddenFor(model => model.OrganizationId)
-        @Html.EditorFor(model => model.OrganizationName, new { htmlAttributes = new { @class = "form-control", placeholder = "Наименование организации" } })
-        @Html.EditorFor(model => model.License, new { htmlAttributes = new { @class = "form-control my-2", placeholder = "Лицензия" } })
-        
-        <input type="submit" class="btn btn-primary w-50 my-3" value="Сохранить" />
+<div class="flex-column d-flex w-75 p-2 align-items-center">
+    @Html.ValidationSummary("", new { @class = "text-danger d-flex text-center" })
+    @Html.HiddenFor(model => model.OrganizationId)
+    @Html.EditorFor(model => model.OrganizationName, new { htmlAttributes = new { @class = "form-control", placeholder = "Наименование организации" } })
+    @Html.EditorFor(model => model.License, new { htmlAttributes = new { @class = "form-control my-2", placeholder = "Лицензия" } })
+    <div class="flex-row d-flex w-100">
+        @Html.EditorFor(model => model.СhairmanName, new { htmlAttributes = new { @class = "form-control", placeholder = "Председатель комиссии" } })
+        <div class="btn btn-primary" style="height: calc(1.5em + 0.75rem + 2px); width: 15%" onclick="$('#customsubmitChairman').click();">
+            <img src='/Resourses/svg/stamp (1).svg' class="img-fluid h-100" />
+        </div>
+        @Html.HiddenFor(model => model.СhairmanSignature, new { id = "СhairmanSignature" })
+
     </div>
+    <div class="flex-row d-flex w-100 my-2">
+        @Html.EditorFor(model => model.TeacherName, new { htmlAttributes = new { @class = "form-control", placeholder = "Преподователь" } })
+        <div class="btn btn-primary" style="height: calc(1.5em + 0.75rem + 2px); width: 15%" onclick="$('#customsubmitTeacherSignature').click();">
+            <img src='/Resourses/svg/stamp (1).svg' class="img-fluid h-100" />
+        </div>
+        @Html.HiddenFor(model => model.TeacherSignature, new { id = "TeacherSignature" })
+    </div>
+    <div class="flex-row d-flex w-100">
+        @Html.EditorFor(model => model.SecretaryName, new { htmlAttributes = new { @class = "form-control", placeholder = "Секретарь" } })
+        <div class="btn btn-primary" style="height: calc(1.5em + 0.75rem + 2px); width: 15%" onclick="$('#customsubmitSecretarySignature').click();">
+            <img src='/Resourses/svg/stamp (1).svg' class="img-fluid h-100" />
+        </div>
+        @Html.HiddenFor(model => model.SecretarySignature, new { id = "SecretarySignature" })
+    </div>
+
+    @Html.HiddenFor(model => model.Stamp, new { id = "Stamp" })
+
+    <div class="btn btn-primary w-50 my-2" onclick="$('#customsubmitStamp').click();">
+        Загрузить печать
+    </div>
+
+    <input type="submit" class="btn btn-primary w-50 my-3" value="Сохранить" />
+</div>
 }
+@using (Ajax.BeginForm("AddOrganizationStamp", null, new AjaxOptions { OnSuccess = "onSuccessStamp" }, new { enctype = "multipart/form-data", id = "submitStamp", @class = "d-none" }))
+{
+    @Html.HiddenFor(model => model.OrganizationId)
+    @Html.Hidden("type", "0")
+    <input type="file" class="custom-file-input" name="uploadImage" id="customsubmitStamp">
+
+}
+@using (Ajax.BeginForm("AddOrganizationStamp", null, new AjaxOptions { OnSuccess = "onSuccessChairman" }, new { enctype = "multipart/form-data", id = "submitChairman", @class = "d-none" }))
+{
+    @Html.HiddenFor(model => model.OrganizationId)
+    @Html.Hidden("type", "1")
+    <input type="file" class="custom-file-input" name="uploadImage" id="customsubmitChairman">
+
+}
+@using (Ajax.BeginForm("AddOrganizationStamp", null, new AjaxOptions { OnSuccess = "onSuccessTeacherSignature" }, new { enctype = "multipart/form-data", id = "submitTeacherSignature", @class = "d-none" }))
+{
+    @Html.HiddenFor(model => model.OrganizationId)
+    @Html.Hidden("type", "2")
+    <input type="file" class="custom-file-input" name="uploadImage" id="customsubmitTeacherSignature">
+
+}
+@using (Ajax.BeginForm("AddOrganizationStamp", null, new AjaxOptions { OnSuccess = "onSuccessSecretarySignature" }, new { enctype = "multipart/form-data", id = "submitSecretarySignature", @class = "d-none" }))
+{
+    @Html.HiddenFor(model => model.OrganizationId)
+    @Html.Hidden("type", "3")
+    <input type="file" class="custom-file-input" name="uploadImage" id="customsubmitSecretarySignature">
+
+}
+<script>
+    function onSuccessStamp(result) {
+        if (result === '') {
+            alert("Не удалось загрузить печать");
+        } else {
+            $("#Stamp").val(result);
+            alert("Печать загружена");
+        }
+
+
+    }
+    function onSuccessChairman(result) {
+        if (result === '') {
+            alert("Не удалось загрузить подпись председателя");
+        } else {
+            $("#СhairmanSignature").val(result);
+            alert("Подпись председателя загружена");
+        }
+
+
+    }
+    function onSuccessTeacherSignature(result) {
+        if (result === '') {
+            alert("Не удалось загрузить подпись преподавателя");
+        } else {
+            $("#TeacherSignature").val(result);
+            alert("Подпись преподавателя загружена");
+        }
+
+
+    }
+    function onSuccessSecretarySignature(result) {
+        if (result === '') {
+            alert("Не удалось загрузить подпись секретаря");
+        } else {
+            $("#SecretarySignature").val(result);
+            alert("Подпись секретаря загружена");
+        }
+
+
+    }
+    function submitt () {
+        $(this).closest('form').submit();
+    };
+    $("input[type='file']").on("change",
+        submitt); 
+        
+</script>

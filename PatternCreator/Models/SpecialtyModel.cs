@@ -20,12 +20,14 @@ namespace PatternCreator.Models
 
         public string Prefix { get; set; }
         public virtual ICollection<PictureModel> Pictures { get; set; }
+        public virtual ICollection<MarkModel> MarkModels { get; set; }
         //public virtual ICollection<ProtocolModel> Protocols { get; set; }
 
         public SpecialtyModel()
         {
             //Protocols = new List<ProtocolModel>();
             Pictures = new List<PictureModel>();
+            MarkModels = new List<MarkModel>();
         }
 
 
@@ -35,7 +37,7 @@ namespace PatternCreator.Models
         [Required]
         public int Id { get; set; }
         [Required]
-        [Remote(action:"CheckSpeciality",controller:"Pattern", ErrorMessage = "Данная специальность уже существует")]
+        //[Remote(action:"CheckSpeciality",controller:"Pattern", ErrorMessage = "Данная специальность уже существует")]
         public string SpecialityName { get; set; }
         public string Prefix { get; set; }
         public int ValidUntil { get; set; }
@@ -43,6 +45,7 @@ namespace PatternCreator.Models
         public string FieldSpecialty { get; set; }
         public string Quality { get; set; }
         public List<int> Templates { get; set; }
+        public List<int> MarkModels { get; set; }
         public SpecialtyViewModel(SpecialtyModel model)
         {
             Id = model.Id;
@@ -52,6 +55,7 @@ namespace PatternCreator.Models
             Quality = model.Quality;
             FieldSpecialty = model.FieldSpecialty;
             Templates = new List<int>(model.Pictures.Select(t=>t.Id));
+            MarkModels = new List<int>(model.MarkModels.Select(t => t.Id));
         }
         public SpecialtyViewModel()
         {

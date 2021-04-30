@@ -25,7 +25,7 @@
                     Добавить шаблон
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownTemplates">
-                    @foreach (var template in ViewBag.Pictures as List<PictureModel>)
+                    @foreach (var template in (ViewBag.Pictures as List<PictureModel>).Where(t=>t.Id!=29))
                     {
                         <button class="dropdown-item" type="button" template-id="@template.Id">@template.Name</button>
                     }
@@ -78,9 +78,12 @@
             <button class="BlueButton" id="PrintBut">
                 <span class="butttonTextStyle">Печать</span>
             </button>
+            <button class="BlueButton" style="display: none" id="Redact" data-toggle="modal" data-target="#templateAccept">
+                <span class="butttonTextStyle">Редактировать</span>
+            </button>
             @*<button class="BlueButton">
-                    <span class="butttonTextStyle">Сохранить в PDF</span>
-                </button>*@
+            <span class="butttonTextStyle">Сохранить в PDF</span>
+        </button>*@
         </div>
     </div>
 </div>
@@ -235,13 +238,15 @@
             });
 
         function onSuccessPhoto(result) {
+
             //const photos = result.split("<separator>");
 
             //for (let photo in photos) {
             $("#photosForPrint")
-                .append(
+                .html(
                     result);
             //}
+            $('#Redact').show();
             $("#preloader-id").addClass("done");
         }
 
@@ -295,6 +300,8 @@
             $(element).closest('.input-group').removeClass("val-error");
             return true;
         }
+
+        var redact = false;
         $(document).on('click',
             "#getDocs",
             function () {
@@ -335,13 +342,14 @@
                         fields: fieldarray
                     });
                 }
-
+               
                 $.post(
                     '@Url.Action("SaveDocuments", "Print")',
                     {
                         data: JSON.stringify(data),
-                        substrate: $("#substrate").prop("checked")
-                    },
+                        substrate: $("#substrate").prop("checked"),
+                        redact:false
+            },
                     onSuccessPhoto,
                     "html");
 

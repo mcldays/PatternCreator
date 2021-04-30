@@ -5,11 +5,11 @@
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<PatternCreator.Utilities.UserContext>
+    public sealed class Configuration : DbMigrationsConfiguration<PatternCreator.Utilities.UserContext>
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;
+            AutomaticMigrationsEnabled = true;
         }
 
         protected override void Seed(PatternCreator.Utilities.UserContext context)

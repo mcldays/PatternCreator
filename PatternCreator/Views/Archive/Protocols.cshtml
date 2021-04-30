@@ -5,13 +5,15 @@
 @Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
 @Scripts.Render("~/Scripts/bootstrap-datetimepicker.min.js")
 @Scripts.Render("~/Scripts/bootstrap-datetimepicker.ru.js")
+@Styles.Render("~/Content/slimselect.min.css")
+@Scripts.Render("~/Scripts/slimselect.min.js")
 <div class="container-fluid">
     <div class="row">
         <div class="col-3">
             <div class="btn btn-primary change-btn">Поиск по № документа</div>
         </div>
     </div>
-    @using (Ajax.BeginForm(new AjaxOptions {HttpMethod = "POST", UpdateTargetId = "Targetbody", OnBegin = "$('#preloader-id').removeClass('done');", OnComplete = "$('#preloader-id').addClass('done');"}))
+    @using (Ajax.BeginForm(new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "Targetbody", OnBegin = "$('#preloader-id').removeClass('done');", OnComplete = "$('#preloader-id').addClass('done');" }))
     {
         <div class="row toggle-item">
             <div class="col-4">
@@ -19,59 +21,63 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">№ протокола</span>
                     </div>
-                    <input name="protocolname" type="text" class="form-control"/>
+                    <input name="protocolname" type="text" class="form-control" />
                     <div class="input-group-append">
-                        <input class="btn btn-primary" type="submit" value="&#8981;"/>
+                        <input class="btn btn-primary" type="submit" value="&#8981;" />
                     </div>
                 </div>
             </div>
         </div>
     }
-    @using (Ajax.BeginForm("Docs",new AjaxOptions {HttpMethod = "POST", UpdateTargetId = "Targetbody1", OnBegin = "$('#preloader-id').removeClass('done');", OnComplete = "$('#preloader-id').addClass('done');"}))
+    @using (Ajax.BeginForm("GetDocs", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "documentresult", OnBegin = "$('#preloader-id').removeClass('done');", OnComplete = "$('#preloader-id').addClass('done');", OnSuccess = "$('#templateAccept').modal('show');" }))
     {
-        <div class="row toggle-item" style="display: none">
-            <div class="col-4">
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">№ документа</span>
-                    </div>
-                    <input name="docId" type="number" class="form-control"/>
-                    <div class="input-group-append">
-                        <input class="btn btn-primary" type="submit" value="&#8981;"/>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="row toggle-item mt-5" style="display: none">
+    <div class="col-12 text-center">
+        Выберите номера документов
+    </div>
+    <div class="col-3"></div>
+    <div class="col-6 mr-0 p-0">
+        <select class="selectDocs reqfields" name="DocIds" style="height: 30px !important" multiple>
+            <option data-placeholder="true" value="">Выберите документы</option>
+        </select>
+    </div>
+    <div class="col-3 my-0 p-0">
+        <input class="btn btn-primary mb-0 pt-0" style="height: 30px !important" type="submit" value="&#8981;" />
+        @Ajax.ActionLink("Удалить", "RemoveDocs", null, new AjaxOptions { Confirm = "Вы уверены что хотите удалить выбранные элементы?", HttpMethod = "GET", OnBegin = "onBegin", OnComplete = "onComplete"}, new { @class = "btn btn-primary mb-0 pt-0" })
+
+    </div>
+</div>
     }
 
     <table width="100%" class="table text-center toggle-item">
         <thead>
-        <tr>
-            <th>ID</th>
-            <th>№ протокола</th>
-            <th>*</th>
-            @*<th>компания</th>
+            <tr>
+                <th>ID</th>
+                <th>№ протокола</th>
+                <th>*</th>
+                <th>*</th>
+                @*<th>компания</th>
                     <th>пользователь</th>
                     <th>название шаблона</th>*@
-            @*<th>дата выдачи</th>*@
-        </tr>
+                @*<th>дата выдачи</th>*@
+            </tr>
         </thead>
         <tbody id="Targetbody"></tbody>
     </table>
-    <table width="100%" class="table text-center toggle-item" style="display: none">
+    <!--<table width="100%" class="table text-center toggle-item" style="display: none">
         <thead>
-        <tr>
-            <th>№ документа</th>
-            <th>№ протокола</th>
-            <th>*</th>
-            @*<th>компания</th>
+            <tr>
+                <th>№ документа</th>
+                <th>№ протокола</th>
+                <th>*</th>-->
+                @*<th>компания</th>
                     <th>пользователь</th>
                     <th>название шаблона</th>*@
-            @*<th>дата выдачи</th>*@
-        </tr>
+                @*<th>дата выдачи</th>*@
+            <!--</tr>
         </thead>
         <tbody id="Targetbody1"></tbody>
-    </table>
+    </table>-->
 </div>
 <div id="templateAccept" tabindex="-1" role="dialog" aria-labelledby="templateAcceptLabel" aria-hidden="true" class="modal fade-scale">
     <div class="modal-dialog mx-auto" style="max-width: 97%;">
@@ -96,7 +102,90 @@
 {
     @Scripts.Render("~/bundles/Print-js")
     <script>
+        var slim;
+
+        function onComplete(result) {
+            window.location.reload();
+        };
+        function onBegin(xhr, request) {
+            console.log($("select.selectDocs option:selected").toArray().map(t => $(t).text()));
+            request.url = "@Url.Action("RemoveDocs")?DocIds=" + JSON.stringify(slim.selected());
+        };
+
+        function createSlim() {
+            slim = new SlimSelect({
+                select: ".selectDocs",
+                allowDeselectOption: true,
+                hideSelectedOption: true,
+                closeOnSelect: false,
+                ajax: function (search, callback) {
+                    // Check search value. If you dont like it callback(false) or callback('Message String')
+                    //if (!search.is(digits)) {
+                    //    callback('Введите номер документа');
+                    //    return;
+                    //}
+
+                    // Perform your own ajax request here
+                    fetch('/Archive/Docs?data=' + search)
+                        .then(function(response) {
+                            return response.json();
+                        })
+                        .then(function(json) {
+                            let data = [];
+                            for (let i = 0; i < json.length; i++) {
+                                data.push({ text: json[i], value: json[i] });
+                            }
+
+                            // Upon successful fetch send data to callback function.
+                            // Be sure to send data back in the proper format.
+                            // Refer to the method setData for examples of proper format.
+                            callback(data);
+                        })
+                        .catch(function(error) {
+                            // If any erros happened send false back through the callback
+                            callback(false);
+                        });
+                }
+
+            });
+        }
         $(document).ready(function () {
+            createSlim();
+            function validElement(element) {
+
+                if (!$(element).valid()) {
+                    $(element).closest('.input-group').addClass("val-error");
+                    return false;
+                }
+                $(element).closest('.input-group').removeClass("val-error");
+                return true;
+            }
+            $(document).on("click", ".createProtocol", function () {
+                var valid = true;
+                $(this).closest('tr').find(".reqfields:not([name='ProtocolName'])").each(function () {
+
+                    if (!$(this).is('div')&&!validElement(this))
+                        valid = false;
+                });
+                if (!valid) {
+                    alert("Заполните даты, выберите программу и организацию, чтобы получить номер протокола!");
+                    return;
+                }
+                var parent_tr = $(this).closest('tr');
+                var target = parent_tr.find("[name='ProtocolName']");
+                let model = {
+                    date: parent_tr.find("input[name='Date']").val(),
+                    specialty: parent_tr.find("[name='SpecialtyName']").val()
+                }
+                $.get(
+                    '@Url.Action("CreateProtocol","Print")',
+                    { data: JSON.stringify(model) },
+                    function (data, textStatus, jqXHR) {
+                        if (textStatus === "success") {
+                            target.val(data).trigger("change");
+                        }
+                    });
+            });
             $(document).on('click', '.change-btn', function () {
                 $('.toggle-item').fadeToggle(200);
                 if ($(this).text() === "Поиск по № документа") {
@@ -113,7 +202,6 @@
                 rules:
                 {
                     SpecialtyName: { NotEqual: "" },
-                    OrganizationName: { NotEqual: "" }
                 }
             });
             $.validator.addClassRules({
@@ -153,58 +241,60 @@
                     $(this).val(value).trigger("change");;
                 });
             });
+
             $(document).on('click',
-            "#getDocs",
-            function () {
-                var valid = true;
-                $("#tableRedact").find(".reqfields").each(function () {
+                "#getDocs",
+                function () {
+                    var valid = true;
+                    $("#tableRedact").find(".reqfields").each(function () {
 
-                    if (!$(this).is('div')&&!validElement(this))
-                        valid = false;
-                });
-                if (!valid) {
-                    alert("Не все поля заполнены");
-                    return;
-                }
-                let data = [];
-                var specialty = $("[name='SpecialtyName']");
-                var organization = $("[name='OrganizationName']");
-                var datestart = $("[name='DateStart']");
-                var date = $("[name='Date']");
-                var educationtime = $("[name='EducationTime']");
-                var protocolname = $("[name='ProtocolName']");
-                var fields = $("[name='WriteFields']");
-
-                $('#preloader-id').removeClass('done');
-                $('#templateAccept').modal('hide');
-
-
-                for (let i = 0; i < specialty.length; i++) {
-                    let fieldarray = $(fields[i]).find('[name="HandWriteField"]').toArray().map(t => t.value);
-                    data = data.concat({
-                        docId: $(specialty[i]).closest('tr').data('docid'),
-                        uid: $(specialty[i]).closest('tr').data('userid'),
-                        datestart: $(datestart[i]).val(),
-                        date: $(date[i]).val(),
-                        educationtime: $(educationtime[i]).val(),
-                        protocolname: $(protocolname[i]).val(),
-                        fields: fieldarray
+                        if (!$(this).is('div')&&!validElement(this))
+                            valid = false;
                     });
-                }
+                    if (!valid) {
+                        alert("Не все поля заполнены");
+                        return;
+                    }
+                    let data = [];
+                    var specialty = $("[name='SpecialtyName']");
+                    var organization = $("[name='OrganizationName']");
+                    var datestart = $("[name='DateStart']");
+                    var date = $("[name='Date']");
+                    var educationtime = $("[name='EducationTime']");
+                    var protocolname = $("[name='ProtocolName']");
+                    var fields = $("[name='WriteFields']");
 
-                $.post(
-                    '@Url.Action("UpdateDoc", "Archive")',
-                    {
-                        data: JSON.stringify(data),
-                        substrate: $("#substrate").prop("checked")
-                    },
-                    function(result) {
-                        $('#photosForPrint').html(result);
-                        $("#preloader-id").addClass("done");
+                    $('#preloader-id').removeClass('done');
+                    $('#templateAccept').modal('hide');
+
+
+                    for (let i = 0; i < specialty.length; i++) {
+                        let fieldarray = $(fields[i]).find('[name="HandWriteField"]').toArray().map(t => t.value);
+                        data = data.concat({
+                            docId: $(specialty[i]).closest('tr').data('docid'),
+                            specialty: $(specialty[i]).val(),
+                            uid: $(specialty[i]).closest('tr').data('userid'),
+                            datestart: $(datestart[i]).val(),
+                            date: $(date[i]).val(),
+                            educationtime: $(educationtime[i]).val(),
+                            protocolname: $(protocolname[i]).val(),
+                            fields: fieldarray
+                        });
+                    }
+
+                    $.post(
+                        '@Url.Action("UpdateDoc", "Archive")',
+                        {
+                            data: JSON.stringify(data),
+                            substrate: $("#substrate").prop("checked")
+                        },
+                        function(result) {
+                            $('#photosForPrint').html(result);
+                            $("#preloader-id").addClass("done");
 
                             var images = $(document.getElementById("photosForPrint").getElementsByClassName('photo'));
                             var bufferStr = '';
-                        $(".printdocument").removeClass('d-none');
+                            $(".printdocument").removeClass('d-none');
                             $(".photo-wrap>.printdocument").each(function() {
                                 bufferStr += this.innerHTML;
                                 console.log(this.innerHTML);
@@ -214,11 +304,11 @@
                                 type: 'raw-html',
                                 style: '* {margin: 0px; padding: 0px;}'
                             });
-                        
-                    },
-                    "html");
 
-        });
+                        },
+                        "html");
+
+                });
         });
     </script>
 }

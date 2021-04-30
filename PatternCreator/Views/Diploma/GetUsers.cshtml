@@ -1,0 +1,86 @@
+﻿@using Newtonsoft.Json
+@using PatternCreator.Models
+@model IEnumerable<DiplomaUserModel>
+<div class="d-flex justify-content-between">
+    <div class="btn-group btn-group-toggle">
+        <a class="btn btn-outline-primary active" data-ajax="true" data-ajax-begin="$('#preloader-id').removeClass('done');" data-ajax-complete="$('#preloader-id').addClass('done'); $('#ChooseUser').modal('show');" data-ajax-mode="replace" data-ajax-update="#usersContainer" href="/Diploma/GetUsers">
+            <input type="radio" name="options1" id="option12" autocomplete="off" checked>Пользователи
+        </a>
+        <a class="btn btn-outline-primary" data-ajax="true" data-ajax-begin="$('#preloader-id').removeClass('done');" data-ajax-complete="$('#preloader-id').addClass('done'); $('#ChooseUser').modal('show');" data-ajax-mode="replace" data-ajax-update="#usersContainer" href="/Diploma/GetCompanies">
+            <input type="radio" name="options1" id="option22" autocomplete="off">Компании
+        </a>
+    </div>
+    <div >
+        @using (Ajax.BeginForm("FindUsers", new AjaxOptions {UpdateTargetId = "usersContainer" }))
+        {
+            <div class="input-group">
+                <input class="form-control" type="text" name="searchText" placeholder="Поиск"/>
+                <button type="submit" class="btn btn-light input-group-append">
+                    <img src="/Resourses/svg/magnifying-glass (3).svg" class="AddUserImg">
+                </button>
+            </div>
+        }
+    </div>
+    
+</div>
+
+<table class="table" id="userTable">
+    <thead>
+    <tr class="text-center">
+        <th>Ф.И.О</th>
+        <th>Компания</th>
+        <th style="width: 70px">*</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (DiplomaUserModel userModel in Model)
+    {
+        <tr data-userid="@(userModel.Id)">
+            <td>@(userModel.FIO)</td>
+            <td>@(userModel.CompanyName)</td>
+            <td>
+                @Ajax.ActionLink("+","AddUser",new{user=JsonConvert.SerializeObject(userModel)}, new AjaxOptions{UpdateTargetId = "ChoosedUsers", InsertionMode = InsertionMode.InsertAfter, OnComplete = "checkUser("+userModel.Id+");"})
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+<div class="flex-column text-center">
+    <div class="flex-row">
+        @{
+            decimal currentPage = ViewBag.CurrentPage;
+            IEnumerable<int> pages = ViewBag.Pages as IEnumerable<int>;
+        }
+        @if (currentPage > 10)
+        {
+            @Ajax.ActionLink("Назад", "GetUsers", new { page = (int)Math.Truncate((currentPage-9) / 10) * 10 + 1 }, new AjaxOptions { UpdateTargetId = "usersContainer" }, new { @class = "btn btn-primary" })
+        }
+        <div class="btn-group btn-group-toggle">
+            @if (ViewBag.Pages != null)
+            {
+                foreach (int p in (pages).Skip(((int)Math.Truncate((currentPage - 1) / 10)) * 10).Take(10))
+                {
+                    if (currentPage == p)
+                    {
+                        @Ajax.ActionLink(p.ToString(), "GetUsers", new { page = p }, new AjaxOptions { UpdateTargetId = "usersContainer" }, new { @class = "btn btn-outline-primary active", style = "width:50px;" })
+                    }
+                    else
+                    {
+                        @Ajax.ActionLink(p.ToString(), "GetUsers", new { page = p }, new AjaxOptions { UpdateTargetId = "usersContainer" }, new { @class = "btn btn-outline-primary", style = "width:50px;" })
+                    }
+                }
+            }
+
+        </div>
+        @if (currentPage < pages.Count() - 10)
+        {
+            @Ajax.ActionLink("Вперед", "GetUsers", new { page = (int)Math.Truncate((currentPage+9) / 10)*10+1 }, new AjaxOptions { UpdateTargetId = "usersContainer" }, new { @class = "btn btn-primary" })
+        }
+
+    </div>
+    
+    <div>Страница</div>
+    <div>@ViewBag.CurrentPage из @(pages.Count())</div>
+</div>
+
+

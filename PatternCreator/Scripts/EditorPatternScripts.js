@@ -1,4 +1,6 @@
-﻿$(document).ready(
+﻿var imgModal;
+
+$(document).ready(
     function () {
     $("tr:not(tr:last)>td:not(:last-child)").each(function () {
         $(this).resizable({
@@ -11,39 +13,15 @@
     });
     setAutocomplete();
 let image = document.getElementsByClassName('imgModalStyle');
-var imgModal;
+        
 $(document).on("change", "#submitImg", handleFiles);
 $(document).on("change", "#submitStamp", handleFiles);
+        $(document).on("click", ".addstamp", function () { Addstamp("Штамп")});
+        $(document).on("click", ".addchairman", function() { Addstamp("Подпись председателя") });
+        $(document).on("click", ".addteacher", function() { Addstamp("Подпись преподавателя") });
+        $(document).on("click", ".addsecretary", function () { Addstamp("Подпись секретаря") });
+
 $(document).on("click",
-    ".AddStamp",
-    function() {
-        var stamp = $(this).closest("div.card").find("img").prop('src');
-        var stamp_id = $(this).closest("div.card").find("img").attr('stamp-id');
-        $("#stampModal").modal("hide");
-        var block = $(
-            "<div stamp-id='" + stamp_id +"' style='height:60px; width:60px; border-thickness: 2px; border-color: #464646' class='stampWrap'><img width='100%' class='' src = '" +
-            stamp +
-            "'/><div class='deleteStamp'>×<div/></div >");
-        $(imgModal.closest(".img-wrap")).append(block);
-
-
-        $(block).draggable({
-            containment: $(imgModal.closest(".img-wrap")),
-            handle: block.find("img")
-        });
-
-
-        $(block).resizable({
-            containment: $(imgModal),
-            handles: 'se',
-            aspectRatio: true,
-            minHeight: 20,
-            minWidth: 20
-        });
-
-
-            });
-        $(document).on("click",
             ".AddPhoto",
             function () {
                 imgModal = $(this).closest('.modal').find(".img-wrap");
@@ -67,7 +45,34 @@ $(document).on("click",
                 });
 
 
-            });
+    });
+$(document).on("click",
+    ".AddEagle",
+    function () {
+        imgModal = $(this).closest('.modal').find(".img-wrap");
+        var block = $(
+            `<div style='height:143px; width:157px; position:absolute; top:0; border: 2px dotted #464646' class='staticWrap'><div style='height:100%; width:100%; display: flex; justify-content: center; align-items: center; font-weight: bold; cursor:grab;'>
+<img class='img-fluid' width='100%' src="/Pattern/GetEagle"/>
+</div><div class='deleteStamp'>×<div/></div >`);
+        $(imgModal.closest(".img-wrap")).append(block);
+
+
+        $(block).draggable({
+            containment: $(imgModal),
+            handle: block.find("div")
+        });
+
+
+        $(block).resizable({
+            containment: $(imgModal.find('img')),
+            handles: 'se',
+            aspectRatio: true,
+            minHeight: 40,
+            minWidth: 30
+        });
+
+
+    });
 
 function handleFiles() {
     $(this).submit();
@@ -95,7 +100,7 @@ function setAutocomplete() {
                 return false;
             }
         }).data("ui-autocomplete")._renderItem = function(ul, item) {
-            var bl = $(`<li><span></span></li>`);
+            var bl = $("<li><span></span></li>");
             $(bl).find("span").html(item.value);
             return bl.appendTo(ul);
         };
@@ -243,6 +248,9 @@ $(".add-text").on("click",
                                     <option>Сфера деятельности</option>
                                     <option>Обучающая организация</option>
                                     <option>Лицензия</option>
+                                    <option>Председатель комиссии</option>
+                                    <option>Преподаватель</option>
+                                    <option>Секретарь</option>
                                     <option>Количество учебных часов</option>                                    
                                     <option>Статичный текст</option>
                                     <option>Статичный текст из бд</option>
@@ -363,8 +371,8 @@ $(".save").on("click",
                 PosX: ((elem.offsetLeft) ).toString(),
                 PosY: ((elem.offsetTop) ).toString(),
                 Width: ((elem.offsetWidth) ).toString(),
-                Height: ((elem.offsetHeight) ).toString(),
-                StampId: elem.getAttribute("stamp-id") || -1,
+                Height: ((elem.offsetHeight)).toString(),
+                Type: elem.getAttribute("stamp-id") || 0,
                 StampPositionId: elem.getAttribute("stamp-posid") || -1,
                 PicId: 0
             };
@@ -373,6 +381,17 @@ $(".save").on("click",
         let photos = $(this).parent().parent().find(".photoWrap").toArray().map(elem => {
             return {
                 PhotoModelId: elem.getAttribute("photo-id") || -1,
+                PosX: ((elem.offsetLeft)).toString(),
+                PosY: ((elem.offsetTop)).toString(),
+                Width: ((elem.offsetWidth)).toString(),
+                Height: ((elem.offsetHeight)).toString(),
+                PicId: 0
+            };
+
+        });
+        let images = $(this).parent().parent().find(".staticWrap").toArray().map(elem => {
+            return {
+                StaticImageModelId: elem.getAttribute("photo-id") || -1,
                 PosX: ((elem.offsetLeft)).toString(),
                 PosY: ((elem.offsetTop)).toString(),
                 Width: ((elem.offsetWidth)).toString(),
@@ -391,6 +410,7 @@ $(".save").on("click",
                     "bounds": bounds,
                     "stamps": stamps,
                     "photos": photos,
+                    "images": images,
                     "picId": $(img).parent().attr("picture-id"),
                     "Id": $(img).parent().parent().parent().find("[name='Id']").val(),
                     "Name": $(img).parent().parent().parent().find("[name='Name']").val(),
@@ -474,6 +494,9 @@ $(document).on("click",
                                     <option>Сфера деятельности</option>
                                     <option>Обучающая организация</option>
                                     <option>Лицензия</option>
+                                    <option>Председатель комиссии</option>
+                                    <option>Преподаватель</option>
+                                    <option>Секретарь</option>
                                     <option>Количество учебных часов</option>                                    
                                     <option>Статичный текст</option>
                                     <option>Статичный текст из бд</option>
@@ -554,9 +577,7 @@ $(document).on("click",
         $(target_positions.stamps).each(function() {
             var block = this;
             var blockHtml = $(
-                "<div stamp-posid='" + block.StampPositionId+"' stamp-id='" + block.stamp_id +"' style='height:60px; width:60px; border-thickness: 2px; border-color: #464646' class='stampWrap'><img width='100%' class='' src = '" +
-                block.image +
-                "'/><div class='deleteStamp'>×<div/></div >");
+                "<div stamp-posid='" + block.StampPositionId + "' stamp-id='" + block.Type + "' style='height:60px; width:60px; border-thickness: 2px; border-color: #464646' class='stampWrap'><div style='height:100%; width:100%; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size:10px; cursor:grab;'>" + block.text +"</div><div class='deleteStamp'>×<div/></div >");
             $(".img-wrap[picture-id='" + block.picture_id + "']").append(blockHtml);
             let img = $(".img-wrap[picture-id='" + block.picture_id + "']")
                 .find('.imgModalStyle')[0];
@@ -574,7 +595,7 @@ $(document).on("click",
             }
             $(blockHtml).draggable({
                 containment: $(img),
-                handle: $(blockHtml).find("img")
+                handle: $(blockHtml).find("div")
             });
             $(blockHtml).resizable({
                 containment: $(img),
@@ -589,6 +610,36 @@ $(document).on("click",
             var block = this;
             var blockHtml = $(
                 "<div photo-id='" + block.PhotoModelId + "' style='height:80px; width:60px; position:absolute; top:0; border: 2px dotted #464646' class='photoWrap'><div style='height:100%; width:100%; display: flex; justify-content: center; align-items: center; font-weight: bold; cursor:grab;'>Фото 3х4</div><div class='deleteStamp'>×<div/></div >");
+            $(".img-wrap[picture-id='" + block.picture_id + "']").append(blockHtml);
+            let img = $(".img-wrap[picture-id='" + block.picture_id + "']")
+                .find('.imgModalStyle')[0];
+            if (img) {
+                blockHtml.css("left",
+                    block.position_x.replace(/,/, '.') + "px");
+                blockHtml.css("top",
+                    block.position_y.replace(/,/, '.') + "px");
+                blockHtml.css("width",
+                    block.position_width.replace(/,/, '.') + "px");
+                blockHtml.css("height",
+                    block.position_height.replace(/,/, '.') + "px");
+            }
+            $(blockHtml).draggable({
+                containment: $(img),
+                handle: $(blockHtml).find("div")
+            });
+            $(blockHtml).resizable({
+                containment: $(img),
+                handles: 'se',
+                aspectRatio: true,
+                minHeight: 40,
+                minWidth: 30
+            });
+
+        });
+        $(target_positions.images).each(function () {
+            var block = this;
+            var blockHtml = $(
+                "<div photo-id='" + block.StaticImageModelId + "' style='height:143px; width:157px; position:absolute; top:0; border: 2px dotted #464646' class='staticWrap'><div style='height:100%; width:100%; display: flex; justify-content: center; align-items: center; font-weight: bold; cursor:grab;'><img class='img-fluid' width='100%' src='/Pattern/GetEagle'/></div><div class='deleteStamp'>×<div/></div >");
             $(".img-wrap[picture-id='" + block.picture_id + "']").append(blockHtml);
             let img = $(".img-wrap[picture-id='" + block.picture_id + "']")
                 .find('.imgModalStyle')[0];
@@ -706,17 +757,44 @@ $(".GridUp").click(function (e) {
 
 
 });
-
-
 $(".rectangleWhite.Grid").click(function(e) {
     $(this).closest(".mainEditor").find('.BlockTable').toggleClass("d-none");
 
 });
-
+function Addstamp(text) {
+    var stamp_id;
+    switch (text) {
+    case "Штамп":
+        stamp_id = 0; break;
+    case "Подпись председателя":
+        stamp_id = 1; break;
+    case "Подпись преподавателя":
+        stamp_id = 2; break;
+    case "Подпись секретаря":
+        stamp_id = 3; break;
+    default:
+        stamp_id = 0; break;
+    }
+    $("#stampModal").modal("hide");
+    var block = $(
+        "<div stamp-id='" + stamp_id + "' style='height:60px; width:60px; border-thickness: 2px; border-color: #464646' class='stampWrap text-center'><div style='height:100%; width:100%; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size:10px; cursor:grab;'>" + text + "</div><div class='deleteStamp'>×<div/></div >");
+    $(imgModal).append(block);
+    $(block).draggable({
+        containment: $(imgModal),
+        handle: block.find("div")
+    });
+    $(block).resizable({
+        containment: $(imgModal.find('img')),
+        handles: 'se',
+        aspectRatio: true,
+        minHeight: 20,
+        minWidth: 20
+    });
+};
 
 $(".rectangleWhite.Stamp").click(function(e) {
 
-    imgModal = $(this).parents()[1].children[1];
+    imgModal = $(this).closest('.modal').find(".img-wrap");
         });
 
 $(document).on('click',

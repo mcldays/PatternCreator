@@ -15,7 +15,7 @@
         padding: 0.2rem !important;
     }
 </style>
-<form id="formvalid">
+<form id="formvalid" style="margin-bottom: 200px">
 
     <table class="table text-center table-borderless" id="tableRedact">
         <thead style="border-bottom: 3px solid #007bff">
@@ -46,7 +46,7 @@
 
             DocumentModel dm = db.DocumentModels.Find(Model[0]);
             int patternId = dm?.PatternId ?? 0;
-
+            SpecialtyModel[] specialtyModels = dm.PictureModel.Specialties.ToArray();
                 
             if (dm != null)
             {
@@ -77,10 +77,18 @@
 
                 <tr data-docid="@temp" data-userid="@user.Id">
                     <td style="width: 320px; max-width: 320px">
-                        <input type="hidden" name="SpecialtyName" value="@dm.SpecialtyId" />
-                        @dm.SpecialtyModel.SpecialityName
+                        <select class="selectSpecialty reqfields form-control p-0" name="SpecialtyName">
+
+                            <optgroup label="Программы для @(dm.PictureModel.Name)">
+                                <option data-placeholder="true" value="">Выберите программу</option>
+                                @foreach (var spec in specialtyModels)
+                                {
+                                    <option value="@spec.Id" @(spec.Id == dm.SpecialtyId ? "selected" : "")>@(spec.SpecialityName + $" ({spec.Prefix}) {spec.Quality}")</option>
+                                }
+                            </optgroup>
+                        </select>
                     </td>
-                    <td style="width: 200px; max-width: 200px">
+                    <td style="width: 200px; max-width: 320px">
                         <input type="hidden" name="OrganizationName" value="@dm.OrganizationId" />
                         @dm.Organization.OrganizationName
 
@@ -126,7 +134,9 @@
                     </td>
                     <td>
                         <div class="input-group">
-
+                            <div class="input-group-prepend createProtocol">
+                                <span class="btn btn-primary">&#9999</span>
+                            </div>
                             <input type="text" class="form-control reqfields" name="ProtocolName" value="@(dm.ProtocolName + $"-{dm.SpecialtyModel.Prefix}")" />
                             <div class="input-group-append alldocs">
                                 <span class="btn btn-primary">&#8661</span>
@@ -194,19 +204,40 @@
 <script type="text/javascript">
     var selectSpecialty = [];
     var selectOrganization = [];
-     function validElement(element) {
-
-            if (!$(element).valid()) {
-                $(element).closest('.input-group').addClass("val-error");
-                return false;
+    $(document).ready(function () {
+        $.validator.addMethod("NotEqual",
+            function(value, element, arg) {
+                return arg !== value;
+            });
+        $('#formvalid').validate({
+            rules:
+            {
+                SpecialtyName: { NotEqual: "" },
+                OrganizationName: { NotEqual: "" }
             }
-            $(element).closest('.input-group').removeClass("val-error");
-            return true;
-        }
+        });
+        $.validator.addClassRules({
+            needValid: { required:true }
+        });
         
-    $('.date').datetimepicker({
-        language: 'ru',
-        pickTime: false
+        $('.reqfields').addClass("needValid");
+        
+        //$('datevalid').rules("add",
+        //    {
+        //        required: true
+        //    });
+        $('.date').datetimepicker({
+            language: 'ru',
+            pickTime: false
+            
+        });
+        $("select.selectSpecialty").each(function () {
+            var slim = new SlimSelect({
+                select: this,
+                allowDeselectOption: true,
+                hideSelectedOption: true
+            });
+            selectSpecialty = selectSpecialty.concat({ elem: $(this), slim: slim });
+        });
     });
-   
 </script>

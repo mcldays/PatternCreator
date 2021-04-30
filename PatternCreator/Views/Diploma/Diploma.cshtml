@@ -1,0 +1,655 @@
+﻿@using PatternCreator.Models
+@using PatternCreator.Utilities
+
+@{
+    ViewBag.Title = "Дипломы и оценки";
+    UserContext db = new UserContext();
+    SpecialtyModel[] specialtyModels = db.PicturesModels.Find(29)?.Specialties.ToArray();
+    Organization[] organizations = db.Organizations.ToArray();
+    db.Dispose();
+}
+@Styles.Render("~/bundles/Print-css")
+@Styles.Render("~/Content/slimselect.min.css")
+@Scripts.Render("~/Scripts/slimselect.min.js")
+@Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+@Scripts.Render("~/Scripts/bootstrap-datetimepicker.min.js")
+@Scripts.Render("~/Scripts/bootstrap-datetimepicker.ru.js")
+@Scripts.Render("~/bundles/Print-js")
+@Styles.Render("~/Content/tableSelection.css")
+@Scripts.Render("~/Scripts/tableSelection.min.js")
+
+<style>
+    .ss-main > .ss-single-selected {
+        height: calc(1.5em + 0.75rem + 2px) !important;
+    }
+
+    .field-validation-error {
+        font-size: 0.7rem;
+    }
+</style>
+<div class="btn-group-toggle" data-toggle="buttons">
+    <div id="newDocs" class="btn btn-outline-primary active"><input type="radio" class="btn-check" name="options" id="option1" autocomplete="off" checked>Новый документ</div>
+    <div id="readyDocs" class="btn btn-outline-primary"><input type="radio" class="btn-check" name="options" id="option2" autocomplete="off" >Ранее созданные</div>
+</div>
+<div id="createcontainer" class="mt-3 container-fluid">
+    @Ajax.ActionLink("Выбрать пользователей/компании", "GetUsers", null, new AjaxOptions { UpdateTargetId = "usersContainer", OnBegin = "$('#preloader-id').removeClass('done');", OnComplete = "$('#preloader-id').addClass('done'); $('#ChooseUser').modal('show');" }, new { @class = "btn btn-primary" })
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Ф.И.О</th>
+                <th>Компания</th>
+                <th style="width: 70px">*</th>
+            </tr>
+        </thead>
+        <tbody id="ChoosedUsers">
+        </tbody>
+    </table>
+    <button class="btn btn-primary" id="continuebtn" style="display: none" data-toggle="modal" data-target="#templateAccept">Продолжить</button>
+</div>
+<div id="readycontainer" class="mt-3 container-fluid" style="display: none">
+
+    @using (Ajax.BeginForm("Protocols", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "targetContainer", OnBegin = "$('#preloader-id').removeClass('done');", OnComplete = "$('#preloader-id').addClass('done'); $('#targetDocsContainer').hide(); $('#targetContainer').fadeIn();"}) )
+    {
+        <div class="row toggle-item">
+            <div class="col-6">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">№ протокола</span>
+                    </div>
+                    <input name="protocolname" type="text" class="form-control" />
+                    <div class="input-group-append">
+                        <input class="btn btn-primary" type="submit" value="&#8981;" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <div id="targetContainer" class="container-fluid"></div>
+    <div id="targetDocsContainer" class="container-fluid" style="display: none"></div>
+</div>
+
+<div class="modal fade-scale" id="ChooseUser" tabindex="-1" role="dialog" aria-labelledby="ChooseUserLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                Выберите пользователей или компании:
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid" id="usersContainer">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="RedactModal" tabindex="-1" role="dialog" aria-labelledby="RedactModalLabel" aria-hidden="true" class="modal fade-scale">
+    <div class="modal-dialog mx-auto" style="max-width: 97%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Данные для заполнения</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="text-left">Выберите нужные документы:</div>
+                    <div class="row btn-group-toggle justify-content-center" data-toggle="buttons">
+                        <div id="diplomaredact" class="btn btn-outline-primary col-2 chooseType active" aria-pressed="false">
+                            <input name="data" type="checkbox">
+                            Диплом
+                        </div>
+                        <div id="applicationredact" class="btn btn-outline-primary mx-2 col-2 chooseType active" aria-pressed="false">
+                            <input name="data" type="checkbox">
+                            Приложение
+                        </div>
+                        <div id="marksredact" class="btn btn-outline-primary col-2 chooseType active" aria-pressed="false">
+                            <input name="data" type="checkbox">
+                            Оценки
+                        </div>
+                    </div>
+
+                    <form id="redactform">
+                        <table class="table">
+                            <thead>
+                                <tr class="text-center">
+                                    <th>Ф.И.О</th>
+                                    <th>Программа</th>
+                                    <th>Организация</th>
+                                    <th>Дата начала обуч.</th>
+                                    <th>Дата окончания обуч.</th>
+                                    <th>Номер протокола</th>
+                                    <th>Аттест. работа</th>
+                                </tr>
+                            </thead>
+                            <tbody id="redactTbody">
+                            </tbody>
+                        </table>
+                    </form>
+                    <div class="form-check text-center">
+                        <input class="form-check-input" type="checkbox" value="" id="substrateredact">
+                        <label class="form-check-label" for="substrateredact">
+                            Подложка
+                        </label>
+                    </div>
+                    <div class="btn btn-primary align-self-center" id="GoRedactDocs">Продолжить</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="templateAccept" tabindex="-1" role="dialog" aria-labelledby="templateAcceptLabel" aria-hidden="true" class="modal fade-scale">
+    <div class="modal-dialog mx-auto" style="max-width: 97%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Данные для заполнения</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid" id="documentresult">
+                    <div class="text-left">Выберите нужные документы:</div>
+                    <div class="row btn-group-toggle justify-content-center" data-toggle="buttons">
+                        <div id="diploma" class="btn btn-outline-primary col-2 chooseType" aria-pressed="false">
+                            <input name="data" type="checkbox">
+                            Диплом
+                        </div>
+                        <div id="application" class="btn btn-outline-primary mx-2 col-2 chooseType" aria-pressed="false">
+                            <input name="data" type="checkbox">
+                            Приложение
+                        </div>
+                        <div id="marks" class="btn btn-outline-primary col-2 chooseType" aria-pressed="false">
+                            <input name="data" type="checkbox">
+                            Оценки
+                        </div>
+                    </div>
+
+                    <form id="validform">
+                        <table class="table">
+                            <thead>
+                                <tr class="text-center">
+                                    <th>Ф.И.О</th>
+                                    <th>Программа</th>
+                                    <th>Организация</th>
+                                    <th>Дата начала обуч.</th>
+                                    <th>Дата окончания обуч.</th>
+                                    <th>Номер протокола</th>
+                                    <th>Аттест. работа</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableDocs">
+                            </tbody>
+                        </table>
+                    </form>
+                    <div class="form-check text-center">
+                        <input class="form-check-input" type="checkbox" value="" id="substrate">
+                        <label class="form-check-label" for="substrate">
+                            Подложка
+                        </label>
+                    </div>
+                    <div class="btn btn-primary align-self-center disabled" id="CreateDocs">Продолжить</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="marksModal" tabindex="-1" role="dialog" aria-labelledby="marksModalLabel" aria-hidden="true" class="modal fade-scale">
+    <div class="modal-dialog mx-auto" style="max-width: 97%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Оценки</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid" id="marksresult">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="d-none" id="printBlock">
+
+</div>
+<script>
+    var redact = false;
+    $(document).ready(function() {
+        $(document).on("click", "#readyDocs:not(.active)", function () {
+            $("#createcontainer").hide();
+            $("#readycontainer").fadeIn();
+        });
+        $(document).on("click", "#newDocs:not(.active)", function () {
+            $("#readycontainer").hide();
+            $("#createcontainer").fadeIn();
+        });
+        $(document).on("click", ".protocolrow", function () {
+            $('#preloader-id').removeClass('done');
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetDocsByProtocol")',
+                data: { protocolname: $(this).data("protocol") },
+                success:function(data) {
+                    $("#targetDocsContainer").html(data);
+                    $("#targetContainer").hide();
+                    $("#targetDocsContainer").fadeIn();
+                },
+                complete: $('#preloader-id').addClass('done')
+            });
+        });
+        $(document).on("click", "#backProtocol", function () {
+            $("#targetDocsContainer").hide();
+            $("#targetContainer").fadeIn();
+        });
+        $(document).on("click", "#deleteDocs", function () {
+            if (confirm("Вы уверены, что хотите удалить выбранные документы?")) {
+                let docIds = $("#DocsTable").find("tr.docrow.selected").toArray().map(t => $(t).data("docid"));
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("DeleteDocs")",
+                    data: { docIds: docIds },
+                    begin: $('#preloader-id').removeClass('done'),
+                    success: function (result) {
+                        if (result === "True") {
+                            $("tr.docrow.selected").remove();
+                            $("#deleteDocs").attr("disabled", "");
+                            $("#redactDocs").attr("disabled", "");
+                        } else {
+                            alert("Что-то пошло не так! Попробуйте позже");
+                        }
+                    },
+                    complete: $('#preloader-id').addClass('done')
+                });
+            }
+        });
+        $(document).on("click", "tr.docrow", function() {
+            if ($('tr.docrow.selected').length>0) {
+                $("#redactDocs").removeAttr("disabled");
+                $("#deleteDocs").removeAttr("disabled");
+            } else {
+                $("#deleteDocs").attr("disabled", "");
+                $("#redactDocs").attr("disabled", "");
+
+            }
+        });
+        $(document).on("click", "#redactDocs", function () {
+            $('#preloader-id').removeClass('done');
+            let data = $("tr.docrow.selected").toArray().map(t => $(t).data("docid"));
+            $.post(
+                '@(Url.Action("ReadyDocs"))',
+                {
+                    docIds: data
+                },
+                function(result) {
+                    $("#redactTbody").html(result);
+                    $("#RedactModal").modal("show");
+                },
+                "html");
+            $('#preloader-id').addClass('done');
+        });
+    });
+
+    var selectSpecialty1 = [];
+    var selectOrganization1 = [];
+    var selectSpecialty = [];
+    var selectOrganization = [];
+    $(document).on("click", "#sendMarks", function() {
+        if ($("#MarkForm").valid()) {
+            var arr = $("#validform").find("tbody>tr").toArray();
+            createDoc(arr);
+        }
+    });
+    $("#CreateDocs").on('click', function () {
+        redact = false;
+        if ($("#validform").valid()) {
+            if ($("#marks").hasClass('active')) {
+                let data = $("#tableDocs").find("tr").toArray().map(function (t) {
+                    var d = {
+                        userid: $(t).data("userid"),
+                        specid: $(t).find('.selectSpecialty').val()
+                    };
+                    return d;
+                });
+                $.post(
+                    '@(Url.Action("GetMarks"))',
+                    {
+                        data: JSON.stringify(data)
+                    },
+                    function(result) {
+                        $("#marksresult").html(result);
+                    }, "html");
+                $("#marksModal").modal("show");
+            } else {
+                var arr = $("#validform").find("tbody>tr").toArray();
+                createDoc(arr);
+            }
+        }
+    });
+    $("#GoRedactDocs").on('click', function () {
+        redact = true;
+        if ($("#redactform").valid()) {
+            if ($("#marksredact").hasClass('active')) {
+                let data = $("#redactTbody").find("tr").toArray().map(function (t) {
+                    var d = {
+                        docid: $(t).data("docid")
+                    };
+                    return d;
+                });
+                $.post(
+                    '@(Url.Action("GetRedactMarks"))',
+                    {
+                        data: JSON.stringify(data)
+                    },
+                    function(result) {
+                        $("#marksresult").html(result);
+                    }, "html");
+                $("#marksModal").modal("show");
+            } else {
+                var arr = $("#redactform").find("tbody>tr").toArray();
+                createDoc(arr);
+            }
+        }
+    });
+
+    function createDoc(arr) {
+        $('#preloader-id').removeClass('done');
+
+        let data = arr.map(function (t) {
+            var id = $(t).data("userid");
+            var docid = $(t).data("docid");
+            let marks = [];
+            if ($("#marks").hasClass('active') && $("#MarkForm").data("action")==="create") {
+                marks = $(".MarkTable[data-userid='" + id + "']").find("tr").toArray().map(function(t) {
+                    var d = {
+                        markid: $(t).data("markid"),
+                        mark: $(t).find("input.Mark").val()
+                    }
+                    return d;
+                });
+            }
+            if ($("#marksredact").hasClass('active') && $("#MarkForm").data("action") === "redact") {
+                marks = $(".MarkTable[data-docid='" + id + "']").find("tr").toArray().map(function (t) {
+                    var d = {
+                        markid: $(t).data("markid"),
+                        mark: $(t).find("input.Mark").val()
+                    }
+                    return d;
+                });
+            }
+            var d = {
+                docid: $(t).data("docid"),
+                uid: id,
+                marks: marks,
+                specialty: $(t).find("select.selectSpecialty").val(),
+                organization: $(t).find("select.selectOrganization").val(),
+                datestart: $(t).find("input.DateStart").val(),
+                date: $(t).find("input.Date").val(),
+                protocolname: $(t).find("input.ProtocolName").val(),
+                certificationwork: $(t).find("input.CertificationWork").val()
+            }
+            return d;
+        });
+        $.post(
+            "@Url.Action("DiplomaPartial","Print")",
+            {
+                data: JSON.stringify(data),
+                isdiploma: redact ? $("#diplomaredact").hasClass('active') : $("#diploma").hasClass('active'),
+                isapplication: redact ? $("#applicationredact").hasClass('active'):$("#application").hasClass('active'),
+                ismarks: redact ? $("#marksredact").hasClass('active'):$("#marks").hasClass('active'),
+                substrate: redact ? $("#substrateredact").prop("checked"):$("#substrate").prop("checked")
+            },
+            function(result) {
+                $("#printBlock").html(result);
+                var bufferStr = '';
+                $("#printBlock>.printdocument").each(function() {
+                    bufferStr += this.innerHTML;
+                });
+                printJS({
+                    printable: bufferStr,
+                    type: 'raw-html',
+                    style: 'body {margin: 0.001cm; padding: 0px;}',
+                    base64: true
+                });
+                $('#preloader-id').addClass('done');
+            }, "html");
+
+    }
+    $(document).on("change", "input[name='data']", function() {
+        if ($("input[name='data']").is(':checked')) {
+            $("#CreateDocs").removeClass("disabled");
+        } else {
+            $("#CreateDocs").addClass("disabled");
+        }
+    });
+    function validElement(element) {
+        if ($(element).val()==="") {
+            $(element).closest('.input-group').addClass("val-error");
+            return false;
+        }
+        $(element).closest('.input-group').removeClass("val-error");
+        return true;
+    }
+
+    $(document).on("DOMSubtreeModified", "#ChoosedUsers", function () {
+        if ($(this).children().length > 0) {
+            $("#ChoosedUsers").find("tr").each(function () {
+                if ($("#tableDocs").find("tr[data-userid='" + $(this).data('userid') + "']").length < 1) {
+                    var usuid = $(this).data('userid');
+                    let block = `<tr data-userid='${usuid}' data-docid='0'>
+                                <td >${$(this).find("td:first-child").text()}</td>
+                                <td style="min-width: 300px; max-width: 300px">
+                                    <div class="input-group">
+                                        <select class="selectSpecialty reqfields form-control p-0" id="[${usuid}].SpecialtyName" name="[${usuid}].SpecialtyName" data-val="true" data-val-required="Выберите программу">
+                                            <optgroup label="Программы для дипломов">
+                                                <option data-placeholder="true" value="">Выберите программу</option>
+                                                @foreach (var spec in specialtyModels)
+                                                {
+                                                    <option value="@spec.Id">@(spec.SpecialityName + $" ({spec.Prefix}) {spec.Quality}")</option>
+                                                }
+                                            </optgroup>
+                                        </select>
+                                        <div class="input-group-append allcompany">
+                                            <span class="btn btn-primary">&#8661</span>
+                                        </div>
+                                    </div>
+                                    <span class="field-validation-valid text-danger font-weight-bold" data-valmsg-for="[${usuid}].SpecialtyName" data-valmsg-replace="true"></span>
+                                </td>
+                                <td style="min-width: 300px; max-width: 300px">
+                                    <div class="input-group">
+                                        <select class="selectOrganization reqfields form-control p-0" id="[${usuid}].OrganizationName" name="[${usuid}].OrganizationName" data-val="true" data-val-required="Выберите организацию">
+                                            <option data-placeholder="true" value="">Выберите организацию</option>
+                                            @foreach (var organization in organizations)
+                                            {
+                                                <option value="@organization.OrganizationId">@(organization.OrganizationName)</option>
+                                            }
+                                        </select>
+                                        <div class="input-group-append  allcompany">
+                                            <span class="btn btn-primary">&#8661</span>
+                                        </div>
+                                    </div>
+                                    <span class="field-validation-valid text-danger font-weight-bold" data-valmsg-for="[${usuid}].OrganizationName" data-valmsg-replace="true"></span>
+                                </td>
+                                <td style="min-width: 180px; max-width: 180px">
+                                    <div class="input-group date">
+                                        <input data-format="dd.MM.yyyy" class="DateStart form-control reqfields" type="text" id="[${usuid}].DateStart" name="[${usuid}].DateStart" aria-describedby="basic-addon2" data-val="true" data-val-required="Выберите дату"/>
+                                        <div class="input-group-append allcompany">
+                                            <span class="btn btn-primary">&#8661</span>
+                                        </div>
+                                        <div class="input-group-append ">
+                                            <span class="add-on input-group-text p-1" id="basic-addon2">
+                                                <img height="25px" src="/Resourses/svg/calendar.svg">
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <span class="field-validation-valid text-danger font-weight-bold" data-valmsg-for="[${usuid}].DateStart" data-valmsg-replace="true"></span>
+                                </td>
+                                <td style="min-width: 180px; max-width: 180px">
+                                    <div class="input-group date">
+                                        <input data-format="dd.MM.yyyy" class="Date form-control reqfields" type="text" id="[${usuid}].Date" name="[${usuid}].Date" aria-describedby="basic-addon3" data-val="true" data-val-required="Выберите дату"/>
+                                        <div class="input-group-append allcompany">
+                                            <span class="btn btn-primary">&#8661</span>
+                                        </div>
+                                        <div class="input-group-append ">
+                                            <span class="add-on input-group-text p-1" id="basic-addon3">
+                                                <img height="25px" src="/Resourses/svg/calendar.svg">
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <span class="field-validation-valid text-danger font-weight-bold" data-valmsg-for="[${usuid}].Date" data-valmsg-replace="true"></span>
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend createProtocol">
+                                            <span class="btn btn-primary">&#9999</span>
+                                        </div>
+                                        <input type="text" readonly class="ProtocolName form-control reqfields" id="[${usuid}].ProtocolName" name="[${usuid}].ProtocolName" data-val="true" data-val-required="Сгенерируйте протокол"/>
+                                        <div class="input-group-append allcompany">
+                                            <span class="btn btn-primary">&#8661</span>
+                                        </div>
+                                    </div>
+                                    <span class="field-validation-valid text-danger font-weight-bold" data-valmsg-for="[${usuid}].ProtocolName" data-valmsg-replace="true"></span>
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <input type="text" class="CertificationWork form-control" id="[${usuid}].CertificationWork" name="[${usuid}].CertificationWork"/>
+                                        <div class="input-group-append allcompany">
+                                            <span class="btn btn-primary">&#8661</span>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>`;
+                    $("#tableDocs").append($(block));
+                    var elem = $("#tableDocs").find("select.selectSpecialty:last")[0];
+                    var slim = new SlimSelect({
+                        select: elem,
+                        allowDeselectOption: true,
+                        hideSelectedOption: true
+                    });
+                    selectSpecialty = selectSpecialty.concat({ elem: $(elem), slim: slim });
+                    elem = $("#tableDocs").find("select.selectOrganization:last")[0];
+                    slim = new SlimSelect({
+                        select: $("#tableDocs").find("select.selectOrganization:last")[0],
+                        allowDeselectOption: true,
+                        hideSelectedOption: true
+                    });
+                    selectOrganization = selectOrganization.concat({ elem: $(elem), slim: slim });
+                    $("#tableDocs>tr:last").find(".date").datetimepicker({
+                        language: 'ru',
+                        pickTime: false
+
+                    });
+                }
+            });
+            $("#continuebtn").fadeIn(300);
+        } else {
+            $("#continuebtn").fadeOut(300);
+        }
+        $("#tableDocs").find("tr").each(function () {
+            if ($("#ChoosedUsers").find("tr[data-userid='" + $(this).data('userid') + "']").length < 1) {
+                $(this).remove();
+            }
+        });
+        var form = $("#validform");
+        $(form).removeData("validator")    // Added by jQuery Validation
+            .removeData("unobtrusiveValidation");   // Added by jQuery Unobtrusive Validation
+        $.validator.unobtrusive.parse(form);
+    });
+    function checkUser(uid) {
+        var items = $("#ChoosedUsers>tr[data-userid='" + uid + "']");
+        if (items.length > 1) {
+            items.last().remove();
+        }
+    }
+
+    function checkCompany(data) {
+        $(data).each(function () {
+            checkUser($(this).data('userid'));
+        });
+
+    };
+
+    $(document).on("input", "input, select", function() {
+        $(this).valid();
+    });
+    $(document).on("click", ".allcompany", function () {
+        console.log("click");
+        var sel = $(this).closest(".input-group").find('select');
+        if (sel.length > 0) {
+            if (sel.hasClass("selectSpecialty")) {
+                selectSpecialty.forEach(t=>t.slim.set(sel.val()));
+            }
+            if (sel.hasClass("selectOrganization")) {
+                selectOrganization.forEach(t => t.slim.set(sel.val()));
+            }
+
+        } else {
+            sel = $(this).closest(".input-group").find('input');
+            if (sel.hasClass("DateStart")) {
+                $(".DateStart").val(sel.val());
+            }
+            if (sel.hasClass("Date")) {
+                $(".Date").val(sel.val());
+            }
+            if (sel.hasClass("ProtocolName")) {
+                $(".ProtocolName").val(sel.val());
+            }
+            if (sel.hasClass("CertificationWork")) {
+                $(".CertificationWork").val(sel.val());
+            }
+        }
+    });
+    $(document).on("click", ".allreadycol", function () {
+        console.log("click");
+        var sel = $(this).closest(".input-group").find('select');
+        if (sel.length > 0) {
+            if (sel.hasClass("selectSpecialty")) {
+                selectSpecialty1.forEach(t => t.slim.set(sel.val()));
+            }
+            if (sel.hasClass("selectOrganization")) {
+                selectOrganization1.forEach(t => t.slim.set(sel.val()));
+            }
+
+        } else {
+            sel = $(this).closest(".input-group").find('input');
+            if (sel.hasClass("DateStart")) {
+                $("#redactTbody").find(".DateStart").val(sel.val());
+            }
+            if (sel.hasClass("Date")) {
+                $("#redactTbody").find(".Date").val(sel.val());
+            }
+            if (sel.hasClass("ProtocolName")) {
+                $("#redactTbody").find(".ProtocolName").val(sel.val());
+            }
+            if (sel.hasClass("CertificationWork")) {
+                $("#redactTbody").find(".CertificationWork").val(sel.val());
+            }
+        }
+    });
+    $(document).on("click", ".createProtocol", function () {
+        var notvalid = true;
+        notvalid = $(this).closest('tr').find("input:not(.ProtocolName), select").toArray().map(t => $(t).valid()).some(t => !t);
+        if (!notvalid) {
+            var parent_tr = $(this).closest('tr');
+            var target = parent_tr.find("input.ProtocolName");
+            let model = {
+                date: parent_tr.find("input.Date").val(),
+                specialty: parent_tr.find("select.selectSpecialty").val()
+            }
+            $.get(
+                '@Url.Action("CreateProtocol","Print")',
+                { data: JSON.stringify(model) },
+                function (data, textStatus, jqXHR) {
+                    if (textStatus === "success") {
+                        target.val(data).trigger("change");
+                    }
+                });
+        }
+
+    });
+</script>
+

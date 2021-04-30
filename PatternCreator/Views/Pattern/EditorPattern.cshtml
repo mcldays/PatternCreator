@@ -35,7 +35,7 @@
 
     <div id="patternsContain">
 
-        @foreach (var item in Model.Where(t=>t.Id!=7&& t.Id != 3&& t.Id != 5))
+        @foreach (var item in Model.Where(t=>t.Id!=7&& t.Id != 3&& t.Id != 5 && t.Id != 29))
         {
             var item1 = "openModal" + item.Id;
             var item2 = "#openModal" + item.Id;
@@ -44,10 +44,8 @@
                 <span class="ImageName">
                     @item.Name
                 </span>
-                <a href=@item2 id="link">
-                    <a class="patternBut" pictureID="@item.Id" data-target="#@item1" data-toggle="modal">
-                        <img class='imgStyle' src="@Url.Action("GetPictureTemplate", new{id = item.Id})" />
-                    </a>
+                <a href=@item2 id="link" class="patternBut" pictureID="@item.Id" data-target="#@item1" data-toggle="modal">
+                    <img class='imgStyle' src="@Url.Action("GetPictureTemplate", new{id = item.Id})" />
                 </a>
                 @*@using (Html.BeginForm("UpdatePicture", "Pattern", FormMethod.Post, new { }))*@
 
@@ -87,6 +85,9 @@
                                             <button type="button" class="blueButtonsModal AddPhoto">
                                                 <span>Добавить фото</span>
                                             </button>
+                                            <button type="button" class="blueButtonsModal AddEagle">
+                                                <span>Добавить орла</span>
+                                            </button>
                                             <button type="button" class="blueButtonsModal GridUp">
                                                 <span>Увеличить сетку</span>
                                             </button>
@@ -115,7 +116,7 @@
                                                 <button type="button" class="rectangleWhite Grid">
                                                     <img src="/Resourses/svg/grid.svg" class="InzoomModal" />
                                                 </button>
-                                                <a class="rectangleWhite Stamp" data-ajax="true" data-ajax-method="GET" data-ajax-mode="replace" data-ajax-update="#stampscontainer" data-target="#stampModal" data-toggle="modal" href="/Pattern/GetStamps" type="button">
+                                                <a class="rectangleWhite Stamp" data-target="#stampModal" data-toggle="modal" href="" type="button">
                                                     <img src='/Resourses/svg/stamp (1).svg' class='InzoomModal' />
                                                 </a>
                                             </div>
@@ -140,29 +141,44 @@
 
 </div>
 <div class="modal fade-scale" id="stampModal" tabindex="-1" role="dialog" aria-labelledby="stampModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header text-center">
+                Выберите штамп или подпись:
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
+                <div class="container-fluid" id="stampscontainer">
+                    <div class="row justify-content-center">
+                        <div class="col-2"></div>
+                        <div class="col-4">
+                            <button type="button" class="blueButtonsModal addstamp">
+                                <span>Штамп</span>
+                            </button>
+                        </div>
+                        <div class="col-4">
+                            <button type="button" class="blueButtonsModal addchairman">
+                                <span>Подпись председателя</span>
+                            </button>
+                        </div>
+                        <div class="col-2"></div>
+                        <div class="col-2"></div>
+                        <div class="col-4 my-3">
+                            <button type="button" class="blueButtonsModal addteacher">
+                                <span>Подпись преподавателя</span>
+                            </button>
+                        </div>
+                        <div class="col-4 my-3">
+                            <button type="button" class="blueButtonsModal addsecretary">
+                                <span>Подпись секретаря</span>
+                            </button>
+                        </div>
+                        <div class="col-2"></div>
 
-                @using (Ajax.BeginForm("AddStamp", null, new AjaxOptions
-                {
-                    UpdateTargetId = "stampscontainer"
-                }, new { enctype = "multipart/form-data", id = "submitStamp", @class = "form-inline flex-row" }))
-                {
-                    <input type="file" name="uploadImage" value="" id="file-stamp" class="hidden-input" />
-                    <label for="file-stamp" class="blueButton">
-                        <span class="blueButtonText">Загрузить штамп</span>
-                        <img src="/Resourses/svg/add doc (1) white.svg" class="AddPatternImg">
-                    </label>
-                }
-
-                <div class="container-fluid" id="stampscontainer"></div>
-
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -170,7 +186,8 @@
 
 
 @section Scripts{
-<script>
+    <script>
+        var imgModal;
         var autotexts = [
             @{ int index = 0;}
             @foreach (AutoTextModel text in ViewBag.Autotexts)
@@ -196,8 +213,8 @@
                 stamps: [
                     @foreach (var block in pic.StampPositions)
                     {
-                        <text>{ StampPositionId:@block.StampPositionId, stamp_id:@block.StampId, position_x:'@block.PosX', position_y:'@block.PosY', position_width:'@block.Width', position_height:'@block.Height', picture_id: @block.PicId, image:'@("data:image/jpeg;base64,"
-                            + Convert.ToBase64String(block.Image))'},</text>
+                        <text>{
+                        StampPositionId:@block.StampPositionId, Type:'@block.Type', position_x: '@block.PosX', position_y: '@block.PosY', position_width: '@block.Width', position_height: '@block.Height', picture_id: @block.PicId, text: '@block.Text'},</text>
                     }
                 ],
                 photos: [
@@ -205,11 +222,17 @@
                     {
                         <text>{ PhotoModelId:@block.PhotoModelId, position_x:'@block.PosX', position_y:'@block.PosY', position_width:'@block.Width', position_height:'@block.Height', picture_id: @block.PicId},</text>
                     }
+                ],
+                images: [
+                    @foreach (var block in pic.StaticImageModels)
+                    {
+                        <text>{ StaticImageModelId:@block.StaticImageModelId, position_x:'@block.PosX', position_y:'@block.PosY', position_width:'@block.Width', position_height:'@block.Height', picture_id: @block.PicId},</text>
+                    }
                 ]
             },</text>
             }
         ];
-</script>
+    </script>
 
     @Scripts.Render("~/Scripts/EditorPatternScripts.js")
 }

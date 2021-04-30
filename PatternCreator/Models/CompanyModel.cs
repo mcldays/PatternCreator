@@ -31,4 +31,14 @@ namespace PatternCreator.Models
         [Required(ErrorMessage = "Введите имя компании")]
         public string CompanyName { get; set; }
     }
+    public class DiplomaCompanyModel
+    {
+        public int CompanyId { get; set; }
+        public string CompanyName { get; set; }
+        public DiplomaCompanyModel(CompanyModel model)
+        {
+            CompanyId = model.CompanyId;
+            CompanyName = model.CompanyName;
+        }
+    }
 }

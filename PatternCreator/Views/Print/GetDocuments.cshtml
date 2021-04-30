@@ -18,7 +18,7 @@
         padding: 0.2rem !important;
     }
 </style>
-<form id="formvalid">
+<form id="formvalid" style="margin-bottom: 200px">
 
 <table class="table text-center table-borderless" id="tableRedact">
 <thead style="border-bottom: 3px solid #007bff">
@@ -61,14 +61,14 @@
             </tr>
 
             <tr data-template="@temp" data-company="@companyId" data-userid="@user.Id">
-                <td style="width: 320px; max-width: 320px">
+                <td style="min-width: 300px; max-width: 300px">
                     <div class="input-group">
                         <select class="selectSpecialty reqfields form-control p-0" data-company="@companyId" name="SpecialtyName">
                             <optgroup label="Программы для @pic.Name">
                                 <option data-placeholder="true" value="">Выберите программу</option>
                                 @foreach (var spec in specialtyModels)
                                 {
-                                    <option value="@spec.Id">@(spec.SpecialityName + $" ({spec.Prefix})")</option>
+                                    <option value="@spec.Id">@(spec.SpecialityName + $" ({spec.Prefix}) {spec.Quality}")</option>
                                 }
                             </optgroup>
                         </select>
@@ -76,9 +76,8 @@
                             <span class="btn btn-primary">&#8661</span>
                         </div>
                     </div>
-
                 </td>
-                <td style="width: 200px; max-width: 200px">
+                <td style="min-width: 300px; max-width: 300px">
                     <div class="input-group">
                         <select class="selectOrganization reqfields form-control p-0" data-company="@companyId" name="OrganizationName">
                             <option data-placeholder="true" value="">Выберите организацию</option>
@@ -92,9 +91,8 @@
                         </div>
                     </div>
                 </td>
-                <td style="width: 200px; max-width: 200px">
-                    
-                        <div class="input-group date">
+                <td style="min-width: 180px; max-width: 180px">
+                    <div class="input-group date">
                             <input data-format="dd.MM.yyyy" class="form-control reqfields" type="text" name="DateStart" aria-describedby="basic-addon2"/>
                             <div class="input-group-append allcompany">
                                 <span class="btn btn-primary">&#8661</span>
@@ -104,13 +102,10 @@
                                     <img height="25px" src="/Resourses/svg/calendar.svg">
                                 </span>
                             </div>
-
-                        </div>
-                    
+                    </div>
                 </td>
-                <td style="width: 200px; max-width: 200px">
-                    
-                        <div class="input-group date">
+                <td style="min-width: 180px; max-width: 180px">
+                    <div class="input-group date">
                             <input data-format="dd.MM.yyyy" class="form-control reqfields" type="text" name="Date" aria-describedby="basic-addon3"/>
                             <div class="input-group-append allcompany">
                                 <span class="btn btn-primary">&#8661</span>
@@ -120,11 +115,9 @@
                                     <img height="25px" src="/Resourses/svg/calendar.svg">
                                 </span>
                             </div>
-
                         </div>
-                   
                 </td>
-                <td style="width: 120px; max-width: 120px">
+                <td style="width: 140px; max-width: 140px">
                     <div class="input-group">
                         <input type="text" class="form-control" name="EducationTime"/>
                         <div class="input-group-append  allcompany">
@@ -191,14 +184,14 @@
             <td colspan="8">@($"{user.Surname} {user.Name} {user.Patronymic}")</td>
         </tr>
         <tr data-template="@temp" data-company="none" data-userid="@user.Id">
-            <td style="max-width: 220px">
+            <td style="min-width: 300px; max-width: 300px">
                 <div class="input-group">
                     <select class="selectSpecialty reqfields form-control p-0" data-company="none" name="SpecialtyName">
                         <optgroup label="Программы для @pic.Name">
                             <option data-placeholder="true" value="">Выберите программу</option>
                             @foreach (var spec in specialtyModels)
                             {
-                                <option value="@spec.Id">@(spec.SpecialityName + $" ({spec.Prefix})")</option>
+                                <option value="@spec.Id">@(spec.SpecialityName + $" ({spec.Prefix}) {spec.Quality}")</option>
                             }
                         </optgroup>
                     </select>
@@ -208,7 +201,7 @@
                 </div>
 
             </td>
-            <td style="max-width: 220px" >
+            <td style="min-width: 300px; max-width: 300px" >
                 <div class="input-group">
                     <select class="selectOrganization reqfields form-control p-0" data-company="none" name="OrganizationName">
                         <option data-placeholder="true" value="">Выберите организацию</option>
@@ -222,7 +215,7 @@
                     </div>
                 </div>
             </td>
-            <td>
+            <td style="min-width: 180px; max-width: 180px">
                 
                     <div class="input-group date">
                         <input data-format="dd.MM.yyyy" class="form-control reqfields" type="text" name="DateStart" aria-describedby="basic-addon2" />
@@ -238,7 +231,7 @@
                     </div>
                 
             </td>
-            <td>
+            <td style="min-width: 180px; max-width: 180px">
                 
                     <div class="input-group date">
                         <input data-format="dd.MM.yyyy" class="form-control reqfields" type="text" name="Date" aria-describedby="basic-addon3" />
@@ -254,7 +247,7 @@
                     </div>
                 
             </td>
-            <td>
+            <td style="min-width: 160px; max-width: 160px">
                 <div class="input-group">
                     <input type="text" class="form-control" name="EducationTime" />
                     <div class="input-group-append  allcompany">
@@ -314,7 +307,7 @@
 </tbody>
 </table>
 </form>
-<div class="col-12 text-center">
+<div class="col-12 mt-5 text-center">
     <button class="BlueButton" id="getDocs">
         <span class="blueButtonText">Продолжить</span>
     </button>
@@ -349,6 +342,7 @@
         $('.date').datetimepicker({
             language: 'ru',
             pickTime: false
+            
         });
         $("select.selectSpecialty").each(function () {
             var slim = new SlimSelect({

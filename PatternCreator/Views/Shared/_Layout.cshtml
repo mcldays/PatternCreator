@@ -8,8 +8,10 @@
     @Styles.Render("~/bundles/Layout-css")
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/Scripts/umd/popper.js")
+    @Scripts.Render("~/Scripts/jquery.validate.js")
+    @Scripts.Render("~/Scripts/jquery.validate.unobtrusive.js")
     @Scripts.Render("~/bundles/bootstrap")
-   
+
     <title>@ViewBag.Title</title>
 </head>
 <body>
@@ -25,9 +27,10 @@
     <div id="MainBlock">
         <div id="Header">
             <div id="ButtonsAligment" class="justify-content-between font-weight-bold w-100">
-                @Html.ActionLink("Работа с пользователями", "Home", "Pattern", null, new { @class = " btn" })
-                @Html.ActionLink("Работа с шаблонами", "EditorPattern", "Pattern", null, new { @class = " btn" })
-                @Html.ActionLink("Программы обучения", "SpecialityPage", "Pattern", null, new { @class = " btn" })
+                @Html.ActionLink("Пользователи", "Home", "Pattern", null, new { @class = " btn" })
+                @Html.ActionLink("Шаблоны", "EditorPattern", "Pattern", null, new { @class = " btn" })
+                @Html.ActionLink("Программы", "SpecialityPage", "Pattern", null, new { @class = " btn" })
+                @Html.ActionLink("Дипломы", "Diploma", "Diploma", null, new { @class = " btn" })
                 @Html.ActionLink("Печать", "PrintPage", "Pattern", null, new { @class = " btn" })
                 @Html.ActionLink("Архив", "Protocols", "Archive", null, new { @class = " btn" })
                 @*@using (Html.BeginForm("Home", "Pattern", FormMethod.Post))

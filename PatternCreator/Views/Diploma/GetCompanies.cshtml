@@ -1,0 +1,68 @@
+﻿@using Newtonsoft.Json
+@using PatternCreator.Models
+@model IEnumerable<PatternCreator.Models.DiplomaCompanyModel>
+<div class="btn-group btn-group-toggle">
+    <a class="btn btn-outline-primary" data-ajax="true" data-ajax-begin="$('#preloader-id').removeClass('done');" data-ajax-complete="$('#preloader-id').addClass('done'); $('#ChooseUser').modal('show');" data-ajax-mode="replace" data-ajax-update="#usersContainer" href="/Diploma/GetUsers">
+        <input type="radio" name="options1" id="option12" autocomplete="off">Пользователи
+    </a>
+    <a class="btn btn-outline-primary active" data-ajax="true" data-ajax-begin="$('#preloader-id').removeClass('done');" data-ajax-complete="$('#preloader-id').addClass('done'); $('#ChooseUser').modal('show');" data-ajax-mode="replace" data-ajax-update="#usersContainer" href="/Diploma/GetCompanies">
+        <input type="radio" name="options1" id="option22" autocomplete="off" checked>Компании
+    </a>
+</div>
+<table class="table" id="companyTable">
+    <thead>
+        <tr>
+            <th>Компания</th>
+            <th style="width: 70px">*</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (DiplomaCompanyModel company in Model)
+        {
+            <tr data-companyid="@(company.CompanyId)">
+                <td>@(company.CompanyName)</td>
+                <td>
+                    @Ajax.ActionLink("+", "AddCompany", new { id = company.CompanyId }, new AjaxOptions { UpdateTargetId = "ChoosedUsers", InsertionMode = InsertionMode.InsertAfter, OnSuccess = "checkCompany" })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="flex-column text-center">
+    <div class="flex-row">
+        @{
+            decimal currentPage = ViewBag.CurrentPage;
+            IEnumerable<int> pages = ViewBag.Pages as IEnumerable<int>;
+        }
+        @if (currentPage > 10)
+        {
+            @Ajax.ActionLink("Назад", "GetCompanies", new { page = (int)Math.Truncate((currentPage - 9) / 10) * 10 + 1 }, new AjaxOptions { UpdateTargetId = "usersContainer" }, new { @class = "btn btn-primary" })
+        }
+        <div class="btn-group btn-group-toggle">
+            @if (ViewBag.Pages != null)
+            {
+                foreach (int p in (pages).Skip(((int)Math.Truncate((currentPage - 1) / 10)) * 10).Take(10))
+                {
+                    if (currentPage == p)
+                    {
+                        @Ajax.ActionLink(p.ToString(), "GetCompanies", new { page = p }, new AjaxOptions { UpdateTargetId = "usersContainer" }, new { @class = "btn btn-outline-primary active", style = "width:50px;" })
+                    }
+                    else
+                    {
+                        @Ajax.ActionLink(p.ToString(), "GetCompanies", new { page = p }, new AjaxOptions { UpdateTargetId = "usersContainer" }, new { @class = "btn btn-outline-primary", style = "width:50px;" })
+                    }
+                }
+            }
+
+        </div>
+        @if (currentPage < pages.Count() - 10)
+        {
+            @Ajax.ActionLink("Вперед", "GetCompanies", new { page = (int)Math.Truncate((currentPage + 9) / 10) * 10 + 1 }, new AjaxOptions { UpdateTargetId = "usersContainer" }, new { @class = "btn btn-primary" })
+        }
+
+    </div>
+
+    <div>Страница</div>
+    <div>@ViewBag.CurrentPage из @(pages.Count())</div>
+</div>

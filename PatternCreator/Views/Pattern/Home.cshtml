@@ -12,7 +12,10 @@
         Text = t.CompanyName
     });
 }
+@Styles.Render("~/bundles/Print-css")
 @Styles.Render("~/bundles/Home-css")
+@Styles.Render("~/Content/tableSelection.css")
+@Scripts.Render("~/Scripts/tableSelection.min.js")
 
 <div id="BlockOne">
     <div id="UserControl">
@@ -33,101 +36,39 @@
         </div>
 
         <div id="AligmentFind">
-            @*@using (Ajax.BeginForm("FindUsersParital", new AjaxOptions {UpdateTargetId = "results", OnSuccess = "OnSuccess"}))
-                {*@
+            @using (Ajax.BeginForm("FindUsersByString", new AjaxOptions {UpdateTargetId = "TableTwo"}))
+            {
             <div class="FindUsersControl">
-                <input type="text" name="name" class="ControlText" id="FindUsers" placeholder="Поиск по пользователям">
-
+                <input type="text" name="searchText" class="ControlText" id="FindUsers" placeholder="Поиск по пользователям">
                 <button class="FindButton">
                     <img src="/Resourses/svg/magnifying-glass (3).svg" class="AddUserImg">
                 </button>
             </div>
-            @*}*@
+            }
         </div>
     </div>
-    
-        <form id="TableTwo">
+    <div class="container-fluid mt-2 text-center">
+        <div class="btn-group-toggle" data-toggle="buttons">
+            @foreach (CompanyViewModel c in Model)
+            {
+                <div class="btn btn-outline-primary my-1 p-0" aria-pressed="true">
+                    <input type="radio" name="companies" id="option1">
+                    <a data-ajax="true" class="w-75 h-100 m-0 text-dark text-decoration-none" data-ajax-mode="replace" data-ajax-update="#TableTwo" href="/Pattern/GetUsersByPage/@(c.CompanyId)?page=1">
+                        <span class="m-2 text-black-50">
+                            @c.CompanyName
+                        </span>
+                    </a>
+                    <a class="IconButtonsSave ManageIconStyle m-0 text-danger text-decoration-none mr-2" data-company-id="@c.CompanyId" data-action="deleteCompany">&#x2716;
+                    </a>
+                </div>
+                
+            }
+        </div>
+    </div>
 
-            <table class="table" style="width:100%" id="companies">
-                <thead>
-                    <tr>
-                        <th scope="col" style="width: 55px">№</th>
-                        <th scope="col" style="width: auto">Имя</th>
-                        <th scope="col" style="width: auto">Фамилия</th>
-                        <th scope="col" style="width: auto">Отчество</th>
-                        <th scope="col" style="width: 50px"></th>
-                        <th scope="col" style="width:100px"></th>
-                    </tr>
-                </thead>
-                <tbody id="targetTableBody" class="table-hover table-borderless text-center">
-                    @{
-                        foreach (CompanyViewModel company in Model)
-                        {
-                            int count = 1;
-                            <tr data-header-id="@company.CompanyId">
-                                <th colspan="5">
-                                    <div class="w-25 text-right text-nowrap">
-                                        @company.CompanyName
-                                        <button type="button" class="closeTableBut" data-company-id="@company.CompanyId">
-                                            <img src="/Resourses/svg/down-arrow (2).svg" style="height: 17px; width: 20px;" />
-                                        </button>
-                                    </div>
-                                </th>
+    <form id="TableTwo">
+    </form>
 
-                                <td class="d-flex justify-content-around align-middle">
-                                    <a class="IconButtonsSave ManageIconStyle invisible" data-company-id="@company.CompanyId" data-action="saveCompany">
-                                        <img src='/Resourses/svg/save-file.svg' class="img-fluid">
-                                    </a>
-                                    <a class="IconButtonsSave ManageIconStyle" data-company-id="@company.CompanyId" data-action="deleteCompany">
-                                        <img src="/Resourses/svg/delete.svg" class="img-fluid">
-                                    </a>
-                                </td>
-                            </tr>
-                            foreach (UserModelViewModel user in company.UserViewModels)
-                            {
-                                <tr data-company-id="@company.CompanyId">
-
-                                    <td class="align-middle py-1"><span>@(count++)</span></td>
-                                    <td class="align-middle py-1" data-user-id="@user.Id">
-                                        @Html.EditorFor(model => user.Name, new { htmlAttributes = new { @class = "EditCol", PlaceHolder = "Имя*", id = "" } })
-                                        @Html.EditorFor(model => user.Name_DativeCase, new { htmlAttributes = new { @class = "EditCol", style = "display: none", PlaceHolder = "Имя(Д.П.)*", id = "" } })
-                                    </td>
-                                    <td class="align-middle py-1" data-user-id="@user.Id">
-                                        @Html.EditorFor(model => user.Surname, new { htmlAttributes = new { @class = "EditCol", PlaceHolder = "Фамилия*", id = "" } })
-                                        @Html.EditorFor(model => user.Surname_DativeCase, new { htmlAttributes = new { @class = "EditCol", style = "display: none", PlaceHolder = "Фамилия(Д.П.)*", id = "" } })
-
-                                    </td>
-                                    <td class="align-middle py-1" data-user-id="@user.Id">
-                                        @Html.EditorFor(model => user.Patronymic, new { htmlAttributes = new { @class = "EditCol", PlaceHolder = "Отчество", id = "" } })
-                                        @Html.EditorFor(model => user.Patronymic_DativeCase, new { htmlAttributes = new { @class = "EditCol", style = "display: none", PlaceHolder = "Отчество(Д.П.)", id = "" } })
-                                    </td>
-                                    <td class="align-middle py-1">
-                                        <a class="d-flex IconButtonsSave ManageIconStyle" data-user-id="@user.Id" data-action="swap">
-                                            <img src='/Resourses/svg/swap.svg' class="img-fluid">
-                                        </a>
-                                    </td>
-                                    <td class="d-flex justify-content-around align-middle py-1">
-                                        <a href="/Pattern/EditUser?UserId=@user.Id" class="IconButtonsSave ManageIconStyle" data-ajax="true" data-ajax-mode="replace" data-ajax-success="$('#EditUserModal').modal('show')" data-ajax-update="#userContainer">
-                                            <img src="/Resourses/svg/pencil-edit-button (2).svg" alt="Редактирование пользователя" class="img-fluid">
-                                        </a>
-                                        <a class="IconButtonsSave ManageIconStyle" data-user-id="@user.Id" data-action="saveUser">
-                                            <img src='/Resourses/svg/save-file.svg' class="img-fluid">
-                                        </a>
-                                        <a class="IconButtonsSave ManageIconStyle" data-user-id="@user.Id" data-action="deleteUser">
-                                            <img src="/Resourses/svg/delete.svg" class="img-fluid">
-                                        </a>
-                                    </td>
-
-                                </tr>
-                            }
-                        }
-                    }
-
-
-                </tbody>
-            </table>
-        </form>
-    
 </div>
 
 
@@ -154,7 +95,7 @@
                         @Html.EditorFor(t => client.Position, new { htmlAttributes = new { @class = "EditCol", PlaceHolder = "Должность" } })
                         @Html.EditorFor(t => client.Education, new { htmlAttributes = new { @class = "EditCol my-2", PlaceHolder = "Образование" } })
                         @Html.DropDownListFor(t => client.CompanyId, CompanyesList, "Выберите компанию", new { @class = "EditCol my-2" })
-                        
+
                         <input type="submit" class="btn btn-primary w-50 my-3" value="Сохранить" />
                     </div>
                 }
@@ -179,8 +120,29 @@
         </div>
     </div>
 </div>
+<div class="modal fade-scale" id="DocsModal" tabindex="-1" role="dialog" aria-labelledby="DocsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="DocsModalLabel">Заведенные документы</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="DocsTablse" style="height: 500px !important; overflow-y: auto">
 
-
+            </div>
+            <div class="modal-footer d-flex justify-content-center">
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="substrate" />
+                    <label class="custom-control-label" for="substrate">Подложка</label>
+                </div>
+                <button type="button" class="btn btn-primary" id="printBtn">Печать</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="photosForPrint" style="display: none"></div>
 <div class="modal fade-scale" id="companyModal" tabindex="-1" role="dialog" aria-labelledby="companyModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -206,7 +168,8 @@
 </div>
 
 @section Scripts{
-    <script>
+    @Scripts.Render("~/bundles/Print-js")
+<script>
         function validElement(element) {
             if (!$(element).valid()) {
                 $(element).addClass("val-error");
@@ -215,11 +178,13 @@
             $(element).removeClass("val-error");
             return true;
         }
+
         $(document).on("input",
             "td>.EditCol",
             function() {
                 validElement(this);
             });
+
         function onSuccessPhoto(result) {
             if ($("#userimage").attr('src').includes('?')) {
                 $("#userimage").attr('src', "/Pattern/GetUserPhoto/" + $("#targetPhoto").val());
@@ -227,132 +192,220 @@
                 $("#userimage").attr('src', "/Pattern/GetUserPhoto?id=" + $("#targetPhoto").val());
 
             }
-            
+
         }
-        $(document).ready(function () {
 
-            $(document).on("change", "#customFile", function () {
-                
-                $("#submitPhoto").submit();
-            });
+        $(document).ready(function() {
+            $(document).on("click",
+                "#Diploms",
+                function() {
+                    if ($("#choosedTypes").hasClass("d-none")) {
+                        $("#choosedTypes").removeClass("d-none");
+                        $("#tableDiploma").show();
+                        $("#tableDocs").hide();
+                    }
+                });
+            $(document).on("click",
+                "#Docs",
+                function () {
+                    if (!$("#choosedTypes").hasClass("d-none")) {
+                        $("#choosedTypes").addClass("d-none");
+                        $("#tableDiploma").hide();
+                        $("#tableDocs").show();
+                    }
+                });
 
-            $(document).on('click',"a.IconButtonsSave", function(e) {
-                switch ($(this).data("action")) {
-                case "deleteCompany":
-                    var companyId = $(this).data("company-id");
-                    var target = $(this);
-                    $.ajax({
-                        type: "GET",
-                        url: "@Url.Action("RemoveCompany", "Pattern")",
-                        data: `id=${companyId}`,
-                        success: function(data) {
-                            //$(e.target).parent().parent().parent().remove();
-                            if (data === "True") {
-                                $("tr[data-company-id='" + companyId + "']").fadeOut(400,
-                                    function() {
-                                        $(this).remove();
-                                    });
-                                target.closest("tr").fadeOut(400,
-                                    function() {
-                                        $(this).remove();
-                                    });
-                            } else {
-                                alert("Произошла ошибка, попробуйте позже");
-                            }
-                        },
-                        error: function() {
-                            alert("Произошла ошибка, попробуйте позже");
+            $(document).on('click',
+                "#printBtn",
+                function () {
+                    $("#DocsModal").modal("hide");
+                    $("#preloader-id").removeClass("done");
+                    if ($("#Diploms").hasClass("active")) {
+                        let data = $("#tableDiploma").find("tr.selected").toArray().map(t => $(t).data('docid'));
+                        $.post(
+                            '@Url.Action("ReadyDiploma", "Print")',
+                            {
+                                data: JSON.stringify(data),
+                                isdiploma: $("#diploma").hasClass('active'),
+                                isapplication: $("#application").hasClass('active'),
+                                ismarks: $("#marks").hasClass('active'),
+                                substrate: $("#substrate").prop("checked")
+                            },
+                            function(result) {
+                                $('#photosForPrint').html(result);
+                                $("#preloader-id").addClass("done");
+                                var bufferStr = '';
+                                $("#photosForPrint>.printdocument").each(function() {
+                                    bufferStr += this.innerHTML;
+                                });
+                                $("#DocsModal").modal("show");
+                                printJS({
+                                    printable: bufferStr,
+                                    type: 'raw-html',
+                                    style: 'body {margin: 0.001cm; padding: 0px;}',
+                                    base64: true
+                                });
+                            },
+                            "html");
+                    } else {
+                        let data = $("#tableDocs").find("tr.selected").toArray().map(t => $(t).data('docid'));
+                        $.post(
+                            '@Url.Action("GetComputedPhotos", "Print")',
+                            {
+                                data: JSON.stringify(data),
+                                substrate: $("#substrate").prop("checked")
+                            },
+                            function(result) {
+
+                                $('#photosForPrint').html(result);
+                                $("#preloader-id").addClass("done");
+                                //console.log(result);
+                                //var images = $(document.getElementById("photosForPrint").getElementsByClassName('photo'));
+                                var bufferStr = '';
+                                $(".printdocument").removeClass('d-none');
+                                $(".photo-wrap>.printdocument").each(function() {
+                                    bufferStr += this.innerHTML;
+                                    console.log(this.innerHTML);
+                                });
+                                console.log(bufferStr);
+                                $("#DocsModal").modal("show");
+                                printJS({
+                                    printable: bufferStr,
+                                    type: 'raw-html',
+                                    style: '* {margin: 0px; padding: 0px;}'
+                                });
+
+                            },
+                            "html");
+                    }
+
+                });
+
+            $(document).on("change",
+                "#customFile",
+                function() {
+
+                    $("#submitPhoto").submit();
+                });
+
+            $(document).on('click',
+                "a.IconButtonsSave",
+                function(e) {
+                    switch ($(this).data("action")) {
+                    case "deleteCompany":
+                        var companyId = $(this).data("company-id");
+                        var target = $(this);
+                        if (confirm("Вы уверены что хотите удалить компанию? Вместе с компанией будут удалены все пользователи!")) {
+                            $.ajax({
+                                type: "GET",
+                                url: "@Url.Action("RemoveCompany", "Pattern")",
+                                data: `id=${companyId}`,
+                                success: function(data) {
+                                    //$(e.target).parent().parent().parent().remove();
+                                    if (data === "True") {
+                                        var closest = $(target).closest("div.btn");
+                                        if (closest.hasClass("active")) {
+                                            $("#TableTwo").html("");
+                                        }
+                                        closest.remove();
+                                    } else {
+                                        alert("Произошла ошибка, попробуйте позже");
+                                    }
+                                },
+                                error: function() {
+                                    alert("Произошла ошибка, попробуйте позже");
+                                }
+                            });
                         }
-                    });
-                    break;
-                case "saveUser":
-                    var valid = true;
-                    var userId = $(this).data("user-id");
-                    $("td[data-user-id='" + userId + "']>input").each(function() {
-                        if (!validElement(this)) {
-                            valid = false;
-                        }
-                    });
-                        if (!valid) {
-                            alert("Не валидные значения полей!")
                         break;
-                    }
-                    var companyId = $(this).closest("tr").data("company-id");
-                    var target = $(this);
-                    var userId = $(this).data("user-id");
-                    var client = {
-                        Id: userId,
-                        Name: $("td[data-user-id='" + userId + "']>input[name='user.Name']").val(),
-                        Surname: $("td[data-user-id='" + userId + "']>input[name='user.Surname']").val(),
-                        Patronymic: $("td[data-user-id='" + userId + "']>input[name='user.Patronymic']").val(),
-                        Name_DativeCase: $("td[data-user-id='" + userId + "']>input[name='user.Name_DativeCase']")
-                            .val(),
-                        Surname_DativeCase: $("td[data-user-id='" + userId + "']>input[name='user.Surname_DativeCase']")
-                            .val(),
-                        Patronymic_DativeCase: $("td[data-user-id='" +
-                            userId +
-                            "']>input[name='user.Patronymic_DativeCase']").val(),
-                        CompanyId: companyId
-                    }
-                    $.ajax({
-                        type: "POST",
-                        url: "@Url.Action("SaveUser", "Pattern")",
-                        data: {
-                            client: client
-                        },
-                        success: function(data) {
-                            //$(e.target).parent().parent().parent().remove();
-                            if (data === "True") {
-                                alert("Изменения сохранены");
-                            } else {
-                                alert("Произошла ошибка, попробуйте позже");
-                            }
-                        },
-                        error: function() {
-                            alert("Произошла ошибка, попробуйте позже");
-                        }
-                    });
-                    break;
-                case "deleteUser":
-                    var userId = $(this).data("user-id");
-                    var target = $(this);
-                    $.ajax({
-                        type: "GET",
-                        url: "@Url.Action("RemoveUser", "Pattern")",
-                        data: `id=${userId}`,
-                        success: function(data) {
-                            //$(e.target).parent().parent().parent().remove();
-                            if (data === "True") {
-                                target.closest("tr").fadeOut(400,
-                                    function() {
-                                        $(this).remove();
-                                    });
-                            } else {
-                                alert("Произошла ошибка, попробуйте позже");
-                            }
-                        },
-                        error: function() {
-                            alert("Произошла ошибка, попробуйте позже");
-                        }
-                    });
-                    break;
-                case "swap":
-                    var userId = $(this).data("user-id");
-                    var hidden = $("td[data-user-id='" + userId + "']>input:hidden");
-                    var i = 0;
-                    $("td[data-user-id='" + userId + "']>input:visible").fadeToggle(200,
-                        function() {
-                            i++;
-                            if (i > 2) {
-                                hidden.fadeToggle(200);
+                    case "saveUser":
+                        var valid = true;
+                        var userId = $(this).data("user-id");
+                        $("td[data-user-id='" + userId + "']>input").each(function() {
+                            if (!validElement(this)) {
+                                valid = false;
                             }
                         });
+                        if (!valid) {
+                            alert("Не валидные значения полей!")
+                            break;
+                        }
+                        var companyId = $(this).closest("tr").data("company-id");
+                        var target = $(this);
+                        var userId = $(this).data("user-id");
+                        var client = {
+                            Id: userId,
+                            Name: $("td[data-user-id='" + userId + "']>input[name='user.Name']").val(),
+                            Surname: $("td[data-user-id='" + userId + "']>input[name='user.Surname']").val(),
+                            Patronymic: $("td[data-user-id='" + userId + "']>input[name='user.Patronymic']").val(),
+                            Name_DativeCase: $("td[data-user-id='" + userId + "']>input[name='user.Name_DativeCase']")
+                                .val(),
+                            Surname_DativeCase: $("td[data-user-id='" + userId + "']>input[name='user.Surname_DativeCase']")
+                                .val(),
+                            Patronymic_DativeCase: $("td[data-user-id='" +
+                                userId +
+                                "']>input[name='user.Patronymic_DativeCase']").val(),
+                            CompanyId: companyId
+                        }
+                        $.ajax({
+                            type: "POST",
+                            url: "@Url.Action("SaveUser", "Pattern")",
+                            data: {
+                                client: client
+                            },
+                            success: function(data) {
+                                //$(e.target).parent().parent().parent().remove();
+                                if (data === "True") {
+                                    alert("Изменения сохранены");
+                                } else {
+                                    alert("Произошла ошибка, попробуйте позже");
+                                }
+                            },
+                            error: function() {
+                                alert("Произошла ошибка, попробуйте позже");
+                            }
+                        });
+                        break;
+                    case "deleteUser":
+                        var userId = $(this).data("user-id");
+                        var target = $(this);
+                        $.ajax({
+                            type: "GET",
+                            url: "@Url.Action("RemoveUser", "Pattern")",
+                            data: `id=${userId}`,
+                            success: function(data) {
+                                //$(e.target).parent().parent().parent().remove();
+                                if (data === "True") {
+                                    target.closest("tr").fadeOut(400,
+                                        function() {
+                                            $(this).remove();
+                                        });
+                                } else {
+                                    alert("Произошла ошибка, попробуйте позже");
+                                }
+                            },
+                            error: function() {
+                                alert("Произошла ошибка, попробуйте позже");
+                            }
+                        });
+                        break;
+                    case "swap":
+                        var userId = $(this).data("user-id");
+                        var hidden = $("td[data-user-id='" + userId + "']>input:hidden");
+                        var i = 0;
+                        $("td[data-user-id='" + userId + "']>input:visible").fadeToggle(200,
+                            function() {
+                                i++;
+                                if (i > 2) {
+                                    hidden.fadeToggle(200);
+                                }
+                            });
 
-                    break;
-                default:
-                }
+                        break;
+                    default:
+                    }
 
-            });
+                });
         });
 
 
@@ -369,33 +422,33 @@
 
         $(".IconButtonsSave").click(function() {
         });
-
-        $(".IconButtonsDelete").click(function() {
-            if (confirm("Вы уверены?")) {
-                $.ajax({
-                    type: "GET",
-                    url: "@Url.Action("RemoveUser", "Pattern")",
-                    data: `id=${$(this).parent().parent().parent().attr("userId")}`,
-                    success: () => {
-                        $(this).parent().parent().parent().remove();
-                    },
-                    error: function(data) {
-                        alert(data);
-                    }
-                });
-            }
-        });
-
-        $(".closeTableBut").click(function(e) {
-            var id = $(this).data("company-id");
-            $("tr[data-company-id='" + id + "']:not('.notfounded')").each(function() {
-                $(this).fadeToggle(400);
+        $(document).on("click",
+            ".IconButtonsDelete",
+            function() {
+                if (confirm("Вы уверены?")) {
+                    $.ajax({
+                        type: "GET",
+                        url: "@Url.Action("RemoveUser", "Pattern")",
+                        data: `id=${$(this).parent().parent().parent().attr("userId")}`,
+                        success: () => {
+                            $(this).parent().parent().parent().remove();
+                        },
+                        error: function(data) {
+                            alert(data);
+                        }
+                    });
+                }
             });
-            $(this).toggleClass('rotated');
-        });
-
-
-    </script>
+        $(document).on("click",
+            ".closeTableBut",
+            function() {
+                var id = $(this).data("company-id");
+                $("tr[data-company-id='" + id + "']:not('.notfounded')").each(function() {
+                    $(this).fadeToggle(400);
+                });
+                $(this).toggleClass('rotated');
+            });
+</script>
 
     @Scripts.Render("~/bundles/Home-js")
 }

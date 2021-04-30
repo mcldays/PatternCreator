@@ -23,6 +23,17 @@
         <a class="btn btn-primary text-white" id="changebtn">Организации</a>
         @*<a class="btn btn-primary mx-2" href="" data-toggle="modal" data-target="#SpecialityModal">&#128269 Фильтр</a>*@
     </div>
+    <div class="row mt-2">
+        <div class="input-group border-secondary rounded" style="border: 3px solid #dee2e6 !important; width: 250px">
+            <input type="text" name="name" class="border-0 form-control mr-1" id="FindSpecialty" placeholder="Поиск программ">
+            <div class="input-prepend">
+                <button class="btn h-100" >
+                    <img height="20" width="20" src="/Resourses/svg/magnifying-glass (3).svg" class="img-fluid d-block">
+                </button>
+            </div>
+            
+        </div>
+    </div>
 
 </div>
 <div class="container-fluid mt-3">
@@ -51,7 +62,22 @@
         <tbody id="orgresults"></tbody>
     </table>
 </div>
+<div class="modal fade-scale" id="MarkModal" tabindex="-1" role="dialog" aria-labelledby="MarkModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="MarkModalLabel">Оценки для специальности</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="MarksPage">
 
+            </div>
+
+        </div>
+    </div>
+</div>
 <div class="modal fade-scale" id="SpecialityModal" tabindex="-1" role="dialog" aria-labelledby="SpecialityModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -62,34 +88,36 @@
                 </button>
             </div>
             <div class="modal-body">
-                @using (Ajax.BeginForm("AddSpeciality", "Pattern", new AjaxOptions { LoadingElementId = "preloader-id", OnBegin = "$('#SpecialityModal').modal('hide')", HttpMethod = "Post", OnSuccess = "OnSuccess" }, new { @class = "form-row justify-content-center" }))
+                @using (Ajax.BeginForm("AddSpeciality", "Pattern", new AjaxOptions { LoadingElementId = "preloader-id", OnBegin = "$('#SpecialityModal').modal('hide')", HttpMethod = "Post", OnSuccess = "OnSuccess1" }, new { @class = "form-row justify-content-center" }))
                 {
-                <div class="flex-column d-flex w-75 p-2 align-items-center">
-                    @Html.ValidationSummary("", new { @class = "text-danger d-flex text-center" })
-                    @Html.HiddenFor(model => model.Id)
-                    @Html.EditorFor(model => model.SpecialityName, new { htmlAttributes = new { @class = "form-control", placeholder = "Наименование специальности" } })
-                    @Html.EditorFor(model => model.Prefix, new { htmlAttributes = new { @class = "form-control  my-2", placeholder = "Префикс" } })
-                    @Html.EditorFor(model => model.Quality, new { htmlAttributes = new { @class = "form-control", placeholder = "Квалификация" } })
-                    @Html.EditorFor(model => model.FieldSpecialty, new { htmlAttributes = new { @class = "form-control my-2", placeholder = "Сфера деятельности" } })
-                    @Html.EditorFor(model => model.ValidUntil, new { htmlAttributes = new { @class = "form-control mb-2", placeholder = "Срок действия" } })
+                    <div class="flex-column d-flex w-75 p-2 align-items-center">
+                        @Html.ValidationSummary("", new { @class = "text-danger d-flex text-center" })
+                        @Html.HiddenFor(model => model.Id)
+                        @Html.EditorFor(model => model.SpecialityName, new { htmlAttributes = new { @class = "form-control", placeholder = "Наименование специальности" } })
+                        @Html.EditorFor(model => model.Prefix, new { htmlAttributes = new { @class = "form-control  my-2", placeholder = "Префикс" } })
+                        @Html.EditorFor(model => model.Quality, new { htmlAttributes = new { @class = "form-control", placeholder = "Квалификация" } })
+                        @Html.EditorFor(model => model.FieldSpecialty, new { htmlAttributes = new { @class = "form-control my-2", placeholder = "Сфера деятельности" } })
+                        @Html.EditorFor(model => model.ValidUntil, new { htmlAttributes = new { @class = "form-control mb-2", placeholder = "Срок действия" } })
+                        @Html.HiddenFor(model => model.MarkModels)
 
-                    <select id="addselect" name="Templates" multiple>
-                        <optgroup label="Выбрать все">
-                            <option data-placeholder="true">Выберите шаблоны</option>
-                            @foreach (var temp in templates)
-                            {
-                                <option value="@temp.Key">@temp.Value</option>
-                            }
-                        </optgroup>
-                    </select>
-                    <input type="submit" class="btn btn-primary w-50 my-3" value="Сохранить" />
-                </div>
+                        <select id="addselect" name="Templates" multiple>
+                            <optgroup label="Выбрать все">
+                                <option data-placeholder="true">Выберите шаблоны</option>
+                                @foreach (var temp in templates)
+                                {
+                                    <option value="@temp.Key">@temp.Value</option>
+                                }
+                            </optgroup>
+                        </select>
+                        <input type="submit" class="btn btn-primary w-50 my-3" value="Сохранить" />
+                    </div>
                 }
             </div>
 
         </div>
     </div>
 </div>
+
 <div class="modal fade-scale" id="OrganizationModal" tabindex="-1" role="dialog" aria-labelledby="OrganizaionModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -103,14 +131,18 @@
                 @using (Ajax.BeginForm("AddOrganization", "Pattern", null,
                     new AjaxOptions { LoadingElementId = "preloader-id", OnBegin = "$('#OrganizaionModal').modal('hide')", HttpMethod = "Post", OnSuccess = "OnSuccess" }, new { @class = "form-row justify-content-center" }))
                 {
-                <div class="flex-column d-flex w-75 p-2 align-items-center">
-                    @Html.ValidationSummary("", new { @class = "text-danger d-flex text-center" })
-                    @Html.HiddenFor(е => organization.OrganizationId)
-                    @Html.EditorFor(е => organization.OrganizationName, new { htmlAttributes = new { @class = "form-control", placeholder = "Наименование организации" } })
-                    @Html.EditorFor(е => organization.License, new { htmlAttributes = new { @class = "form-control  my-2", placeholder = "Лицензия" } })
+                    <div class="flex-column d-flex w-75 p-2 align-items-center">
+                        @Html.ValidationSummary("", new { @class = "text-danger d-flex text-center" })
+                        @Html.HiddenFor(е => organization.OrganizationId)
+                        @Html.EditorFor(е => organization.OrganizationName, new { htmlAttributes = new { @class = "form-control", placeholder = "Наименование организации" } })
+                        @Html.EditorFor(е => organization.License, new { htmlAttributes = new { @class = "form-control  my-2", placeholder = "Лицензия" } })
+                        @Html.EditorFor(e => organization.СhairmanName, new { htmlAttributes = new { @class = "form-control", placeholder = "Председатель комиссии" } })
+                        @Html.EditorFor(e => organization.TeacherName, new { htmlAttributes = new { @class = "form-control my-2", placeholder = "Преподователь" } })
+                        @Html.EditorFor(e => organization.SecretaryName, new { htmlAttributes = new { @class = "form-control mb-2", placeholder = "Секретарь" } })
 
-                    <input type="submit" class="btn btn-primary w-50 my-3" value="Сохранить" />
-                </div>
+
+                        <input type="submit" class="btn btn-primary w-50 my-3" value="Сохранить" />
+                    </div>
                 }
             </div>
 
@@ -150,23 +182,57 @@
     </div>
 </div>
 <script>
-    $(document).on("click", "#changebtn", function() {
+    $(document).on("click", "#changebtn", function () {
         $('.restable').fadeToggle(300);
         $('.newitem').fadeToggle(300);
         if ($(this).text() === "Организации") {
             $(this).text("Программы");
         }
-        else { $(this).text("Организации");}
-        
+        else { $(this).text("Организации"); }
+
     });
+    $(document).on("input", "#FindSpecialty", function () {
+        FindProgramm(this);
+    });
+
+    function FindProgramm(t) {
+        var findtext = $(t).val().toLowerCase();
+        $("#results").find("tr").each(function () {
+            $(this).hide();
+            var elem = $($(this).find("td.SpecName").first());
+            if (elem.text().toLowerCase().indexOf(findtext)>=0) 
+                $(this).show();
+        });
+
+    };
     function OnSuccess(result) {
         if (result === "True") {
-            if ($(".restable").first().css("display")!=="none") {
+            if ($(".restable").first().css("display") !== "none") {
                 $("#refresh").click();
             } else {
                 $("#orgrefresh").click();
             }
-           
+
+
+        } else {
+            alert("Что-то пошло не так. Попробуйте позже.");
+        }
+    };
+    function OnSuccess1(result) {
+        if (result !== 0) {
+            $("#refresh").click();
+            $.ajax({
+                url:'@(Url.Action("NewMarks"))',
+                type: "GET",
+                data: {
+                    specId:result
+                },
+                dataType: "html",
+                success: function (data) {
+                    $("#MarksPage").html(data);
+                    $('#MarkModal').modal("show");
+                }
+        });
         } else {
             alert("Что-то пошло не так. Попробуйте позже.");
         }
@@ -188,4 +254,5 @@
         $("#refresh").click();
         $("#orgrefresh").click();
     });
+    
 </script>

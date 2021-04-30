@@ -1,0 +1,11 @@
+﻿@model DiplomaUserModel[]
+@foreach (var user in Model)
+{
+    <tr data-userid="@(user.Id)">
+        <td>@user.FIO</td>
+        <td>@user.CompanyName</td>
+        <td>
+            <a class="btn" onclick="$(this).closest('tr').remove()">&#10006;</a>
+        </td>
+    </tr>
+}

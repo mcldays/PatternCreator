@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
+using PatternCreator.Controllers;
 
 namespace PatternCreator.Models
 {
@@ -17,9 +18,7 @@ namespace PatternCreator.Models
         public float Width { get; set; }
         public float Height { get; set; }
 
-        public int StampId { get; set; }
-        [ForeignKey("StampId")]
-        public virtual StampModel StampModel { get; set; }
+        public PatternController.StampType Type { get; set; }
 
         public int PicId { get; set; }
         [ForeignKey("PicId")]
@@ -27,19 +26,32 @@ namespace PatternCreator.Models
         
 
     }
+    
     public class StampPositionsViewModel
     {
-        
+        public static string GetTextByType(PatternController.StampType type)
+        {
+            switch (type)
+            {
+                case PatternController.StampType.Stamp: return "Штамп";
+                case PatternController.StampType.СhairmanSignature: return "Подпись председателя";
+                case PatternController.StampType.TeacherSignature: return "Подпись преподавателя";
+                case PatternController.StampType.SecretarySignature: return "Подпись секретаря";
+                default: return string.Empty;
+            }
+        }
+
         public int StampPositionId { get; set; }
 
         public float PosX   { get; set; }
         public float PosY   { get; set; }
         public float Width  { get; set; }
         public float Height { get; set; }
+        public PatternController.StampType Type { get; set; }
 
         public int StampId { get; set; }
-        
-        public byte[] Image { get; set; }
+        public string Text { get; set; }
+
 
         public int PicId { get; set; }
 
@@ -54,9 +66,9 @@ namespace PatternCreator.Models
             PosY  = model.PosY  ;
             Width = model.Width ;
             Height= model.Height;
-            StampId = model.StampId;
-            Image = model.StampModel.Image;
             PicId = model.PicId;
+            Type = model.Type;
+            Text = GetTextByType(model.Type);
         }
 
     }
@@ -69,9 +81,7 @@ namespace PatternCreator.Models
         public string PosY { get; set; }
         public string Width { get; set; }
         public string Height { get; set; }
-
-        public int StampId { get; set; }
-
+        public PatternController.StampType Type { get; set; }
         public int PicId { get; set; }
         public StampConvertModel()
         {

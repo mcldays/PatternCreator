@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 
 using Microsoft.EntityFrameworkCore;
+using PatternCreator.Migrations;
 using PatternCreator.Models;
 
 namespace PatternCreator.Utilities
@@ -24,6 +25,7 @@ namespace PatternCreator.Utilities
 
         public DbSet<UserModel> UserModels { get; set;}
         public DbSet<PhotoModel> PhotoModel { get; set; }
+        public DbSet<StaticImageModel> StaticImageModel { get; set; }
 
         public DbSet<SpecialtyModel> Specialties { get; set; }
         public DbSet<ProtocolModel> Protocols { get; set; }
@@ -33,11 +35,19 @@ namespace PatternCreator.Utilities
         public DbSet<StampModel> StampModels { get; set; }
         public DbSet<StampPositions> StampPositions { get; set; }
         public DbSet<PositionModel> PositionModels { get; set; }
+        public DbSet<MarkModel> MarkModels { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             //modelBuilder.Entity<ProtocolModel>().HasIndex(p => new
             //    {p.Date, p.DocumentModels}).HasName("IndexOfDay").IsUnique(true);
+        }
+    }
+    public class ProjectInitializer : MigrateDatabaseToLatestVersion<UserContext, Configuration>
+    {
+        protected void Seed(UserContext context)
+        {
+
         }
     }
 }

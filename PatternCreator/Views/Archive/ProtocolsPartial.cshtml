@@ -10,17 +10,20 @@ else
     int i = 1;
     foreach (var m in Model)
      {
-         <tr>
-             <td>
-                 @i
-             </td>
-             <td>
-                 @m.ProtocolName
-             </td>
-             <td>
-                 <a class="btn" data-ajax="true" data-ajax-failure="alert('Что то пошло не так! попробуйте ещё раз')" data-ajax-mode="replace" data-ajax-success="$('#templateAccept').modal('show');" data-ajax-update="#documentresult" href="/Archive/GetDocsByProtocol?protocolname=@(m.ProtocolName)">&#9998;</a>
-             </td>
-         </tr>
+<tr>
+    <td>
+        @i
+    </td>
+    <td>
+        @m.ProtocolName
+    </td>
+    <td>
+        <a class="btn" data-ajax="true" data-ajax-failure="alert('Что то пошло не так! попробуйте ещё раз')" data-ajax-mode="replace" data-ajax-success="$('#templateAccept').modal('show');" data-ajax-update="#documentresult" href="/Archive/GetDocsByProtocol?protocolname=@(m.ProtocolName)">&#9998;</a>
+    </td>
+    <td>
+        <a class="btn" data-ajax="true" data-ajax-confirm="Вы уверены что хотите удалить протокол @(m.ProtocolName)?" data-ajax-failure="alert('Что то пошло не так! попробуйте ещё раз')" data-ajax-success="$(this).closest('tr').remove()" href="/Archive/DeleteProtocol?protocolname=@(m.ProtocolName)">&#10006;</a>
+    </td>
+</tr>
          i++;
      }
 }

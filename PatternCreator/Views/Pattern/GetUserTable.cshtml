@@ -1,0 +1,104 @@
+﻿@using PatternCreator.Models
+@model PatternCreator.Models.UserModelViewModel[]
+
+<table class="table" style="width:100%" id="companies">
+    <thead>
+        <tr>
+            <th scope="col" style="width: 55px">№</th>
+            <th scope="col" style="width: auto">Имя</th>
+            <th scope="col" style="width: auto">Фамилия</th>
+            <th scope="col" style="width: auto">Отчество</th>
+            <th scope="col" style="width: 50px"></th>
+            <th scope="col" style="width: 50px"></th>
+            <th scope="col" style="width:100px"></th>
+        </tr>
+    </thead>
+    <tbody id="targetTableBody" class="table-hover table-borderless text-center">
+    @{
+        int count = 1;
+        int companyId = Model.FirstOrDefault().CompanyId;
+                foreach (UserModelViewModel user in Model)
+                {
+                    <tr data-company-id="@user.CompanyId">
+
+                        <td class="align-middle py-1"><span>@(count++)</span></td>
+                        <td class="align-middle py-1" data-user-id="@user.Id">
+                            @Html.EditorFor(model => user.Name, new { htmlAttributes = new { @class = "EditCol", PlaceHolder = "Имя*", id = "" } })
+                            @Html.EditorFor(model => user.Name_DativeCase, new { htmlAttributes = new { @class = "EditCol", style = "display: none", PlaceHolder = "Имя(Д.П.)*", id = "" } })
+                        </td>
+                        <td class="align-middle py-1" data-user-id="@user.Id">
+                            @Html.EditorFor(model => user.Surname, new { htmlAttributes = new { @class = "EditCol", PlaceHolder = "Фамилия*", id = "" } })
+                            @Html.EditorFor(model => user.Surname_DativeCase, new { htmlAttributes = new { @class = "EditCol", style = "display: none", PlaceHolder = "Фамилия(Д.П.)*", id = "" } })
+
+                        </td>
+                        <td class="align-middle py-1" data-user-id="@user.Id">
+                            @Html.EditorFor(model => user.Patronymic, new { htmlAttributes = new { @class = "EditCol", PlaceHolder = "Отчество", id = "" } })
+                            @Html.EditorFor(model => user.Patronymic_DativeCase, new { htmlAttributes = new { @class = "EditCol", style = "display: none", PlaceHolder = "Отчество(Д.П.)", id = "" } })
+                        </td>
+                        <td class="align-middle py-1">
+                            <a class="d-flex IconButtonsSave ManageIconStyle" data-user-id="@user.Id" data-action="swap">
+                                <img src='/Resourses/svg/swap.svg' class="img-fluid">
+                            </a>
+                        </td>
+                        <td>
+                            <a href="/Pattern/GetUserDocs?UserId=@user.Id" class="IconButtonsSave ManageIconStyle" data-ajax="true" data-ajax-mode="replace" data-ajax-success="$('#DocsModal').modal('show')" data-ajax-update="#DocsTablse">
+                                &#9776;
+                            </a>
+                        </td>
+                        <td class="d-flex justify-content-around align-middle py-1">
+                            <a href="/Pattern/EditUser?UserId=@user.Id" class="IconButtonsSave ManageIconStyle" data-ajax="true" data-ajax-mode="replace" data-ajax-success="$('#EditUserModal').modal('show')" data-ajax-update="#userContainer">
+                                <img src="/Resourses/svg/pencil-edit-button (2).svg" alt="Редактирование пользователя" class="img-fluid">
+                            </a>
+                            <a class="IconButtonsSave ManageIconStyle" data-user-id="@user.Id" data-action="saveUser">
+                                <img src='/Resourses/svg/save-file.svg' class="img-fluid">
+                            </a>
+                            <a class="IconButtonsSave ManageIconStyle" data-user-id="@user.Id" data-action="deleteUser">
+                                <img src="/Resourses/svg/delete.svg" class="img-fluid">
+                            </a>
+                        </td>
+
+                    </tr>
+                }
+        }
+
+
+    </tbody>
+</table>
+
+<div class="flex-column text-center">
+    <div class="flex-row">
+        @{
+            decimal currentPage = ViewBag.CurrentPage;
+            IEnumerable<int> pages = ViewBag.Pages as IEnumerable<int>;
+        }
+        @if (currentPage > 10)
+        {
+            @Ajax.ActionLink("Назад", "GetUsersByPage", new { page = (int)Math.Truncate((currentPage - 9) / 10) * 10 + 1, id = companyId }, new AjaxOptions { UpdateTargetId = "TableTwo" }, new { @class = "btn btn-primary" })
+        }
+        <div class="btn-group btn-group-toggle">
+            @if (ViewBag.Pages != null)
+            {
+                foreach (int p in (pages).Skip(((int)Math.Truncate((currentPage - 1) / 10)) * 10).Take(10))
+                {
+                    if (currentPage == p)
+                    {
+                        @Ajax.ActionLink(p.ToString(), "GetUsersByPage", new { page = p, id = companyId }, new AjaxOptions { UpdateTargetId = "TableTwo" }, new { @class = "btn btn-outline-primary active", style = "width:50px;" })
+                    }
+                    else
+                    {
+                        @Ajax.ActionLink(p.ToString(), "GetUsersByPage", new { page = p, id = companyId }, new AjaxOptions { UpdateTargetId = "TableTwo" }, new { @class = "btn btn-outline-primary", style = "width:50px;" })
+                    }
+                }
+            }
+
+        </div>
+        @if (currentPage < pages.Count() - 10)
+        {
+            @Ajax.ActionLink("Вперед", "GetUsersByPage", new { page = (int)Math.Truncate((currentPage + 9) / 10) * 10 + 1, id = companyId }, new AjaxOptions { UpdateTargetId = "TableTwo" }, new { @class = "btn btn-primary" })
+        }
+
+    </div>
+
+    <div>Страница</div>
+    <div>@ViewBag.CurrentPage из @(pages.Count())</div>
+</div>

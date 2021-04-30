@@ -1,0 +1,40 @@
+﻿@using System.Drawing
+@using PatternCreator.Utilities
+@model PatternCreator.Models.DocumentPrintViewModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>GetDocumentApi</title>
+    <style type="text/css">
+        body {font-family: times !important}
+        @@page { margin: 0px 0px; }
+    </style>
+</head>
+<body style="height: @(Model.NaturalHeight)mm; width: @(Model.NaturalWidth)mm; padding: 0; margin: 0">
+            <img style="position: absolute; margin-top: 0; top: 0; right: 0; left: 0; height: @(Model.NaturalHeight)mm; width: @(Model.NaturalWidth)mm;" src="data:image/jpg;base64,@(ComputePhoto.ConvertImageToBase64(Model.Image))" />
+
+            @foreach (var item in Model.Items)
+            {
+                <span style="@(item.Underline?"text-decoration:underline;":"");text-underline-position: under; position: absolute; white-space: pre-line; font-family: Times New Roman; display: block; text-align: @(item.Format.FormatFlags==StringFormatFlags.MeasureTrailingSpaces?"justify":item.Format.Alignment == StringAlignment.Center ? "center" : (item.Format.Alignment == StringAlignment.Near ? "left" : "right")); margin-top: @(item.Rectf.Y.ToString().Replace(",", "."))px; margin-left: @(item.Rectf.X.ToString().Replace(",", "."))px; font-size: @(item.FontSize)pt; font-weight: @(item.Weight == FontStyle.Regular ? "normal" : "bold"); width: @(item.Rectf.Width.ToString().Replace(",", "."))px; height: @(item.Rectf.Height.ToString().Replace(",", "."))px">@(item.Text.Replace("*newline*", "\n"))</span>
+            }
+            @foreach (var stamp in Model.Stamps)
+            {
+                <img style="position: absolute; width: @((stamp.Rectf.Width).ToString().Replace(",", "."))px; height: @((stamp.Rectf.Height).ToString().Replace(",", "."))px; margin-top: @((stamp.Rectf.Y).ToString().Replace(",", "."))px;  margin-left: @((stamp.Rectf.X).ToString().Replace(",", "."))px;" src="data:image/png;base64, @(ComputePhoto.ConvertImageToBase64Stamp(stamp.OrgPath))" />
+            }
+            @foreach (var stamp in Model.Photos)
+            {
+                <img style="position: absolute; width: @((stamp.Rectf.Width).ToString().Replace(",", "."))px;height: @((stamp.Rectf.Height).ToString().Replace(",", "."))px; margin-top: @((stamp.Rectf.Y ).ToString().Replace(",", "."))px; margin-left: @((stamp.Rectf.X).ToString().Replace(",", "."))px;" src="@Url.Action("GetUserPhoto","Pattern", new{id=stamp.UserId})" />
+            }
+            @foreach (var img in Model.Images)
+            {
+                <img style="position: absolute; width: @((img.Width).ToString().Replace(",", "."))px;height: @((img.Height).ToString().Replace(",", "."))px; margin-top: @((img.PosY ).ToString().Replace(",", "."))px; margin-left: @((img.PosX).ToString().Replace(",", "."))px;" src="data:image/png;base64, @(ComputePhoto.ConvertImageToBase64Eagle("image1.png"))" />
+            }
+</body>
+</html>

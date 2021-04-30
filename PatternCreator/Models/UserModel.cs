@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using PatternCreator.Models;
+using PatternCreator.Utilities;
 
 namespace PatternCreator.Models
 {
@@ -78,4 +80,25 @@ namespace PatternCreator.Models
         [Range(0, Int32.MaxValue, ErrorMessage = "Выберите компанию.")]
         public int CompanyId { get; set; }
     }
+}
+
+public class DiplomaUserModel
+{
+    public int Id { get; set; }
+    public string FIO { get; set; }
+    public string CompanyName { get; set; }
+    public DiplomaUserModel(UserModel model)
+    {
+        Id = model.Id;
+        FIO = $"{model.Surname} {model.Name?.FirstOrDefault()}. {model.Patronymic?.FirstOrDefault()}.";
+        using (UserContext dContext = new UserContext())
+            CompanyName = dContext.CompanyModels.Find(model.CompanyId)?.CompanyName;
+
+    }
+
+    public DiplomaUserModel()
+    {
+
+    }
+
 }

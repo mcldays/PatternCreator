@@ -33,6 +33,7 @@
             }
         </optgroup>
     </select>
+    @Ajax.ActionLink("Работа с оценками", "NewMarks", new { specId = Model.Id}, new AjaxOptions{UpdateTargetId = "MarksPage", OnSuccess = "$('#SpecialityUpdate').modal('hide'); $('#MarkModal').modal('show');" })
     <input type="submit" class="btn btn-primary w-50 my-3" value="Сохранить" />
 </div>
 }

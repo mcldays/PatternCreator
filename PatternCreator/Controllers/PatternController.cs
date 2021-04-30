@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Web;
 using System.Web.Hosting;
 using System.Web.Mvc;
@@ -21,6 +22,9 @@ namespace PatternCreator.Controllers
     {
         string path = Path.Combine(HostingEnvironment.ApplicationPhysicalPath, "TemplateImage");
         string userphotopath = Path.Combine(HostingEnvironment.ApplicationPhysicalPath, "UserPhoto");
+        string stamppath = Path.Combine(HostingEnvironment.ApplicationPhysicalPath, "Resources","Stamps");
+        string respath = Path.Combine(HostingEnvironment.ApplicationPhysicalPath, "Resourses");
+
         // GET: Pattern
         [AllowAnonymous]
         public ActionResult MainPage(string returnUrl)
@@ -57,7 +61,22 @@ namespace PatternCreator.Controllers
             }
             return PartialView(company);
         }
-       
+        [HttpGet]
+        public ActionResult GetUserDocs(int UserId)
+        {
+            using (UserContext db = new UserContext())
+            {
+                UserModel user = db.UserModels.Find(UserId);
+                if (user==null)
+                {
+                    return PartialView(new UserDocs[]{});
+
+                }
+                UserDocs[] docs = user.DocumentModels.ToArray().Select(t=>new UserDocs(t)).ToArray();
+                return PartialView(docs);
+            }
+        }
+
         public ActionResult EditUser(int UserId)
         {
             UserModelViewModel user;
@@ -94,6 +113,41 @@ namespace PatternCreator.Controllers
             return View(company);
         }
 
+        public ActionResult FindUsersByString(string searchText)
+        {
+            if (string.IsNullOrWhiteSpace(searchText))
+                return Content("Пустая строка поиска");
+            using (UserContext db = new UserContext())
+            {
+                    var terms = searchText.ToLower().Split(' ');
+                    CompanyViewModel[] company = db.CompanyModels.ToArray().Select(c => new CompanyViewModel
+                    {
+                        CompanyName = c.CompanyName,
+                        CompanyId = c.CompanyId,
+                        UserViewModels = c.UserModels.ToArray().Where(t => terms.All(r =>
+                                string.Concat(t.Name, t.Surname, t.Patronymic).ToLower().Contains(r)))
+                            .ToArray().Select(t => new UserModelViewModel(t))
+                    }).ToArray();
+                    return PartialView(company);
+            }
+        }
+        public ActionResult GetUsersByPage(int page, int id)
+        {
+            using (UserContext db = new UserContext())
+            {
+                CompanyModel company = db.CompanyModels.Find(id);
+                if (company == null)
+                    return Content("Компания не найдена");
+                UserModelViewModel[] users = company.UserModels.Skip((page - 1)*20).Take(20).ToArray().Select(t => new UserModelViewModel(t))
+                    .ToArray();
+                ViewBag.Pages = Enumerable.Range(1, (int)Math.Ceiling((double)company.UserModels.Count() / 20));
+                ViewBag.CurrentPage = page;
+                if (users.Length < 1)
+                    return Content("Компания пуста");
+                return PartialView("GetUserTable", users);
+            }
+        }
+
         public ActionResult SpecialityPage()
         {
             return View();
@@ -106,7 +160,7 @@ namespace PatternCreator.Controllers
                 return PartialView(spvm);
             }
         }
-        public bool AddSpeciality(SpecialtyViewModel model)
+        public int AddSpeciality(SpecialtyViewModel model)
         {
             try
             {
@@ -122,14 +176,96 @@ namespace PatternCreator.Controllers
                         Quality = model.Quality,
                         Pictures = new List<PictureModel>(db.PicturesModels.Where(t => model.Templates.Contains(t.Id)))
                     };
-                    db.Specialties.AddOrUpdate(sp);
+                    sp = db.Specialties.Add(sp);
                     db.SaveChanges();
-                    return true;
+                    return sp.Id;
                 }
             }
             catch
             {
-                return false;
+                return 0;
+            }
+
+
+        }
+        public bool RemoveMark(int id)
+        {
+            using (UserContext db = new UserContext())
+            {
+                MarkModel mm = db.MarkModels.Find(id);
+                if (mm == null) return false;
+                db.MarkModels.Remove(mm);
+                db.SaveChanges();
+                return true;
+            }
+        }
+        public ActionResult NewMark()
+        {
+            MarkViewModel[] mv = new MarkViewModel[]
+            {
+                new MarkViewModel
+                {
+                    HoursNumber = 0,
+                    Naming = "Итоговая аттестация"
+                }, 
+            };
+            return PartialView("NewMarks",mv);
+        }
+        public ActionResult NewMarks(int specId)
+        {
+            MarkViewModel[] mv;
+            using (UserContext db = new UserContext())
+            {
+               SpecialtyModel sp = db.Specialties.Find(specId);
+               if (sp == null) return null;
+               mv = sp.MarkModels.Select(t => new MarkViewModel(t)).ToArray();
+               if (!mv.Any())
+                   mv = new MarkViewModel[]
+                   {
+                       new MarkViewModel
+                       {
+                           HoursNumber = 0,
+                           Naming = "Итоговая аттестация",
+                           SpecialtyId = specId
+                       },
+                   };
+            }
+            return PartialView(mv);
+        }
+        public ActionResult AddMarks(MarkViewModel[] model)
+        {
+            if (!ModelState.IsValid)
+                return null;
+
+            try
+            {
+                List<int> ids = new List<int>();
+                using (UserContext db = new UserContext())
+                {
+                    foreach (MarkViewModel markViewModel in model)
+                    {
+                        MarkModel sp = new MarkModel
+                        {
+                            Id = markViewModel.Id,
+                            Naming = markViewModel.Naming,
+                            HoursNumber = markViewModel.HoursNumber,
+                            Number = markViewModel.Number,
+                            SpecialtyId = markViewModel.SpecialtyId
+                        };
+                        if (sp.Id < 1)
+                            sp = db.MarkModels.Add(sp);
+                        else
+                            db.MarkModels.AddOrUpdate(sp);
+                        db.SaveChanges();
+                        ids.Add(sp.Id);
+                    }
+                    
+                    return Json(ids.ToArray(), JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch
+            {
+                return Json(new int[0], JsonRequestBehavior.AllowGet);
             }
 
 
@@ -153,6 +289,7 @@ namespace PatternCreator.Controllers
                 SpecialtyModel sp = db.Specialties.Find(Id);
                 if (sp == null)
                     return null;
+                db.MarkModels.RemoveRange(sp.MarkModels);
                 db.Specialties.Remove(sp);
                 db.SaveChanges();
                 return true;
@@ -198,7 +335,10 @@ namespace PatternCreator.Controllers
                     {
                         OrganizationId = organization.OrganizationId,
                         License = organization.License,
-                        OrganizationName = organization.OrganizationName
+                        OrganizationName = organization.OrganizationName,
+                        СhairmanName = organization.СhairmanName,
+                        SecretaryName = organization.SecretaryName,
+                        TeacherName = organization.TeacherName
                     };
                     db.Organizations.AddOrUpdate(sp);
                     db.SaveChanges();
@@ -244,6 +384,9 @@ namespace PatternCreator.Controllers
                 Organization sp = db.Organizations.Find(model.OrganizationId);
                 sp.OrganizationName = model.OrganizationName;
                 sp.License = model.License;
+                sp.SecretaryName = model.SecretaryName;
+                sp.TeacherName = model.TeacherName;
+                sp.СhairmanName = model.СhairmanName;
                 db.Entry(sp).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("OrganizationPartialPage");
@@ -331,6 +474,25 @@ namespace PatternCreator.Controllers
 
             return RedirectToAction("Home", "Pattern");
         }
+        [AllowAnonymous]
+        public int UserToDbApi(string user)
+        {
+            UserModel user1 = JsonConvert.DeserializeObject<UserModel>(user);
+            try
+            {
+                using (UserContext db = new UserContext())
+                {
+                    user1 = db.UserModels.Add(user1);
+                    db.SaveChanges();
+                    return user1.Id;
+                }
+            }
+            catch (Exception e)
+            {
+                return -1;
+            }
+            
+        }
 
         public bool RemoveCompany(int id)
         {
@@ -411,6 +573,7 @@ namespace PatternCreator.Controllers
             }
             
         }
+        [AllowAnonymous]
         public FileResult GetPictureTemplate(int id)
         {
             using (var dbUse = new UserContext())
@@ -418,10 +581,32 @@ namespace PatternCreator.Controllers
                 var image = dbUse.PicturesModels.Find(id);
                 if (image == null)
                     return null;
+                if (string.IsNullOrEmpty(image.PathToImg))
+                    return null;
 
                 return File(System.IO.File.ReadAllBytes(Path.Combine(path, image.PathToImg)), "image/jpeg");
             }
 
+        }
+        [AllowAnonymous]
+        public FileResult GetStaticImage(int id)
+        {
+            using (var dbUse = new UserContext())
+            {
+                var image = dbUse.StaticImageModel.Find(id);
+                if (image == null)
+                    return null;
+                if (string.IsNullOrEmpty(image.PathToImg))
+                    return null;
+
+                return File(System.IO.File.ReadAllBytes(Path.Combine(path, image.PathToImg)), "image/jpeg");
+            }
+
+        }
+        [AllowAnonymous]
+        public FileResult GetEagle()
+        {
+            return File(System.IO.File.ReadAllBytes(Path.Combine(respath,"image1.png" )), "image/jpeg");
         }
 
         public ActionResult DeleteStamp(int id)
@@ -485,17 +670,79 @@ namespace PatternCreator.Controllers
             if (ModelState.IsValid && uploadImage != null)
             {
 
-                Image image = Image.FromStream(uploadImage.InputStream);
-
-                var Name = id.ToString() + Path.GetExtension(uploadImage.FileName);
-                Directory.CreateDirectory(userphotopath);
-                Directory.GetFiles(userphotopath).Where(t => t.StartsWith(Path.Combine(userphotopath, id.ToString()))).ToList().ForEach(t=> System.IO.File.Delete(t));
-                
-                image.Save(Path.Combine(userphotopath, Name));
+                using (Image image = Image.FromStream(uploadImage.InputStream))
+                {
+                    var Name = id.ToString() + Path.GetExtension(uploadImage.FileName);
+                    Directory.CreateDirectory(userphotopath);
+                    Directory.GetFiles(userphotopath).Where(t => t.StartsWith(Path.Combine(userphotopath, id.ToString()))).ToList().ForEach(t => System.IO.File.Delete(t));
+                    image.Save(Path.Combine(userphotopath, Name));
+                }
                 return true;
             }
 
             return false;
+        }
+        public string AddOrganizationStamp(HttpPostedFileBase uploadImage, int OrganizationId, StampType type=StampType.Stamp)
+        {
+            if (ModelState.IsValid && uploadImage != null)
+            {
+                string Name = string.Empty;
+
+                using (UserContext db = new UserContext())
+                {
+                    Organization org = db.Organizations.Find(OrganizationId);
+                    if (org == null)
+                        return string.Empty;
+                    Directory.CreateDirectory(stamppath);
+                    switch (type)
+                    {
+                        case StampType.Stamp:
+                            if (!string.IsNullOrEmpty(org.Stamp) && System.IO.File.Exists(Path.Combine(stamppath, org.Stamp)))
+                                System.IO.File.Delete(Path.Combine(stamppath, org.Stamp));
+                            Name = Path.GetRandomFileName() + ".png";
+                            using (Image image = Image.FromStream(uploadImage.InputStream))
+                                image.Save(Path.Combine(stamppath, Name));
+                            org.Stamp = Name;
+                            break;
+                        case StampType.СhairmanSignature:
+                            if (!string.IsNullOrEmpty(org.СhairmanSignature) && System.IO.File.Exists(Path.Combine(stamppath, org.СhairmanSignature)))
+                                System.IO.File.Delete(Path.Combine(stamppath, org.СhairmanSignature));
+                            Name = Path.GetRandomFileName() + ".png";
+                            using (Image image = Image.FromStream(uploadImage.InputStream))
+                                image.Save(Path.Combine(stamppath, Name));
+                            org.СhairmanSignature = Name;
+                            break;
+                        case StampType.TeacherSignature:
+                            if (!string.IsNullOrEmpty(org.TeacherSignature) && System.IO.File.Exists(Path.Combine(stamppath, org.TeacherSignature)))
+                                System.IO.File.Delete(Path.Combine(stamppath, org.TeacherSignature));
+                            Name = Path.GetRandomFileName() + ".png";
+                            using (Image image = Image.FromStream(uploadImage.InputStream))
+                                image.Save(Path.Combine(stamppath, Name));
+                            org.TeacherSignature = Name;
+                            break;
+                        case StampType.SecretarySignature:
+                            if (!string.IsNullOrEmpty(org.SecretarySignature) && System.IO.File.Exists(Path.Combine(stamppath, org.SecretarySignature)))
+                                System.IO.File.Delete(Path.Combine(stamppath, org.SecretarySignature));
+                            Name = Path.GetRandomFileName() + ".png";
+                            using (Image image = Image.FromStream(uploadImage.InputStream))
+                                image.Save(Path.Combine(stamppath, Name));
+                            org.SecretarySignature = Name;
+                            break;
+                    }
+                    db.SaveChanges();
+                }
+                return Name;
+            }
+
+            return string.Empty;
+        }
+
+        public enum StampType
+        {
+            Stamp,
+            СhairmanSignature,
+            TeacherSignature,
+            SecretarySignature
         }
         [HttpPost]
         public ActionResult Create(HttpPostedFileBase uploadImage)
@@ -545,6 +792,24 @@ namespace PatternCreator.Controllers
                 return null;
             }
            
+
+        }
+        public FileResult GetOrgStamp(string f)
+        {
+            if (string.IsNullOrEmpty(f))
+                return File(Path.Combine(HostingEnvironment.ApplicationPhysicalPath, "Resourses", "couldnotfound.png"), "image/jpeg");
+            try
+            {
+                string p = Path.Combine(stamppath, f);
+                if (!System.IO.File.Exists(p))
+                    return File(Path.Combine(HostingEnvironment.ApplicationPhysicalPath, "Resourses", "couldnotfound.png"), "image/jpeg");
+                return File(System.IO.File.ReadAllBytes(p), "image/jpeg");
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+
 
         }
         [HttpPost]
@@ -641,7 +906,7 @@ namespace PatternCreator.Controllers
                         stamps.Width = float.Parse(stamp.Width  .Replace('.', ','));
                         stamps.PosX = float.Parse(stamp.PosX    .Replace('.', ','));
                         stamps.PosY = float.Parse(stamp.PosY.Replace('.', ','));
-                        stamps.StampId = stamp.StampId;
+                        stamps.Type = stamp.Type;
                         dbUse.Entry(stamps).State = EntityState.Modified;
                     }
                     else
@@ -649,7 +914,7 @@ namespace PatternCreator.Controllers
                         stamps = new StampPositions
                         {
                             PicId = picId,
-                            StampId = stamp.StampId,
+                            Type = stamp.Type,
                             Height = float.Parse(stamp.Height.Replace('.', ',')),
                             Width = float.Parse(stamp.Width  .Replace('.', ',')),
                             PosX = float.Parse(stamp.PosX    .Replace('.', ',')),
@@ -682,6 +947,32 @@ namespace PatternCreator.Controllers
                             PosY = float.Parse(photo.PosY.Replace('.', ','))
                         };
                         dbUse.PhotoModel.AddOrUpdate(photos);
+                    }
+                }
+                foreach (var photo in b.images)
+                {
+                    StaticImageModel photos = picture.StaticImageModels.FirstOrDefault(t => t.StaticImageModelId == photo.StaticImageModelId);
+                    if (photos != null)
+                    {
+                        photos.Height = float.Parse(photo.Height.Replace('.', ','));
+                        photos.Width = float.Parse(photo.Width.Replace('.', ','));
+                        photos.PosX = float.Parse(photo.PosX.Replace('.', ','));
+                        photos.PosY = float.Parse(photo.PosY.Replace('.', ','));
+                        photos.StaticImageModelId = photo.StaticImageModelId;
+                        dbUse.Entry(photos).State = EntityState.Modified;
+                    }
+                    else
+                    {
+                        photos = new StaticImageModel
+                        {
+                            PicId = picId,
+                            StaticImageModelId = photo.StaticImageModelId,
+                            Height = float.Parse(photo.Height.Replace('.', ',')),
+                            Width = float.Parse(photo.Width.Replace('.', ',')),
+                            PosX = float.Parse(photo.PosX.Replace('.', ',')),
+                            PosY = float.Parse(photo.PosY.Replace('.', ','))
+                        };
+                        dbUse.StaticImageModel.AddOrUpdate(photos);
                     }
                 }
                 if (a.Count != 0)

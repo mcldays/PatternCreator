@@ -1,0 +1,171 @@
+﻿@using Newtonsoft.Json
+@using PatternCreator.Models
+@using PatternCreator.Utilities
+@model Dictionary<int, int>
+@{
+    bool Is_Diploma = ViewBag.IsDiploma;
+    bool Is_Application = ViewBag.IsApplication;
+    bool Is_Mark = ViewBag.IsMark;
+    bool Substrate = ViewBag.Substrate;
+    UserContext db = new UserContext();
+    string diploma = Is_Diploma ? ComputePhoto.GetBase64ByPath("tuy5nzeq.zgs.jpg") : null;
+    string application = Is_Application ? ComputePhoto.GetBase64ByPath("a3vqvq1v.dbr.jpg") : null;
+    string mark = Is_Mark ? ComputePhoto.GetBase64ByPath("rscghnwi.jpx.jpg") : null;
+}
+
+
+@foreach (int id in Model.Select(t => t.Value))
+{
+    DocumentModel doc = db.DocumentModels.Find(id);
+    if (doc == null) { continue; }
+
+    if (Is_Diploma)
+    {<div class="printdocument">
+            <div style="display: block; height: 29.7cm; width: 20.9cm; padding: 0; margin: 0; page-break-after: always;">
+                <div style="position: absolute; height: 20.9cm; width: 29.7cm; margin: 0; transform: rotate(90deg); transform-origin: 35%">
+                    @if (Substrate)
+                    {
+                    <img style="position: absolute; height: 19.1cm; width: 29.7cm; margin: 0; margin-top: 0.9cm; margin-bottom: 0.9cm;" src="@(diploma)" />
+                    }
+
+                    
+                    <div style="position: absolute; display: block; margin-top: 3.25cm; margin-left: 17.8cm; width: 9cm; text-align: center;">
+                        <span style="display: block; font-size: 16pt; font-weight: bold;">@($"{doc.UserModel.Surname} {doc.UserModel.Name} {doc.UserModel.Patronymic}")</span>
+                        <span style="display: block; font-size: 11pt; font-weight: normal; height: 0.44cm; margin-top: 0.15cm;">за время обучения в период</span>
+                        <span style="display: block; font-size: 11pt; font-weight: bold; height: 0.59cm;">c @(doc.StartDate.Day) @(DateConverter.GetMounthName(doc.StartDate.Month)) @(doc.StartDate.Year) по @(doc.Date.Day) @(DateConverter.GetMounthName(doc.Date.Month)) @(doc.Date.Year) года</span>
+                        <span style="display: block; font-size: 11pt; font-weight: normal; height: 0.59cm; margin-top: 1.2cm; vertical-align: bottom;">@(doc.Organization.OrganizationName)</span>
+                        <span style="display: block; font-size: 11pt; font-weight: normal; height: 0.47cm; vertical-align: middle;">по программе переподготовки</span>
+                        <span style="display: block; font-size: 12pt; font-weight: bold; height: 1.55cm; vertical-align: text-top;">@(doc.SpecialtyModel.SpecialityName)</span>
+                        <span style="display: block; font-size: 11pt; font-weight: bold; height: 1.25cm; padding: auto; line-height: 1.25cm; text-align: center; margin-top: 0.2cm">@(doc.Date.Day) @(DateConverter.GetMounthName(doc.Date.Month)) @(doc.Date.Year) года</span>
+                        <span style="display: block; font-size: 12pt; font-weight: bold; height: 3.2cm; text-align: center; margin-top: 0.95cm">
+                            @(doc.SpecialtyModel.Quality)
+                        </span>
+                        <span style="display: block; font-size: 11pt; font-weight: bold; text-align: right; margin-top: 0.95cm">@(doc.Organization.СhairmanName)</span>
+                        <span style="display: block; font-size: 11pt; font-weight: bold; text-align: right; margin-top: 0.51cm">@(doc.Organization.TeacherName)</span>
+                        <span style="display: block; font-size: 11pt; font-weight: bold; text-align: right; margin-top: 0.51cm">@(doc.Organization.SecretaryName)</span>
+                    </div>
+                    <div style="display: block; position: absolute; width: 15cm; margin-top: 12.2cm">
+                        <span style="display: block; font-size: 11pt; font-weight: bold; text-align: center;">дает право на выполнение нового вида</span>
+                        <span style="display: block; font-size: 11pt; font-weight: bold; text-align: center;">профессиональной деятельности</span>
+                        <span style="display: block; font-size: 11pt; font-weight: bold; text-align: center; margin-top: 1.3cm">@(doc.BlankNumber)</span>
+                        <span style="display: block; font-size: 11pt; font-weight: bold; text-align: center; margin-top: 1.0cm">Ижевск</span>
+                        <span style="display: block; font-size: 11pt; font-weight: bold; text-align: center; margin-top: 1.0cm">@(doc.Date.Day) @(DateConverter.GetMounthName(doc.Date.Month)) @(doc.Date.Year) года</span>
+                    </div>
+                    <img style="position: absolute; height: 5cm; margin-top: 14cm; margin-left: 15cm; width: 5cm;" src="@Url.Action("GetOrgStamp", "Pattern", new {f = doc.Organization.Stamp})"/>
+                    <img style="position: absolute; height: 2cm; margin-top: 14.7cm; margin-left: 23.3cm; width: 2cm;" src="@Url.Action("GetOrgStamp", "Pattern", new {f = doc.Organization.СhairmanSignature})"/>
+                    <img style="position: absolute; height: 2cm; margin-top: 15.7cm; margin-left: 23.3cm; width: 2cm;" src="@Url.Action("GetOrgStamp", "Pattern", new {f = doc.Organization.TeacherSignature})"/>
+                    <img style="position: absolute; height: 2cm; margin-top: 16.7cm; margin-left: 23.3cm; width: 2cm;" src="@Url.Action("GetOrgStamp", "Pattern", new {f = doc.Organization.SecretarySignature})"/>
+                </div>
+            </div>
+        </div>
+    }
+    if (Is_Application)
+    {
+<div class="printdocument">
+    <div style="display: block; height: 29.7cm; width: 21cm; padding: 0; margin: 0; page-break-after: always;">
+        <div style="position: absolute; height: 29.6cm; width: 20.9cm; margin: 0;">
+            @if (Substrate)
+            {
+            <img style="position: absolute; height: 29.6cm; width: 20.9cm;" src="@(application)">
+            }
+            
+            <div style="position: absolute; display: block; margin-top: 2.5cm; margin-left: 1.6cm; width: 17.7cm; text-align: center;">
+                <span style="display: block; font-size: 13pt; font-weight: bold; text-align: right;">@(doc.BlankNumber)</span>
+                <span style="display: block; font-size: 16pt; font-weight: bold; margin-top: 2.75cm; margin-left: 6.8cm; text-align: center;">@(doc.UserModel.Surname)</span>
+                <span style="display: block; font-size: 16pt; font-weight: bold; margin-top: 0.68cm; margin-left: 6.8cm; text-align: center;">@(doc.UserModel.Name) @(doc.UserModel.Patronymic)</span>
+                <span style="display: block; height: 2.66cm; font-size: 11pt; line-height: 1.33cm; font-weight: normal; margin-top: 1.67cm; text-align: center; text-indent: 9cm; vertical-align: text-top;">@(doc.UserModel.Education ?? " ")</span>
+                <div style="display: flex; text-align: left; margin-top: 0.47cm;">
+                    <span style="display: block; font-size: 12pt; font-weight: normal; margin-left: 0.95cm; text-align: center; width: 1.2cm;">@(doc.StartDate.Day)</span>
+                    <span style="display: block; font-size: 12pt; font-weight: normal; margin-left: 0.2cm; text-align: center; width: 4cm;">@(DateConverter.GetMounthName(doc.StartDate.Month))</span>
+                    <span style="display: block; font-size: 12pt; font-weight: normal; margin-left: 0.34cm; text-align: center; width: 1.5cm;">@(doc.StartDate.Year)</span>
+                    <span style="display: block; font-size: 12pt; font-weight: normal; margin-left: 2.05cm; text-align: center; width: 1.2cm;">@(doc.Date.Day)</span>
+                    <span style="display: block; font-size: 12pt; font-weight: normal; margin-left: 0.2cm; text-align: center; width: 4cm;">@(DateConverter.GetMounthName(doc.Date.Month))</span>
+                    <span style="display: block; font-size: 12pt; font-weight: normal; margin-left: 0.34cm; text-align: center; width: 1.5cm;">@(doc.Date.Year)</span>
+                </div>
+                <span style="display: block; font-size: 12pt; height: 2.6cm; line-height: 1.30cm; font-weight: normal; margin-top: 1.75cm; margin-left: 2.9cm; text-align: center; vertical-align: text-top; width: 12cm">@(doc.Organization.OrganizationName)</span>
+                <span style="display: block; font-size: 12pt; font-weight: normal; margin-left: 4cm; text-align: center; margin-top: 0.45cm;">профессиональной переподготовки</span>
+                <span style="display: block; font-size: 12pt; font-weight: normal; text-align: center; margin-top: 0.8cm;">@(doc.SpecialtyModel.SpecialityName)</span>
+                <span style="display: block; font-size: 12pt; font-weight: normal; text-align: left; margin-left: 2cm; margin-top: 2.15cm;">
+                    не предусмотрена
+                </span>
+                <span style="display: block; font-size: 12pt; font-weight: normal; text-align: center; margin-top: 2.13cm;">@(doc.CertificationWork)</span>
+            </div>
+        </div>
+    </div>
+</div>
+    }
+    if (Is_Mark)
+    {
+<div class="printdocument">
+    <div style="display: block; height: 29.7cm; width: 21cm; padding: 0; margin: 0;">
+        <div style="position: absolute; height: 29.6cm; width: 20.9cm; margin: 0;">
+            @if (Substrate)
+            {
+                <img style="position: absolute; height: 29.6cm; width: 20.9cm;" src="@(mark)">
+            }
+
+
+            <div style="position: absolute; display: block; margin-top: 5.2cm; margin-left: 1.4cm; text-align: center;">
+                <table style="text-align: center; font-size: 11pt">
+                    <thead>
+                        <tr>
+                            <th style="width: 1.5cm"></th>
+                            <th style="width: 7.56cm"></th>
+                            <th style="width: 5.35cm"></th>
+                            <th style="width: 3.15cm"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            Dictionary<int, string> marks = JsonConvert.DeserializeObject<Dictionary<int, string>>(doc.HandWriteFields);
+                            var markarray = doc.SpecialtyModel.MarkModels.ToArray();
+
+                        }
+                        @foreach (var markrow in markarray.OrderBy(t => t.Number).Where(t => t.Number != null))
+                        {
+                            <tr>
+                                <td>@(markrow.Number).</td>
+                                <td style="text-align: left; width: 7.26cm">@(markrow.Naming)</td>
+                                <td>@(markrow.HoursNumber)</td>
+                                <td>@(marks[markrow.Id])</td>
+                            </tr>
+                        }
+                        @foreach (var markrow in markarray.Where(t => t.Number == null))
+                        {
+                            <tr>
+                                <td></td>
+                                <td style="text-align: left; width: 7.26cm">@(markrow.Naming)</td>
+                                <td>@(markrow.HoursNumber)</td>
+                                <td>@(marks[markrow.Id])</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <span style="position: absolute; margin-top: 21.4cm; margin-left: 5.4cm; width: 4cm; text-align: center; font-size: 12pt; font-weight: bold;">@(markarray.Sum(t=>t.HoursNumber))</span>
+            <img style="position: absolute; height: 2cm; margin-top: 22.5cm; margin-left: 14cm; width: 2cm;" src="@Url.Action("GetOrgStamp", "Pattern", new {f = doc.Organization.TeacherSignature})" />
+            <img style="position: absolute; height: 2cm; margin-top: 23.7cm; margin-left: 14cm; width: 2cm;" src="@Url.Action("GetOrgStamp", "Pattern", new {f = doc.Organization.SecretarySignature})" />
+            <span style="position: absolute; font-size: 12pt; font-weight: normal; text-align: right; margin-top: 23.15cm; margin-left: 14.2cm; width: 5.2cm;">@(doc.Organization.TeacherName)</span>
+            <span style="position: absolute; font-size: 12pt; font-weight: normal; text-align: right; margin-top: 24.41cm; margin-left: 14.2cm; width: 5.2cm;">@(doc.Organization.SecretaryName)</span>
+        </div>
+    </div>
+</div>
+    }
+
+
+
+}
+
+<script>
+    $(document).ready(function() {
+        @foreach (var el in Model)
+        {
+            <text>
+                $("#tableDocs").find("tr[data-userid='" + @(el.Key) + "']").data("docid", "@(el.Value)");
+            </text>
+    }
+    });
+</script>
+@{
+    db.Dispose();
+}

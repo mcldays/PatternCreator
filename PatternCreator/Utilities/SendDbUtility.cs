@@ -16,6 +16,8 @@ namespace PatternCreator.Utilities
                 //{
                     using (UserContext db = new UserContext())
                     {
+
+                       
                         AutModel user =
                             db.AutModels.FirstOrDefault(t => t.Login == model.Login && t.Password == model.Password);  //Здесь переделать пока костыли
 
@@ -66,8 +68,7 @@ namespace PatternCreator.Utilities
                 return db.CompanyModels.ToArray().Select(t=>new CompanyViewModel
                 {
                     CompanyName = t.CompanyName,
-                    CompanyId = t.CompanyId,
-                    UserViewModels = t.UserModels.Select(u=>new UserModelViewModel(u))
+                    CompanyId = t.CompanyId
                 }).ToArray();  
             }
         }

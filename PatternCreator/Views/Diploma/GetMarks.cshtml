@@ -1,0 +1,54 @@
+﻿@using PatternCreator.Models
+@using PatternCreator.Utilities
+@model Dictionary<int, int>
+
+@{
+    UserContext db = new UserContext();
+    int i = 0;
+}
+<style>
+    .input-validation-error {
+        border-color: red;
+        border-width: 2px;
+    }
+</style>
+<form id="MarkForm" data-action="create">
+    <div class="text-center">
+@foreach (var model in Model)
+{
+    UserModel user = db.UserModels.Find(model.Key);
+    SpecialtyModel specialty = db.Specialties.Find(model.Value);
+    
+    if (user==null||specialty==null){continue;}
+    <div class="text-center">@($"{user.Surname} {user.Name} {user.Patronymic}")</div>
+    <table class="table MarkTable" data-userid="@(user.Id)">
+        <tbody>
+    @foreach (var markModel in specialty.MarkModels.OrderBy(t => t.Number).Where(t => t.Number != null))
+    {
+        <tr data-markid="@(markModel.Id)">
+            <td>@(markModel.Number).</td>
+            <td>@(markModel.Naming)</td>
+            <td><input class="form-control Mark" type="text" name="[@i].Mark" data-val-required="Заполните поле" data-val="true"/></td>
+        </tr>
+        i++;
+    }
+        @foreach (var markModel in specialty.MarkModels.Where(t => t.Number == null))
+        {
+            <tr data-markid="@(markModel.Id)">
+                <td></td>
+                <td>@(markModel.Naming)</td>
+                <td><input class="form-control Mark" type="text" name="[@i].Mark" data-val-required="Заполните поле" data-val="true"/></td>
+            </tr>
+            i++;
+        }
+        </tbody>
+    </table> 
+
+}
+        <input type="button" id="sendMarks" class="btn btn-primary" value="Продолжить"/>
+    </div>
+</form>
+<script>
+    $.validator.unobtrusive.parse($("#MarkForm"));
+</script>
+@{db.Dispose();}

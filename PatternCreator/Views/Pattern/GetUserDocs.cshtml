@@ -1,0 +1,92 @@
+﻿@using PatternCreator.Models
+@model PatternCreator.Models.UserDocs[]
+<div class="row btn-group-toggle justify-content-center mb-3" data-toggle="buttons">
+    <div id="Docs" class="btn btn-outline-primary col-2 chooseType active" aria-pressed="false">
+        <input name="data" type="radio">
+        Документы
+    </div>
+    <div id="Diploms" class="btn btn-outline-primary mx-2 col-2 chooseType" aria-pressed="false">
+        <input name="data" type="radio">
+        Дипломы
+    </div>
+</div>
+<div class="row btn-group-toggle justify-content-center d-none mb-3" id="choosedTypes" data-toggle="buttons">
+    <div id="diploma" class="btn btn-outline-primary col-2 chooseType" aria-pressed="false">
+        <input name="data1" type="checkbox">
+        Диплом
+    </div>
+    <div id="application" class="btn btn-outline-primary mx-2 col-2 chooseType" aria-pressed="false">
+        <input name="data1" type="checkbox">
+        Приложение
+    </div>
+    <div id="marks" class="btn btn-outline-primary col-2 chooseType" aria-pressed="false">
+        <input name="data1" type="checkbox">
+        Оценки
+    </div>
+</div>
+<table class="table" id="tableDocs">
+    <thead class="text-center">
+    <tr>
+        <th> № корки</th>
+        <th> Шаблон</th>
+
+        <th> № протокола</th>
+        <th> Префикс </th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (UserDocs doc in Model.Where(t=>t.PatternId!=29))
+    {
+        <tr data-docid="@(doc.DocumentId)">
+            <td>@(doc.DocumentId)</td>
+            <td>@(doc.PatternName)</td>
+            <td>@(doc.ProtocolName)</td>
+            <td>@(doc.Prefix)</td>
+        </tr>
+    }
+    @if (!Model.Any())
+    {
+        <th>
+            <td colspan="4">Документы не найдены!</td>
+        </th>
+    }
+    </tbody>
+</table>
+<table class="table" id="tableDiploma" style="display: none">
+    <thead class="text-center">
+    <tr>
+        <th> № корки</th>
+        <th> Шаблон</th>
+
+        <th> № протокола</th>
+        <th> Префикс </th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (UserDocs doc in Model.Where(t=>t.PatternId==29))
+    {
+        <tr data-docid="@(doc.DocumentId)">
+            <td>@(doc.DocumentId)</td>
+            <td>@(doc.PatternName)</td>
+            <td>@(doc.ProtocolName)</td>
+            <td>@(doc.Prefix)</td>
+        </tr>
+    }
+    @if (!Model.Any())
+    {
+        <th>
+            <td colspan="4">Дипломы не найдены!</td>
+        </th>
+    }
+    </tbody>
+</table>
+<script>
+    $(document).ready(function() {
+        $("#tableDocs").TableSelection({
+            status: 'multiple'
+        });
+        $("#tableDiploma").TableSelection({
+            status: 'multiple'
+        });
+    });
+</script>

@@ -1,0 +1,138 @@
+﻿@using PatternCreator.Models
+@using PatternCreator.Utilities
+@model int[]
+@{
+    UserContext db = new UserContext();
+    var d = db.DocumentModels.Find(Model.FirstOrDefault());
+    if (d==null)
+    {
+        db.Dispose();
+        return;
+    }
+    var specialtyModels = d.PictureModel.Specialties.ToArray();
+    var organizations = db.Organizations.ToArray();
+}
+@foreach (int id in Model)
+{
+    DocumentModel doc = db.DocumentModels.Find(id);
+    if(doc==null){continue;}
+<tr data-userid='@(doc.UserModel.Id)' data-docid='@(doc.DocumentId)'>
+    <td>@(doc.UserModel.Surname+" " +
+          doc.UserModel.Name.FirstOrDefault()+". " +
+          doc.UserModel.Patronymic.FirstOrDefault()+".")</td>
+    <td style="min-width: 300px; max-width: 300px">
+        <div class="input-group">
+            <select class="selectSpecialty reqfields form-control p-0" id="[@(doc.DocumentId)].SpecialtyName" name="[@(doc.DocumentId)].SpecialtyName" data-val="true" data-val-required="Выберите программу">
+                <optgroup label="Программы для дипломов">
+                    <option data-placeholder="true" value="">Выберите программу</option>
+                    @foreach (var spec in specialtyModels)
+                    {
+                        <option value="@spec.Id" @(doc.SpecialtyId==spec.Id?"selected":"")>@(spec.SpecialityName + $" ({spec.Prefix}) {spec.Quality}")</option>
+                    }
+                </optgroup>
+            </select>
+            <div class="input-group-append allreadycol">
+                <span class="btn btn-primary">&#8661</span>
+            </div>
+        </div>
+        <span class="field-validation-valid text-danger font-weight-bold" data-valmsg-for="[@(doc.DocumentId)].SpecialtyName" data-valmsg-replace="true"></span>
+    </td>
+    <td style="min-width: 300px; max-width: 300px">
+        <div class="input-group">
+            <select class="selectOrganization reqfields form-control p-0" id="[@(doc.DocumentId)].OrganizationName" name="[@(doc.DocumentId)].OrganizationName" data-val="true" data-val-required="Выберите организацию">
+                <option data-placeholder="true" value="">Выберите организацию</option>
+                @foreach (var organization in organizations)
+                {
+                    <option value="@organization.OrganizationId" @(doc.OrganizationId==organization.OrganizationId?"selected":"")>@(organization.OrganizationName)</option>
+                }
+            </select>
+            <div class="input-group-append  allreadycol">
+                <span class="btn btn-primary">&#8661</span>
+            </div>
+        </div>
+        <span class="field-validation-valid text-danger font-weight-bold" data-valmsg-for="[@(doc.DocumentId)].OrganizationName" data-valmsg-replace="true"></span>
+    </td>
+    <td style="min-width: 180px; max-width: 180px">
+        <div class="input-group date">
+            <input data-format="dd.MM.yyyy" class="DateStart form-control reqfields" type="text" id="[@(doc.DocumentId)].DateStart" name="[@(doc.DocumentId)].DateStart" aria-describedby="basic-addon2" data-val="true" data-val-required="Выберите дату" value="@(doc.StartDate)"/>
+            <div class="input-group-append allreadycol">
+                <span class="btn btn-primary">&#8661</span>
+            </div>
+            <div class="input-group-append ">
+                <span class="add-on input-group-text p-1" id="basic-addon2">
+                    <img height="25px" src="/Resourses/svg/calendar.svg">
+                </span>
+            </div>
+        </div>
+        <span class="field-validation-valid text-danger font-weight-bold" data-valmsg-for="[@(doc.DocumentId)].DateStart" data-valmsg-replace="true"></span>
+    </td>
+    <td style="min-width: 180px; max-width: 180px">
+        <div class="input-group date">
+            <input data-format="dd.MM.yyyy" class="Date form-control reqfields" type="text" id="[@(doc.DocumentId)].Date" name="[@(doc.DocumentId)].Date" aria-describedby="basic-addon3" data-val="true" data-val-required="Выберите дату" value="@(doc.Date)"/>
+            <div class="input-group-append allreadycol">
+                <span class="btn btn-primary">&#8661</span>
+            </div>
+            <div class="input-group-append ">
+                <span class="add-on input-group-text p-1" id="basic-addon3">
+                    <img height="25px" src="/Resourses/svg/calendar.svg">
+                </span>
+            </div>
+        </div>
+        <span class="field-validation-valid text-danger font-weight-bold" data-valmsg-for="[@(doc.DocumentId)].Date" data-valmsg-replace="true"></span>
+    </td>
+    <td>
+        <div class="input-group">
+            <div class="input-group-prepend createProtocol">
+                <span class="btn btn-primary">&#9999</span>
+            </div>
+            <input type="text" class="ProtocolName form-control reqfields" id="[@(doc.DocumentId)].ProtocolName" name="[@(doc.DocumentId)].ProtocolName" data-val="true" data-val-required="Сгенерируйте протокол" value="@(doc.ProtocolName)"/>
+            <div class="input-group-append allreadycol">
+                <span class="btn btn-primary">&#8661</span>
+            </div>
+        </div>
+        <span class="field-validation-valid text-danger font-weight-bold" data-valmsg-for="[@(doc.DocumentId)].ProtocolName" data-valmsg-replace="true"></span>
+    </td>
+    <td>
+        <div class="input-group">
+            <input type="text" class="CertificationWork form-control" id="[@(doc.DocumentId)].CertificationWork" name="[@(doc.DocumentId)].CertificationWork" value="@(doc.CertificationWork)"/>
+            <div class="input-group-append allreadycol">
+                <span class="btn btn-primary">&#8661</span>
+            </div>
+        </div>
+    </td>
+</tr>
+}
+<script>
+    
+    $(document).ready(function () {
+        $("#redactTbody").find("select.selectSpecialty").each(function () {
+            var elem = this;
+            var slim = new SlimSelect({
+                select: elem,
+                allowDeselectOption: true,
+                hideSelectedOption: true
+            });
+            selectSpecialty1 = selectSpecialty1.concat({ elem: $(elem), slim: slim });
+        });
+        $("#redactTbody").find("select.selectOrganization").each(function () {
+            var elem = this;
+            var slim = new SlimSelect({
+                select: elem,
+                allowDeselectOption: true,
+                hideSelectedOption: true
+            });
+            selectOrganization1 = selectOrganization1.concat({ elem: $(elem), slim: slim });
+        });
+        $("#redactTbody>tr").find(".date").datetimepicker({
+            language: 'ru',
+            pickTime: false
+        });
+        var form = $("#redactform");
+        $(form).removeData("validator")    // Added by jQuery Validation
+            .removeData("unobtrusiveValidation");   // Added by jQuery Unobtrusive Validation
+        $.validator.unobtrusive.parse(form);
+    });
+</script>
+
+
+@{db.Dispose();}

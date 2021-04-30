@@ -1,0 +1,73 @@
+﻿@model  Dictionary<string, int>
+@{
+    IEnumerable<int> pageCount = ViewBag.PageCount;
+    int currentPage = ViewBag.CurrentPage;
+    string protocol = ViewBag.Protocol;
+    int currentPart = currentPage % 5 == 0 ? (int)Math.Truncate((decimal)currentPage / 5) - 1 : (int)Math.Truncate((decimal)currentPage / 5);
+    int parts = pageCount.Count() % 5 == 0 ? (int)Math.Truncate((decimal)pageCount.Count() / 5) - 1 : (int)Math.Truncate((decimal)pageCount.Count() / 5);
+    int i = 1;
+}
+<h5>Выберите протокол:</h5>
+<table id="ProtocolTable" class="table text-center">
+    <thead>
+    <tr>
+        <th>№ п/п</th>
+        <th>№ протокола</th>
+        <th>Кол-во дипломов</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var doc in Model)
+    {
+        <tr class="protocolrow" data-protocol="@(doc.Key)">
+            <td>@(i++)</td>
+            <td>@(doc.Key)</td>
+            <td>@(doc.Value)</td>
+        </tr>
+    }
+    </tbody>
+</table>
+<div class="row justify-content-center">
+    @if (currentPage > 5)
+    {
+        int pg = (currentPart - 1)*5 + 1;
+        <div class="col-auto mx-1 p-0">
+            <a class="btn btn-primary" data-ajax="true" data-ajax-failure="alert('Что то пошло не так! попробуйте ещё раз')" href="/Diploma/Protocols?protocolname=@(protocol)&page=@(pg)" data-ajax-begin="$('#preloader-id').removeClass('done');" data-ajax-complete="$('#preloader-id').addClass('done');" data-ajax-method="POST" data-ajax-update="#targetContainer"><<</a>
+        </div>
+    }
+    @if (currentPage > 1)
+    {
+        <div class="col-auto mx-1 p-0">
+            <a class="btn btn-primary" data-ajax="true" data-ajax-failure="alert('Что то пошло не так! попробуйте ещё раз')" href="/Diploma/Protocols?protocolname=@(protocol)&page=@(currentPage-1)" data-ajax-begin="$('#preloader-id').removeClass('done');" data-ajax-complete="$('#preloader-id').addClass('done');" data-ajax-method="POST" data-ajax-update="#targetContainer"><</a>
+        </div>
+    }
+    @foreach (int page in pageCount.Skip(5 * currentPart).Take(5))
+    {
+        <div class="col-auto mx-1 p-0">
+            <a class="btn btn-outline-primary @(page==currentPage?"active":"")" data-ajax="true" data-ajax-failure="alert('Что то пошло не так! попробуйте ещё раз')" href="/Diploma/Protocols?protocolname=@(protocol)&page=@(page)" data-ajax-begin="$('#preloader-id').removeClass('done');" data-ajax-complete="$('#preloader-id').addClass('done');" data-ajax-method="POST" data-ajax-update="#targetContainer">@(page)</a>
+        </div>
+    }
+
+    @if (currentPage < pageCount.Last())
+    {
+        <div class="col-auto mx-1 p-0">
+            <a class="btn btn-primary" data-ajax="true" data-ajax-failure="alert('Что то пошло не так! попробуйте ещё раз')" href="/Diploma/Protocols?protocolname=@(protocol)&page=@(currentPage+1)" data-ajax-begin="$('#preloader-id').removeClass('done');" data-ajax-complete="$('#preloader-id').addClass('done');" data-ajax-method="POST" data-ajax-update="#targetContainer">></a>
+        </div>
+    }
+    @if (!(currentPage > parts * 5))
+    {
+        int pg = (currentPart + 1)*5 + 1;
+        <div class="col-auto mx-1 p-0">
+            <a class="btn btn-primary" data-ajax="true" data-ajax-failure="alert('Что то пошло не так! попробуйте ещё раз')" href="/Diploma/Protocols?protocolname=@(protocol)&page=@(pg)" data-ajax-begin="$('#preloader-id').removeClass('done');" data-ajax-complete="$('#preloader-id').addClass('done');" data-ajax-method="POST" data-ajax-update="#targetContainer">>></a>
+        </div>
+    }
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#ProtocolTable").TableSelection({});
+    });
+</script>
+
+
+

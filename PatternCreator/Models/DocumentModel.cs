@@ -30,6 +30,7 @@ namespace PatternCreator.Models
         public int OrganizationId { get; set; }
         public virtual Organization Organization { get; set; }
         
+        public int BlankNumber { get; set; }
         public string ProtocolName { get; set; }
         public virtual ProtocolModel ProtocolModel { get; set; }
 
@@ -39,13 +40,33 @@ namespace PatternCreator.Models
         public string EducationTime { get; set; }
 
         public string HandWriteFields { get; set; }
-        
+        public string CertificationWork { get; set; }
+
     }
     public class DocumentSaveModel
     {
         public int DocumentId { get; set; }
         public string Date { get; set; }
         public string StartDate { get; set; }
+
+    }
+
+    public class UserDocs
+    {
+        public UserDocs(DocumentModel model)
+        {
+            DocumentId = model.DocumentId;
+            PatternName = model.PictureModel.Name;
+            ProtocolName = model.ProtocolName;
+            Prefix = model.SpecialtyModel.Prefix;
+            PatternId = model.PatternId;
+        }
+        public int DocumentId { get; set; }
+        public int PatternId { get; set; }
+        public string PatternName { get; set; }
+        public string ProtocolName { get; set; }
+        public string Prefix { get; set; }
+
 
     }
     public class DocumentViewModel
@@ -74,6 +95,7 @@ namespace PatternCreator.Models
             Items = new List<ItemModel>();
             Stamps = new List<Stamp>();
             Photos = new List<Stamp>();
+            Images = new List<StaticImageViewModel>();
         }
         public TypeDoc Identity { get; set; }
 
@@ -83,6 +105,7 @@ namespace PatternCreator.Models
         public List<ItemModel> Items { get; set; }
         public List<Stamp> Stamps { get; set; }
         public List<Stamp> Photos { get; set; }
+        public List<StaticImageViewModel> Images { get; set; }
         public int DocId { get; set; }
         public static int[] Patterns = {45};
         public enum TypeDoc
@@ -108,7 +131,7 @@ namespace PatternCreator.Models
     public class Stamp
     {
         public RectangleF Rectf { get; set; }
-        public string Image { get; set; }
+        public string OrgPath { get; set; }
         public int UserId { get; set; }
     }
     public class UserNameModel

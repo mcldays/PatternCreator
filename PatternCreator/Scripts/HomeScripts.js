@@ -28,11 +28,11 @@ $(document).ready(function() {
         $(".closeTableBut").removeClass('rotated');
     };
     $(document).on("input", "#FindUsers", function() {
-    findUsers($(this));
+    //findUsers($(this));
     });
 
     $(document).on("click", ".FindButton", function() {
-        findUsers($(this).prev());
+        //findUsers($(this).prev());
     });
 });
 

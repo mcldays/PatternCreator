@@ -6,13 +6,19 @@ using System.Drawing.Imaging;
 using System.Drawing.Text;
 using System.IO;
 using System.Linq;
+using System.Web.Hosting;
 using Newtonsoft.Json;
+using PatternCreator.Controllers;
 using PatternCreator.Models;
 
 namespace PatternCreator.Utilities
 {
     public static class ComputePhoto
     {
+        static string stamppath = Path.Combine(HostingEnvironment.ApplicationPhysicalPath, "Resources", "Stamps");
+        static string eagle = Path.Combine(HostingEnvironment.ApplicationPhysicalPath, "Resourses");
+
+        static string path = Path.Combine(HostingEnvironment.ApplicationPhysicalPath, "TemplateImage");
         public static List<string> TrimWrapping(string sourcestring, int part, int wrapcount)
         {
             if (string.IsNullOrEmpty(sourcestring) || wrapcount >= sourcestring.Length)
@@ -72,7 +78,7 @@ namespace PatternCreator.Utilities
             switch (doc.PatternId)
             {
                 case 7: dpvm.Identity = DocumentPrintViewModel.TypeDoc.WorkHighSecurityWithQuality; break;
-                case 4: dpvm.Identity = DocumentPrintViewModel.TypeDoc.WorkSecurity; break;
+                case 21: dpvm.Identity = DocumentPrintViewModel.TypeDoc.WorkSecurity; break;
                 case 3: dpvm.Identity = DocumentPrintViewModel.TypeDoc.WorkHighSecurity; break;
                 case 5: dpvm.Identity = DocumentPrintViewModel.TypeDoc.Pplam; break;
                 case 6: dpvm.Identity = DocumentPrintViewModel.TypeDoc.Ptm; break;
@@ -98,7 +104,7 @@ namespace PatternCreator.Utilities
                 switch (position.Type)
                     {
                         case "Компания":
-                            text = user.CompanyModel.CompanyName;
+                            text = user.CompanyModel?.CompanyName;
                             break;
                         case "Ф.И.О":
                             text = $"{user.Surname} {user.Name} {user.Patronymic}";
@@ -125,7 +131,7 @@ namespace PatternCreator.Utilities
                             text = user.Patronymic_DativeCase;
                             break;
                         case "Должность":
-                            text = user.Position;
+                            text = user.Position??"";
                             break;
                         case "Образование":
                             text = user.Education;
@@ -188,9 +194,9 @@ namespace PatternCreator.Utilities
                             text = doc.ProtocolName+"-"+doc.SpecialtyModel.Prefix;
                             break;
                         case "Номер бланка":
-                            text = doc.PictureModel.DocumentModels.OrderBy(t=>t.DocumentId).ToList().IndexOf(doc).ToString("D5");
+                            text = doc.BlankNumber.ToString("D5");
                             break;
-                    case "Номер корочки":
+                        case "Номер корочки":
                             text = doc.DocumentId.ToString();
                             break;
                         case "Ручной ввод":
@@ -205,12 +211,21 @@ namespace PatternCreator.Utilities
                         case "Лицензия":
                             text = doc.Organization.License;
                             break;
-
+                        case "Председатель комиссии":
+                            text = doc.Organization.СhairmanName;
+                            break;
+                        case "Преподаватель":
+                            text = doc.Organization.TeacherName;
+                            break;
+                        case "Секретарь":
+                            text = doc.Organization.SecretaryName;
+                            break;
                     default:
-                            text = position.Text;
+                            text = position.Text??"";
                             break;
                     }
-               
+
+                text = text ?? "";
                          var format = new StringFormat();
                 format.LineAlignment = StringAlignment.Near;
                 switch (position.Alignment)
@@ -269,10 +284,17 @@ namespace PatternCreator.Utilities
             {
                 RectangleF rectf = new RectangleF((float)(position.PosX), (float)(position.PosY),
                         (float)(position.Width), (float)(position.Height));
+                string fname="";
+                switch (position.Type)
+                {
+                    case PatternController.StampType.Stamp: fname = doc.Organization.Stamp; break;
+                    case PatternController.StampType.СhairmanSignature: fname = doc.Organization.СhairmanSignature; break;
+                    case PatternController.StampType.TeacherSignature: fname = doc.Organization.TeacherSignature; break;
+                    case PatternController.StampType.SecretarySignature: fname = doc.Organization.SecretarySignature; break;
+                }
                 dpvm.Stamps.Add(new Stamp
                 {
-                    Rectf = rectf,
-                    Image = Convert.ToBase64String(position.StampModel.Image)
+                    Rectf = rectf, OrgPath = fname
                 });
 
             }
@@ -287,6 +309,10 @@ namespace PatternCreator.Utilities
                 });
 
             }
+            foreach (var position in template.StaticImageModels)
+            {
+                dpvm.Images.Add(new StaticImageViewModel(position));
+            }
             dpvm.Image = template.Id;
             return dpvm;
         }
@@ -299,6 +325,109 @@ namespace PatternCreator.Utilities
                 return (byte[])converter.ConvertTo(img, typeof(byte[]));
             
            
+        }
+
+        public static string GetBase64ByPath(string p)
+        {
+            string base64String;
+            using (var img = System.Drawing.Image.FromFile(Path.Combine(path, p))) // Image Path from File Upload Controller
+            {
+                using (var memStream = new MemoryStream())
+                {
+                    img.Save(memStream, img.RawFormat);
+                    byte[] imageBytes = memStream.ToArray();
+
+                    // Convert byte[] to Base64 String
+                    base64String = Convert.ToBase64String(imageBytes);
+                    return "data:image/jpg;base64,"+base64String;
+                }
+            }
+        }
+        public static string  ConvertImageToBase64(int imgid)
+        {
+            using (var dbUse = new UserContext())
+            {
+                var image = dbUse.PicturesModels.Find(imgid);
+                if (image == null)
+                    return null;
+                if (string.IsNullOrEmpty(image.PathToImg))
+                    return null;
+                string base64String = string.Empty;
+                // Convert Image to Base64
+                using (var img = System.Drawing.Image.FromFile(Path.Combine(path, image.PathToImg))) // Image Path from File Upload Controller
+                {
+                    using (var memStream = new MemoryStream())
+                    {
+                        img.Save(memStream, img.RawFormat);
+                        byte[] imageBytes = memStream.ToArray();
+
+                        // Convert byte[] to Base64 String
+                        base64String = Convert.ToBase64String(imageBytes);
+                        return base64String;
+                    }
+                }
+            }
+        }
+        public static string ConvertImageToBase64Eagle(string p)
+        {
+            if (string.IsNullOrEmpty(p))
+                return null;
+            string base64String = string.Empty;
+            // Convert Image to Base64
+            using (var img = System.Drawing.Image.FromFile(Path.Combine(eagle, p))) // Image Path from File Upload Controller
+            {
+                using (var memStream = new MemoryStream())
+                {
+                    img.Save(memStream, img.RawFormat);
+                    byte[] imageBytes = memStream.ToArray();
+                    // Convert byte[] to Base64 String
+                    base64String = Convert.ToBase64String(imageBytes);
+                    return base64String;
+                }
+            }
+        }
+        public static string ConvertImageToBase64Stamp(string p)
+        {
+                if (string.IsNullOrEmpty(p))
+                    return null;
+                string base64String = string.Empty;
+                // Convert Image to Base64
+                using (var img = System.Drawing.Image.FromFile(Path.Combine(stamppath, p))) // Image Path from File Upload Controller
+                {
+                    using (var memStream = new MemoryStream())
+                    {
+                        img.Save(memStream, img.RawFormat);
+                        byte[] imageBytes = memStream.ToArray();
+                        // Convert byte[] to Base64 String
+                        base64String = Convert.ToBase64String(imageBytes);
+                        return base64String;
+                    }
+                }
+        }
+        public static string ConvertImageToBase64Photo(int imgid)
+        {
+            using (var dbUse = new UserContext())
+            {
+                var image = dbUse.PicturesModels.Find(imgid);
+                if (image == null)
+                    return null;
+                if (string.IsNullOrEmpty(image.PathToImg))
+                    return null;
+                string base64String = string.Empty;
+                // Convert Image to Base64
+                using (var img = System.Drawing.Image.FromFile(Path.Combine(path, image.PathToImg))) // Image Path from File Upload Controller
+                {
+                    using (var memStream = new MemoryStream())
+                    {
+                        img.Save(memStream, img.RawFormat);
+                        byte[] imageBytes = memStream.ToArray();
+
+                        // Convert byte[] to Base64 String
+                        base64String = Convert.ToBase64String(imageBytes);
+                        return base64String;
+                    }
+                }
+            }
         }
     }
 }

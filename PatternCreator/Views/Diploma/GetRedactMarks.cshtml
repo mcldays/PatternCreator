@@ -1,0 +1,96 @@
+﻿@using Newtonsoft.Json
+@using PatternCreator.Models
+@using PatternCreator.Utilities
+@model Dictionary<int, string>
+
+@{
+    UserContext db = new UserContext();
+    int i = 0;
+}
+<style>
+    .input-validation-error {
+        border-color: red;
+        border-width: 2px;
+    }
+</style>
+<form id="MarkForm" data-action="redact">
+    <div class="text-center">
+        @foreach (var model in Model)
+        {
+            DocumentModel doc = db.DocumentModels.Find(model.Key);
+            if (doc == null) { continue; }
+            UserModel user = doc.UserModel;
+            SpecialtyModel specialty = doc.SpecialtyModel;
+
+            if (user == null || specialty == null) { continue; }
+            Dictionary<int, string> dictionary = JsonConvert.DeserializeObject<Dictionary<int, string>>(doc.HandWriteFields);
+
+            <div class="text-center">@($"{user.Surname} {user.Name} {user.Patronymic}")</div>
+            <div class="text-center">@($"Диплом № {doc.BlankNumber}")</div>
+            <table class="table MarkTable" data-userid="@(user.Id)" data-docid="@(model.Key)">
+                <tbody>
+                    @foreach (var markModel in specialty.MarkModels.OrderBy(t => t.Number).Where(t => t.Number != null))
+                    {
+                        <tr data-markid="@(markModel.Id)">
+                            <td>@(markModel.Number).</td>
+                            <td>@(markModel.Naming)</td>
+                            <td><input class="form-control Mark" type="text" name="[@i].Mark" data-val-required="Заполните поле" data-val="true" value="@(dictionary.ContainsKey(markModel.Id)?dictionary[markModel.Id]:"")"/></td>
+                        </tr>
+                        i++;
+                    }
+                    @foreach (var markModel in specialty.MarkModels.Where(t => t.Number == null))
+                    {
+                        <tr data-markid="@(markModel.Id)">
+                            <td></td>
+                            <td>@(markModel.Naming)</td>
+                            <td><input class="form-control Mark" type="text" name="[@i].Mark" data-val-required="Заполните поле" data-val="true" value="@(dictionary.ContainsKey(markModel.Id)?dictionary[markModel.Id]:"")"/></td>
+                        </tr>
+                        i++;
+                    }
+                </tbody>
+            </table>
+
+        }
+        <input type="button" id="redactMarks" class="btn btn-primary" value="Продолжить" />
+    </div>
+</form>
+<script>
+    $.validator.unobtrusive.parse($("#MarkForm"));
+    $(document).ready(function() {
+        $("#redactMarks").on("click", function () {
+            $('#preloader-id').removeClass('done');
+            let data = $(".MarkTable").toArray().map(function(t) {
+                let marks = $(t).find("tr").toArray().map(function (r) {
+                    var d = {
+                        markid: $(r).data("markid"),
+                        mark: $(r).find("input.Mark").val()
+                    }
+                    return d;
+                });
+                var d = {
+                    docid: $(t).data("docid"),
+                    marks: marks
+                }
+                return d;
+            });
+            $.post(
+                '@(Url.Action("RedactMarks"))',
+                {
+                    data: JSON.stringify(data),
+                },
+                function(result) {
+                    if (result==="True") {
+                        alert("Успешно!");
+                        $("#marksModal").modal('hide');
+                        var arr = $("#redactform").find("tbody>tr").toArray();
+                        createDoc(arr);
+                    } else {
+                        alert("Что-то пошло не так!");
+                    }
+                    $('#preloader-id').addClass('done');
+                }, "html");
+        });
+    });
+</script>
+@{db.Dispose();}
+
