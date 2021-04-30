@@ -1,8 +1,9 @@
-﻿@model  Dictionary<int, string>
+﻿@model  Dictionary<int, string[]>
 @{
     IEnumerable<int> pageCount = ViewBag.PageCount;
     int currentPage = ViewBag.CurrentPage;
     string protocol = ViewBag.Protocol;
+    string typogr = ViewBag.DocString;
     int currentPart = currentPage % 5 == 0 ? (int)Math.Truncate((decimal)currentPage / 5) - 1 : (int)Math.Truncate((decimal)currentPage / 5);
     int parts = pageCount.Count() % 5 == 0 ? (int)Math.Truncate((decimal)pageCount.Count() / 5) - 1 : (int)Math.Truncate((decimal)pageCount.Count() / 5);
     int i = 1;
@@ -13,6 +14,7 @@
         <tr>
             <th>№ п/п</th>
             <th>№ документа</th>
+            <th>№ диплома</th>
             <th>№ протокола</th>
         </tr>
     </thead>
@@ -22,7 +24,8 @@
             <tr data-docid="@(doc.Key)" class="docrow">
                 <td>@(i++)</td>
                 <td>@(doc.Key)</td>
-                <td>@(doc.Value)</td>
+                <td>@(doc.Value[0])</td>
+                <td>@(doc.Value[1])</td>
             </tr>
         }
     </tbody>
@@ -34,32 +37,32 @@
         {
             int pg = (currentPart - 1) * 5 + 1;
             <div class="col-auto mx-1 p-0">
-                <a class="btn btn-primary" data-ajax="true" data-ajax-failure="alert('Что то пошло не так! попробуйте ещё раз')" href="/Diploma/GetDocsByProtocol?protocolname=@(protocol)&page=@(pg)" data-ajax-begin="$('#preloader-id').removeClass('done');" data-ajax-complete="$('#preloader-id').addClass('done');" data-ajax-method="POST" data-ajax-update="#targetContainer"><<</a>
+                <a class="btn btn-primary" data-ajax="true" data-ajax-failure="alert('Что то пошло не так! попробуйте ещё раз')" href="/Diploma/@(protocol!=null?"GetDocsByProtocol?protocolname="+ protocol??"":"GetDocsByPart?number="+ typogr??"")&page=@(pg)" data-ajax-begin="$('#preloader-id').removeClass('done');" data-ajax-complete="$('#preloader-id').addClass('done');" data-ajax-method="POST" data-ajax-update="#targetContainer"><<</a>
             </div>
         }
         @if (currentPage > 1)
         {
             <div class="col-auto mx-1 p-0">
-                <a class="btn btn-primary" data-ajax="true" data-ajax-failure="alert('Что то пошло не так! попробуйте ещё раз')" href="/Diploma/GetDocsByProtocol?protocolname=@(protocol)&page=@(currentPage-1)" data-ajax-begin="$('#preloader-id').removeClass('done');" data-ajax-complete="$('#preloader-id').addClass('done');" data-ajax-method="POST" data-ajax-update="#targetContainer"><</a>
+                <a class="btn btn-primary" data-ajax="true" data-ajax-failure="alert('Что то пошло не так! попробуйте ещё раз')" href="/Diploma/@(protocol!=null?"GetDocsByProtocol?protocolname="+ protocol??"":"GetDocsByPart?number="+ typogr??"")&page=@(currentPage-1)" data-ajax-begin="$('#preloader-id').removeClass('done');" data-ajax-complete="$('#preloader-id').addClass('done');" data-ajax-method="POST" data-ajax-update="#targetContainer"><</a>
             </div>
         }
         @foreach (int page in pageCount.Skip(5 * currentPart).Take(5))
         {
             <div class="col-auto mx-1 p-0">
-                <a class="btn btn-outline-primary @(page==currentPage?"active":"")" data-ajax="true" data-ajax-failure="alert('Что то пошло не так! попробуйте ещё раз')" href="/Diploma/GetDocsByProtocol?protocolname=@(protocol)&page=@(currentPage-1)" data-ajax-begin="$('#preloader-id').removeClass('done');" data-ajax-complete="$('#preloader-id').addClass('done');" data-ajax-method="POST" data-ajax-update="#targetContainer">@(page)</a>
+                <a class="btn btn-outline-primary @(page==currentPage?"active":"")" data-ajax="true" data-ajax-failure="alert('Что то пошло не так! попробуйте ещё раз')" href="/Diploma/@(protocol!=null?"GetDocsByProtocol?protocolname="+ protocol??"":"GetDocsByPart?number="+ typogr??"")&page=@(page)" data-ajax-begin="$('#preloader-id').removeClass('done');" data-ajax-complete="$('#preloader-id').addClass('done');" data-ajax-method="POST" data-ajax-update="#targetContainer">@(page)</a>
             </div>
         }
         @if (!(currentPage > parts * 5))
         {
             int pg = (currentPart + 1) * 5 + 1;
             <div class="col-auto mx-1 p-0">
-                <a class="btn btn-primary" data-ajax="true" data-ajax-failure="alert('Что то пошло не так! попробуйте ещё раз')" href="/Diploma/GetDocsByProtocol?protocolname=@(protocol)&page=@(pg)" data-ajax-begin="$('#preloader-id').removeClass('done');" data-ajax-complete="$('#preloader-id').addClass('done');" data-ajax-method="POST" data-ajax-update="#targetContainer">>></a>
+                <a class="btn btn-primary" data-ajax="true" data-ajax-failure="alert('Что то пошло не так! попробуйте ещё раз')" href="/Diploma/@(protocol!=null?"GetDocsByProtocol?protocolname="+ protocol??"":"GetDocsByPart?number="+ typogr??"")&page=@(pg)" data-ajax-begin="$('#preloader-id').removeClass('done');" data-ajax-complete="$('#preloader-id').addClass('done');" data-ajax-method="POST" data-ajax-update="#targetContainer">>></a>
             </div>
         }
         @if (currentPage < pageCount.Last())
         {
             <div class="col-auto mx-1 p-0">
-                <a class="btn btn-primary" data-ajax="true" data-ajax-failure="alert('Что то пошло не так! попробуйте ещё раз')" href="/Diploma/GetDocsByProtocol?protocolname=@(protocol)&page=@(currentPage+1)" data-ajax-begin="$('#preloader-id').removeClass('done');" data-ajax-complete="$('#preloader-id').addClass('done');" data-ajax-method="POST" data-ajax-update="#targetContainer">></a>
+                <a class="btn btn-primary" data-ajax="true" data-ajax-failure="alert('Что то пошло не так! попробуйте ещё раз')" href="/Diploma/@(protocol!=null?"GetDocsByProtocol?protocolname="+ protocol??"":"GetDocsByPart?number="+ typogr??"")&page=@(currentPage+1)" data-ajax-begin="$('#preloader-id').removeClass('done');" data-ajax-complete="$('#preloader-id').addClass('done');" data-ajax-method="POST" data-ajax-update="#targetContainer">></a>
             </div>
         }
 
@@ -67,10 +70,13 @@
 
 }
 <div class="row justify-content-center my-3">
+    @if (protocol != null)
+    {
         <button id="backProtocol" class="btn btn-primary mr-auto">Назад</button>
-    
-        <button id="redactDocs" class="btn btn-primary mx-1" disabled>Редактировать</button>
-        <button id="deleteDocs" class="btn btn-primary" disabled>Удалить</button>
+    }
+
+    <button id="redactDocs" class="btn btn-primary mx-1" disabled>Редактировать</button>
+    <button id="deleteDocs" class="btn btn-primary" disabled>Удалить</button>
 </div>
 <script>
     $(document).ready(function () {

@@ -90,7 +90,7 @@ public class DiplomaUserModel
     public DiplomaUserModel(UserModel model)
     {
         Id = model.Id;
-        FIO = $"{model.Surname} {model.Name?.FirstOrDefault()}. {model.Patronymic?.FirstOrDefault()}.";
+        FIO = $"{model.Surname} {model.Name} {model.Patronymic}";
         using (UserContext dContext = new UserContext())
             CompanyName = dContext.CompanyModels.Find(model.CompanyId)?.CompanyName;
 

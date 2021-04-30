@@ -177,16 +177,39 @@ namespace PatternCreator.Controllers
                 ViewBag.PageCount = Enumerable.Range(1, (int)Math.Ceiling((double)count / 10));
                 ViewBag.CurrentPage = page;
                 ViewBag.Protocol = protocolname;
+                ViewBag.DocString = null;
                 var models = models1.OrderByDescending(t => t.ProtocolName).Skip(10 * (page - 1)).Take(10).ToList();
                 models.ForEach(t=>dictionary.Add(t.ProtocolName, t.DocumentModels.Count(x=>x.PatternId==29)));
             }
             return PartialView("ProtocolsPartial", dictionary);
         }
+        [HttpPost]
+        public ActionResult GetDocsByPart(string number, int page = 1)
+        {
+            Dictionary<int, string[]> docs;
+            using (UserContext db = new UserContext())
+            {
+                var pat = db.PicturesModels.Find(29);
+                if (pat == null) return null;
+                var documents = pat.DocumentModels.Where(t=>t.TypographicNumber.ToString().Contains(number));
+                var documentModels = documents as DocumentModel[] ?? documents.ToArray();
+                int count = documentModels.Count();
+                if (count < 1) { return Content("Документы не найдены!" + "<div class='col-3'><button id='backProtocol' class='btn btn-primary'>Назад</button></div>"); }
+                ViewBag.PageCount = Enumerable.Range(1, (int)Math.Ceiling((double)count / 20));
+                ViewBag.CurrentPage = page;
+                ViewBag.Protocol = null;
+                ViewBag.DocString = number;
+                docs = new Dictionary<int, string[]>();
+                documentModels.Skip(20 * (page - 1)).Take(20).Select(t => new KeyValuePair<int, string[]>(t.DocumentId, new []{ t.TypographicNumber.ToString(),t.ProtocolName })).OrderByDescending(t => t.Key).ToList()
+                    .ForEach(t => docs.Add(t.Key, t.Value));
+            }
+            return PartialView("GetDocs", docs);
+        }
 
         [HttpPost]
         public ActionResult GetDocsByProtocol(string protocolname, int page = 1)
         {
-            Dictionary<int,string> docs;
+            Dictionary<int,string[]> docs;
             using (UserContext db = new UserContext())
             {
                 var protocol = db.Protocols.Find(protocolname);
@@ -198,9 +221,10 @@ namespace PatternCreator.Controllers
                 ViewBag.PageCount = Enumerable.Range(1, (int)Math.Ceiling((double)count/ 20)); 
                 ViewBag.CurrentPage = page;
                 ViewBag.Protocol = protocol.ProtocolName;
-                docs = new Dictionary<int, string>();
-                documentModels.Skip(20 * (page - 1)).Take(20).Select(t => new KeyValuePair<int, string>(t.DocumentId, t.ProtocolName)).OrderByDescending(t => t.Key).ToList()
-                    .ForEach(t=>docs.Add(t.Key,t.Value));
+                ViewBag.DocString = null;
+                docs = new Dictionary<int, string[]>();
+                documentModels.Skip(20 * (page - 1)).Take(20).Select(t => new KeyValuePair<int, string[]>(t.DocumentId, new[] { t.TypographicNumber.ToString(), t.ProtocolName })).OrderByDescending(t => t.Key).ToList()
+                    .ForEach(t => docs.Add(t.Key, t.Value));
             }
             return PartialView("GetDocs", docs);
         }

@@ -242,7 +242,8 @@ namespace PatternCreator.Controllers
                         OrganizationId = int.Parse(obj.organization.ToString()),
                         SpecialtyId = int.Parse(obj.specialty.ToString()),
                         ProtocolName = obj.protocolname.ToString().Split('-')[0],
-                        HandWriteFields = JsonConvert.SerializeObject(marks)
+                        HandWriteFields = JsonConvert.SerializeObject(marks),
+                        TypographicNumber = long.Parse(obj.typographicnumber.ToString().Length<12?"100000000000":obj.typographicnumber.ToString())
                     };
                     PictureModel pic = db.PicturesModels.Find(doc.PatternId);
                     doc.BlankNumber = pic.BlankNumber;

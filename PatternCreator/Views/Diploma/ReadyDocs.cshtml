@@ -17,9 +17,11 @@
     DocumentModel doc = db.DocumentModels.Find(id);
     if(doc==null){continue;}
 <tr data-userid='@(doc.UserModel.Id)' data-docid='@(doc.DocumentId)'>
-    <td>@(doc.UserModel.Surname+" " +
+    <td>
+        @(doc.UserModel.Surname+" " +
           doc.UserModel.Name.FirstOrDefault()+". " +
-          doc.UserModel.Patronymic.FirstOrDefault()+".")</td>
+          doc.UserModel.Patronymic.FirstOrDefault()+".")
+    </td>
     <td style="min-width: 300px; max-width: 300px">
         <div class="input-group">
             <select class="selectSpecialty reqfields form-control p-0" id="[@(doc.DocumentId)].SpecialtyName" name="[@(doc.DocumentId)].SpecialtyName" data-val="true" data-val-required="Выберите программу">
@@ -27,7 +29,7 @@
                     <option data-placeholder="true" value="">Выберите программу</option>
                     @foreach (var spec in specialtyModels)
                     {
-                        <option value="@spec.Id" @(doc.SpecialtyId==spec.Id?"selected":"")>@(spec.SpecialityName + $" ({spec.Prefix}) {spec.Quality}")</option>
+                        <option value="@spec.Id" @(doc.SpecialtyId == spec.Id ? "selected" : "")>@(spec.SpecialityName + $" ({spec.Prefix}) {spec.Quality}")</option>
                     }
                 </optgroup>
             </select>
@@ -43,7 +45,7 @@
                 <option data-placeholder="true" value="">Выберите организацию</option>
                 @foreach (var organization in organizations)
                 {
-                    <option value="@organization.OrganizationId" @(doc.OrganizationId==organization.OrganizationId?"selected":"")>@(organization.OrganizationName)</option>
+                    <option value="@organization.OrganizationId" @(doc.OrganizationId == organization.OrganizationId ? "selected" : "")>@(organization.OrganizationName)</option>
                 }
             </select>
             <div class="input-group-append  allreadycol">
@@ -54,7 +56,7 @@
     </td>
     <td style="min-width: 180px; max-width: 180px">
         <div class="input-group date">
-            <input data-format="dd.MM.yyyy" class="DateStart form-control reqfields" type="text" id="[@(doc.DocumentId)].DateStart" name="[@(doc.DocumentId)].DateStart" aria-describedby="basic-addon2" data-val="true" data-val-required="Выберите дату" value="@(doc.StartDate)"/>
+            <input data-format="dd.MM.yyyy" class="DateStart form-control reqfields" type="text" id="[@(doc.DocumentId)].DateStart" name="[@(doc.DocumentId)].DateStart" aria-describedby="basic-addon2" data-val="true" data-val-required="Выберите дату" value="@(doc.StartDate)" />
             <div class="input-group-append allreadycol">
                 <span class="btn btn-primary">&#8661</span>
             </div>
@@ -68,7 +70,7 @@
     </td>
     <td style="min-width: 180px; max-width: 180px">
         <div class="input-group date">
-            <input data-format="dd.MM.yyyy" class="Date form-control reqfields" type="text" id="[@(doc.DocumentId)].Date" name="[@(doc.DocumentId)].Date" aria-describedby="basic-addon3" data-val="true" data-val-required="Выберите дату" value="@(doc.Date)"/>
+            <input data-format="dd.MM.yyyy" class="Date form-control reqfields" type="text" id="[@(doc.DocumentId)].Date" name="[@(doc.DocumentId)].Date" aria-describedby="basic-addon3" data-val="true" data-val-required="Выберите дату" value="@(doc.Date)" />
             <div class="input-group-append allreadycol">
                 <span class="btn btn-primary">&#8661</span>
             </div>
@@ -81,11 +83,11 @@
         <span class="field-validation-valid text-danger font-weight-bold" data-valmsg-for="[@(doc.DocumentId)].Date" data-valmsg-replace="true"></span>
     </td>
     <td>
-        <div class="input-group">
+        <div class="input-group" style="min-width: 140px;">
             <div class="input-group-prepend createProtocol">
                 <span class="btn btn-primary">&#9999</span>
             </div>
-            <input type="text" class="ProtocolName form-control reqfields" id="[@(doc.DocumentId)].ProtocolName" name="[@(doc.DocumentId)].ProtocolName" data-val="true" data-val-required="Сгенерируйте протокол" value="@(doc.ProtocolName)"/>
+            <input type="text" style="width: 60px" class="ProtocolName form-control reqfields" id="[@(doc.DocumentId)].ProtocolName" name="[@(doc.DocumentId)].ProtocolName" data-val="true" data-val-required="Сгенерируйте протокол" value="@(doc.ProtocolName)" />
             <div class="input-group-append allreadycol">
                 <span class="btn btn-primary">&#8661</span>
             </div>
@@ -93,8 +95,16 @@
         <span class="field-validation-valid text-danger font-weight-bold" data-valmsg-for="[@(doc.DocumentId)].ProtocolName" data-valmsg-replace="true"></span>
     </td>
     <td>
-        <div class="input-group">
-            <input type="text" class="CertificationWork form-control" id="[@(doc.DocumentId)].CertificationWork" name="[@(doc.DocumentId)].CertificationWork" value="@(doc.CertificationWork)"/>
+        <div class="input-group" style="min-width: 180px;">
+            <input type="number" class="TypographicNumber form-control" min="100000000000" id="[@(doc.DocumentId)].TypographicNumber" name="[@(doc.DocumentId)].TypographicNumber" value="@(doc.TypographicNumber)" value="100000000000" />
+            <div class="input-group-append allreadycol">
+                <span class="btn btn-primary">&#8661</span>
+            </div>
+        </div>
+    </td>
+    <td>
+        <div class="input-group" style="min-width: 180px;">
+            <input type="text" class="CertificationWork form-control" id="[@(doc.DocumentId)].CertificationWork" name="[@(doc.DocumentId)].CertificationWork" value="@(doc.CertificationWork)" />
             <div class="input-group-append allreadycol">
                 <span class="btn btn-primary">&#8661</span>
             </div>

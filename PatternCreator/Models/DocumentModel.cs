@@ -31,6 +31,7 @@ namespace PatternCreator.Models
         public virtual Organization Organization { get; set; }
         
         public int BlankNumber { get; set; }
+        public long TypographicNumber { get; set; }
         public string ProtocolName { get; set; }
         public virtual ProtocolModel ProtocolModel { get; set; }
 
